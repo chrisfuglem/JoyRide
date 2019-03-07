@@ -9,7 +9,7 @@ class BookingService {
     });
   }
 
-  getStudent(id, success) {
+  getBooking(id, success) {
     connection.query('select * from Students where id=?', [id], (error, results) => {
       if (error) return console.error(error);
 
@@ -17,7 +17,7 @@ class BookingService {
     });
   }
 
-  updateStudent(id, name, email, success) {
+  updateBooking(id, name, email, success) {
     connection.query('update Students set name=?, email=? where id=?', [name, email, id], (error, results) => {
       if (error) return console.error(error);
 
@@ -25,7 +25,7 @@ class BookingService {
     });
   }
 
-  insertStudent(name, email, success) {
+  insertBooking(name, email, success) {
     connection.query('insert into Students (name, email) values (?, ?)', [name, email]),
       (error, results) => {
         if (error) return console.error(error);
@@ -34,7 +34,7 @@ class BookingService {
       };
   }
 
-  deleteStudent(id) {
+  deleteBooking(id) {
     connection.query('delete from Students where id=?', [id]),
       (error, results) => {
         if (error) return console.error(error);
@@ -44,8 +44,8 @@ class BookingService {
   }
 }
 
-class SubjectService {
-  getSubjects(success) {
+class CustomerService {
+  getCustomers(success) {
     connection.query('select * from Subjects', (error, results) => {
       if (error) return console.error(error);
 
@@ -53,7 +53,7 @@ class SubjectService {
     });
   }
 
-  getSubject(id, success) {
+  getCustomer(id, success) {
     connection.query('select * from Subjects where id=?', [id], (error, results) => {
       if (error) return console.error(error);
 
@@ -61,7 +61,7 @@ class SubjectService {
     });
   }
 
-  updateSubject(id, SubjectCode, SubjectName, success) {
+  updateCustomer(id, SubjectCode, SubjectName, success) {
     connection.query(
       'update Subjects set SubjectCode=?, SubjectName=? where id=?',
       [SubjectCode, SubjectName, id],
@@ -73,7 +73,7 @@ class SubjectService {
     );
   }
 
-  insertSubject(SubjectCode, SubjectName, success) {
+  insertCustomer(SubjectCode, SubjectName, success) {
     connection.query('insert into Subjects (SubjectCode, SubjectName) values (?, ?)', [SubjectCode, SubjectName]),
       (error, results) => {
         if (error) return console.error(error);
@@ -82,7 +82,7 @@ class SubjectService {
       };
   }
 
-  deleteSubject(id) {
+  deleteCustomer(id) {
     connection.query('delete from Subjects where id=?', [id]),
       (error, results) => {
         if (error) return console.error(error);
@@ -91,5 +91,5 @@ class SubjectService {
       };
   }
 }
-export let subjectService = new SubjectService();
+export let customerService = new CustomerService();
 export let bookingService = new BookingService();
