@@ -40,7 +40,7 @@ class BookingService {
   }
 
   deleteBooking(id) {
-    connection.query('delete from Students where id=?', [id]),
+    connection.query('delete from Rentals where id=?', [id]),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -103,6 +103,27 @@ class CustomerService {
   }
 }
 
+class EmployeeService {
+  getEmployees(success) {
+    connection.query('select * from Employees', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+      console.log(results);
+    });
+  }
+
+  getEmployee(id, success) {
+    connection.query('select * from Employees where EmployeeID=?', [id], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results[0]);
+    });
+  }
+}
+
 export let customerService = new CustomerService();
 
 export let bookingService = new BookingService();
+
+export let employeeService = new EmployeeService();

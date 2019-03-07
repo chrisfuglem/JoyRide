@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { bookingService, customerService } from './services';
+import { bookingService, customerService, employeeService } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form } from './widgets';
 
 import createHashHistory from 'history/createHashHistory';
@@ -15,6 +15,7 @@ class Menu extends Component {
         <NavBar.Link to="/sales">Sales</NavBar.Link>
         <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
         <NavBar.Link to="/customers">Customers</NavBar.Link>
+        <NavBar.Link to="/employees">Employees</NavBar.Link>
       </NavBar>
     );
   }
@@ -256,6 +257,34 @@ class CustomerInsert extends Component {
   }
 }
 
+class EmployeeList extends Component {
+  employees = [];
+
+  render() {
+    return (
+      <Card title="Employee List">
+        <List>
+          {this.employees.map(employee => (
+            <List.Item key={employee.EmployeeID}>
+              <NavLink to={'/warehouse/' + employee.EmployeeID}>
+                {employee.Firstname} {employee.Surname}
+              </NavLink>
+            </List.Item>
+          ))}
+        </List>
+        <br />
+        <NavLink to="/warehouse/insert" />
+      </Card>
+    );
+  }
+
+  mounted() {
+    employeeService.getEmployees(employees => {
+      this.employees = employees;
+    });
+  }
+}
+
 ReactDOM.render(
   <HashRouter>
     <div>
@@ -264,6 +293,7 @@ ReactDOM.render(
       <Route exact path="/sales" component={BookingList} />
       <Route exact path="/warehouse" component={CustomerList} />
       <Route exact path="/customers" component={CustomerList} />
+      <Route exact path="/employees" component={EmployeeList} />
       <Route path="/sales/:id/edit" component={BookingEdit} />
       <Route path="/warehouse/:id/edit" component={CustomerEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
