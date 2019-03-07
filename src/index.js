@@ -40,8 +40,8 @@ class BookingList extends Component {
         <List>
           {this.rentals.map(rental => (
             <List.Item key={rental.RentalID}>
-              <NavLink to={'/sales/' + rental.id + '/edit'}>
-                Rental ID: {rental.RentalID} | {rental.FirstName} | SUM: {rental.SUM}
+              <NavLink to={'/sales/' + rental.RentalID + '/edit'}>
+                Rental ID: {rental.RentalID} | Name: {rental.FirstName} | SUM: {rental.SUM} | BicycleCount: {rental["COUNT(RentedBicycles.BicycleID)"]}
               </NavLink>
             </List.Item>
           ))}
@@ -57,7 +57,6 @@ class BookingList extends Component {
   mounted() {
     bookingService.getBookings(rentals => {
       this.rentals = rentals;
-      console.log(this.rentals)
     });
   }
 }

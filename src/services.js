@@ -2,7 +2,7 @@ import { connection } from './mysql_connection';
 
 class BookingService {
   getBookings(success) {
-    connection.query("SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID",
+    connection.query("SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) GROUP BY Rentals.RentalID;",
                        (error, results) => {
       if (error) return console.error(error);
 
