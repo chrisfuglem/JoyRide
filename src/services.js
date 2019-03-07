@@ -11,7 +11,7 @@ class BookingService {
   }
 
   getBooking(id, success) {
-    connection.query('select * from Rentals where RentalID=?', [RentalID], (error, results) => {
+    connection.query('select * from Rentals where RentalID=?', [id], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);
@@ -124,8 +124,63 @@ class EmployeeService {
   }
 }
 
+class BicycleService {
+  getBicycles(success) {
+    connection.query('select * from Bicycles', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
+  getBicycle(id, success) {
+    connection.query('select * from Bicycle where BicycleID=?', [id], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results[0]);
+    });
+  }
+
+  updateBicycle(id, type, framtype, braketype, wheelsize, bicyclestatus, homelocation, dailyprice, currentlocation, success) {
+    connection.query('update Bicycles set BicycleType=?, FrameType=?, BrakeType=?, Wheelsize=?, BicycleStatus=?, HomeLocation=?, DailyPrice=?, CurrentLocation=? where id=?', [name, email, id], (error, results) => {
+      if (error) return console.error(error);
+
+      success();
+    });
+  }
+
+  insertBicycle(type, framtype, braketype, wheelsize, bicyclestatus, homelocation, dailyprice, currentlocation, success) {
+    connection.query('insert into Bicycles (BicycleType, FrameType, BrakeType, Wheelsize, BicycleStatus, HomeLocation, DailyPrice, CurrentLocation) values (?, ?, ?, ?, ?, ?, ?, ?)', [
+      type,
+      frametype,
+      braketype,
+      wheelsize,
+      bicyclestatus,
+      homelocation,
+      dailyprice,
+      currentlocation
+    ]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+
+  deleteBicycle(id) {
+    connection.query('delete from Bicycles where id=?', [id]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+}
+
 export let customerService = new CustomerService();
 
 export let bookingService = new BookingService();
 
 export let employeeService = new EmployeeService();
+
+export let bicycleService = new BicycleService();
