@@ -31,32 +31,32 @@ class Home extends Component {
 }
 
 class BookingList extends Component {
-  students = [];
+  rentals = [];
 
   render() {
     return (
-      <Card title="Student List">
-        <p>Click the students to edit or delete them</p>
+      <Card title="Booking List">
+        <p>Click the bookings to edit or delete them</p>
         <List>
-          {this.students.map(student => (
-            <List.Item key={student.id}>
-              <NavLink to={'/sales/' + student.id + '/edit'}>
-                {student.name} | {student.email}
+          {this.rentals.map(rental => (
+            <List.Item key={rental.id}>
+              <NavLink to={'/sales/' + rental.id + '/edit'}>
+                {rental.RentalId} | {rental.CustomerId}
               </NavLink>
             </List.Item>
           ))}
         </List>
         <br />
         <NavLink to="/sales/insert">
-          <Button.Light>Add New Student</Button.Light>
+          <Button.Light>Add New Booking</Button.Light>
         </NavLink>
       </Card>
     );
   }
 
   mounted() {
-    bookingService.getBookings(students => {
-      this.students = students;
+    bookingService.getBookings(rentals => {
+      this.rentals = rentals;
     });
   }
 }
@@ -68,9 +68,9 @@ class BookingEdit extends Component {
   render() {
     return (
       <Card title="Editing student">
-        <Form.Label>Name</Form.Label>
+        <Form.Label>Firstname</Form.Label>
         <Form.Input type="text" value={this.name} onChange={e => (this.name = e.target.value)} />
-        <Form.Label>Email</Form.Label>
+        <Form.Label>Surname</Form.Label>
         <Form.Input type="text" value={this.email} onChange={e => (this.email = e.target.value)} />
         <br />
         <NavLink to="/sales">
@@ -108,68 +108,81 @@ class BookingEdit extends Component {
 class BookingInsert extends Component {
   render() {
     return (
-      <Card title="Adding Student">
-        <Form.Label>Name:</Form.Label>
+      <Card title="Adding Booking">
+        <Form.Label>Firstname:</Form.Label>
         <Form.Input type="text" value={this.name} onChange={e => (this.name = e.target.value)} />
-        <Form.Label>Email:</Form.Label>
+        <Form.Label>Surname:</Form.Label>
         <Form.Input type="text" value={this.email} onChange={e => (this.email = e.target.value)} />
+        <Form.Label>Start date:</Form.Label>
+        <Form.Input type="text" value={this.RentStart} onChange={e => (this.RentStart = e.target.value)} />
+        <Form.Label>End date:</Form.Label>
+        <Form.Input type="text" value={this.RentEnd} onChange={e => (this.RentEnd = e.target.value)} />
         <br />
         <NavLink to="/sales">
-          <Button.Success onClick={this.insert}>Add New Student</Button.Success>
+          <Button.Success onClick={this.insert}>Add New Booking</Button.Success>
         </NavLink>
       </Card>
     );
   }
 
   insert() {
-    bookingService.insertBooking(this.name, this.email, () => {
+    bookingService.insertBooking(this.name, this.email, this.RentEnd, this.RendEnd, () => {
       history.push('/sales');
     });
   }
 }
 
 class CustomerList extends Component {
-  subjects = [];
+  customers = [];
 
   render() {
     return (
-      <Card title="Subject List">
-        <p>Click the subjects to edit or delete them</p>
+      <Card title="Customer List">
+        <p>Click the customers to edit or delete them</p>
         <List>
-          {this.subjects.map(subject => (
-            <List.Item key={subject.id}>
-              <NavLink to={'/warehouse/' + subject.id + '/edit'}>
-                {subject.SubjectName} | {subject.SubjectCode}
+          {this.customers.map(customer => (
+            <List.Item key={customer.id}>
+              <NavLink to={'/warehouse/' + customer.id + '/edit'}>
+                {customer.FirstName} | {customer.SurName} | {customer.Email} | {customer.Phone} | {customer.Address}
               </NavLink>
             </List.Item>
           ))}
         </List>
         <br />
         <NavLink to="/warehouse/insert">
-          <Button.Light>Add New Subject</Button.Light>
+          <Button.Light>Add New Customer</Button.Light>
         </NavLink>
       </Card>
     );
   }
 
   mounted() {
-    customerService.getCustomers(subjects => {
-      this.subjects = subjects;
+    customerService.getCustomers(customers => {
+      this.customers = customers;
     });
   }
 }
 
 class CustomerEdit extends Component {
-  SubjectCode = '';
-  SubjectName = '';
+  FirstName = '';
+  SurName = '';
+  Email = '';
+  Phone = '';
+  Address = '';
 
   render() {
     return (
-      <Card title="Editing Subject">
-        <Form.Label>Subject Code</Form.Label>
-        <Form.Input type="text" value={this.SubjectCode} onChange={e => (this.name = e.target.value)} />
-        <Form.Label>Subject Name</Form.Label>
-        <Form.Input type="text" value={this.SubjectName} onChange={e => (this.email = e.target.value)} />
+      <Card title="Editing Customer">
+        <Form.Label>Firstname</Form.Label>
+        <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
+        <Form.Label>Surname</Form.Label>
+        <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
+        <Form.Label>Email</Form.Label>
+        <Form.Input type="text" value={this.Email} onChange={e => (this.Email = e.target.value)} />
+        <Form.Label>Phone</Form.Label>
+        <Form.Input type="text" value={this.Phone} onChange={e => (this.Phone = e.target.value)} />
+        <Form.Label>Address</Form.Label>
+        <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
         <br />
         <NavLink to="/warehouse">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
@@ -177,23 +190,34 @@ class CustomerEdit extends Component {
         <br />
         <br />
         <NavLink to="/warehouse">
-          <Button.Danger onClick={this.delete}>Delete Subject</Button.Danger>
+          <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
         </NavLink>
       </Card>
     );
   }
 
   mounted() {
-    customerService.getCustomer(this.props.match.params.id, subject => {
-      this.SubjectCode = subject.SubjectCode;
-      this.SubjectName = subject.SubjectName;
+    customerService.getCustomer(this.props.match.params.id, customer => {
+      this.FirstName = customer.FirstName;
+      this.SurName = customer.SurName;
+      this.Email = customer.Email;
+      this.Phone = customer.Phone;
+      this.Address = customer.Address;
     });
   }
 
   save() {
-    customerService.updateCustomer(this.props.match.params.id, this.SubjectCode, this.SubjectName, () => {
-      history.push('/warehouse');
-    });
+    customerService.updateCustomer(
+      this.props.match.params.id,
+      this.FirstName,
+      this.SurName,
+      this.Email,
+      this.Phone,
+      this.Address,
+      () => {
+        history.push('/warehouse');
+      }
+    );
   }
 
   delete() {
@@ -206,21 +230,27 @@ class CustomerEdit extends Component {
 class CustomerInsert extends Component {
   render() {
     return (
-      <Card title="Adding Subject">
-        <Form.Label>Subject Code:</Form.Label>
-        <Form.Input type="text" value={this.SubjectCode} onChange={e => (this.SubjectCode = e.target.value)} />
-        <Form.Label>Subject Name:</Form.Label>
-        <Form.Input type="text" value={this.SubjectName} onChange={e => (this.SubjectName = e.target.value)} />
+      <Card title="Adding Customer">
+        <Form.Label>Firstname:</Form.Label>
+        <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
+        <Form.Label>Surname:</Form.Label>
+        <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
+        <Form.Label>Email:</Form.Label>
+        <Form.Input type="text" value={this.Email} onChange={e => (this.Email = e.target.value)} />
+        <Form.Label>Phone:</Form.Label>
+        <Form.Input type="text" value={this.Phone} onChange={e => (this.Phone = e.target.value)} />
+        <Form.Label>Address:</Form.Label>
+        <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
         <br />
         <NavLink to="/warehouse">
-          <Button.Success onClick={this.insert}>Add New Subject</Button.Success>
+          <Button.Success onClick={this.insert}>Add New Customer</Button.Success>
         </NavLink>
       </Card>
     );
   }
 
   insert() {
-    customerService.insertCustomer(this.SubjectCode, this.SubjectName, () => {
+    customerService.insertCustomer(this.FirstName, this.SurName, this.Email, this.Phone, this.Address, () => {
       history.push('/warehouse');
     });
   }

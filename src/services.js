@@ -2,7 +2,7 @@ import { connection } from './mysql_connection';
 
 class BookingService {
   getBookings(success) {
-    connection.query('select * from Students', (error, results) => {
+    connection.query('select * from Rentals', (error, results) => {
       if (error) return console.error(error);
 
       success(results);
@@ -26,7 +26,12 @@ class BookingService {
   }
 
   insertBooking(name, email, success) {
-    connection.query('insert into Students (name, email) values (?, ?)', [name, email]),
+    connection.query('insert into Rentals (name, email, RentStart, RentEnd) values (?, ?)', [
+      name,
+      email,
+      rentstart,
+      rentend
+    ]),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -46,7 +51,7 @@ class BookingService {
 
 class CustomerService {
   getCustomers(success) {
-    connection.query('select * from Subjects', (error, results) => {
+    connection.query('select * from Customers', (error, results) => {
       if (error) return console.error(error);
 
       success(results);
@@ -54,17 +59,17 @@ class CustomerService {
   }
 
   getCustomer(id, success) {
-    connection.query('select * from Subjects where id=?', [id], (error, results) => {
+    connection.query('select * from Customers where id=?', [id], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);
     });
   }
 
-  updateCustomer(id, SubjectCode, SubjectName, success) {
+  updateCustomer(id, FirstName, SurName, Email, Phone, Address, success) {
     connection.query(
-      'update Subjects set SubjectCode=?, SubjectName=? where id=?',
-      [SubjectCode, SubjectName, id],
+      'update Customers set FirstName=?, SurName=?, Email=?, Phone=?, Address=? where id=?',
+      [firstname, surname, email, phone, address, id],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -73,8 +78,14 @@ class CustomerService {
     );
   }
 
-  insertCustomer(SubjectCode, SubjectName, success) {
-    connection.query('insert into Subjects (SubjectCode, SubjectName) values (?, ?)', [SubjectCode, SubjectName]),
+  insertCustomer(FirstName, SurName, Email, Phone, Address, success) {
+    connection.query('insert into Customers (FirstName, SurName, Email, Phone, Address) values (?, ?, ?, ?, ?)', [
+      firstname,
+      surname,
+      email,
+      phone,
+      address
+    ]),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -83,7 +94,7 @@ class CustomerService {
   }
 
   deleteCustomer(id) {
-    connection.query('delete from Subjects where id=?', [id]),
+    connection.query('delete from Customers where id=?', [id]),
       (error, results) => {
         if (error) return console.error(error);
 
