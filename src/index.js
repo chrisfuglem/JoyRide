@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { bookingService, subjectService } from './services';
+import { bookingService, customerService } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form } from './widgets';
 
 import createHashHistory from 'history/createHashHistory';
@@ -24,13 +24,13 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <Card title="Welcome to WhiteBoard">Navigate using the buttons above</Card>
+        <Card title="Welcome to Joyride">Navigate using the buttons above</Card>
       </div>
     );
   }
 }
 
-class StudentList extends Component {
+class BookingList extends Component {
   students = [];
 
   render() {
@@ -61,7 +61,7 @@ class StudentList extends Component {
   }
 }
 
-class StudentEdit extends Component {
+class BookingEdit extends Component {
   name = '';
   email = '';
 
@@ -86,26 +86,26 @@ class StudentEdit extends Component {
   }
 
   mounted() {
-    bookingService.getStudent(this.props.match.params.id, student => {
+    bookingService.getBooking(this.props.match.params.id, student => {
       this.name = student.name;
       this.email = student.email;
     });
   }
 
   save() {
-    bookingService.updateStudent(this.props.match.params.id, this.name, this.email, () => {
+    bookingService.updateBooking(this.props.match.params.id, this.name, this.email, () => {
       history.push('/sales');
     });
   }
 
   delete() {
-    bookingService.deleteStudent(this.props.match.params.id, () => {
+    bookingService.deleteBooking(this.props.match.params.id, () => {
       history.push('/sales');
     });
   }
 }
 
-class StudentInsert extends Component {
+class BookingInsert extends Component {
   render() {
     return (
       <Card title="Adding Student">
@@ -122,13 +122,13 @@ class StudentInsert extends Component {
   }
 
   insert() {
-    bookingService.insertStudent(this.name, this.email, () => {
+    bookingService.insertBooking(this.name, this.email, () => {
       history.push('/sales');
     });
   }
 }
 
-class SubjectList extends Component {
+class CustomerList extends Component {
   subjects = [];
 
   render() {
@@ -153,13 +153,13 @@ class SubjectList extends Component {
   }
 
   mounted() {
-    subjectService.getSubjects(subjects => {
+    customerService.getCustomers(subjects => {
       this.subjects = subjects;
     });
   }
 }
 
-class SubjectEdit extends Component {
+class CustomerEdit extends Component {
   SubjectCode = '';
   SubjectName = '';
 
@@ -184,26 +184,26 @@ class SubjectEdit extends Component {
   }
 
   mounted() {
-    subjectService.getSubject(this.props.match.params.id, subject => {
+    customerService.getCustomer(this.props.match.params.id, subject => {
       this.SubjectCode = subject.SubjectCode;
       this.SubjectName = subject.SubjectName;
     });
   }
 
   save() {
-    subjectService.updateSubject(this.props.match.params.id, this.SubjectCode, this.SubjectName, () => {
+    customerService.updateCustomer(this.props.match.params.id, this.SubjectCode, this.SubjectName, () => {
       history.push('/warehouse');
     });
   }
 
   delete() {
-    subjectService.deleteSubject(this.props.match.params.id, () => {
+    customerService.deleteCustomer(this.props.match.params.id, () => {
       history.push('/warehouse');
     });
   }
 }
 
-class SubjectInsert extends Component {
+class CustomerInsert extends Component {
   render() {
     return (
       <Card title="Adding Subject">
@@ -220,7 +220,7 @@ class SubjectInsert extends Component {
   }
 
   insert() {
-    subjectService.insertSubject(this.SubjectCode, this.SubjectName, () => {
+    customerService.insertCustomer(this.SubjectCode, this.SubjectName, () => {
       history.push('/warehouse');
     });
   }
@@ -231,15 +231,15 @@ ReactDOM.render(
     <div>
       <Menu />
       <Route exact path="/" component={Home} />
-      <Route exact path="/sales" component={StudentList} />
-      <Route exact path="/warehouse" component={SubjectList} />
-      <Route exact path="/customers" component={SubjectList} />
-      <Route path="/sales/:id/edit" component={StudentEdit} />
-      <Route path="/warehouse/:id/edit" component={SubjectEdit} />
-      <Route path="/customers/:id/edit" component={SubjectEdit} />
-      <Route path="/sales/insert" component={StudentInsert} />
-      <Route path="/warehouse/insert" component={SubjectInsert} />
-      <Route path="/customers/insert" component={SubjectInsert} />
+      <Route exact path="/sales" component={BookingList} />
+      <Route exact path="/warehouse" component={CustomerList} />
+      <Route exact path="/customers" component={CustomerList} />
+      <Route path="/sales/:id/edit" component={BookingEdit} />
+      <Route path="/warehouse/:id/edit" component={CustomerEdit} />
+      <Route path="/customers/:id/edit" component={CustomerEdit} />
+      <Route path="/sales/insert" component={BookingInsert} />
+      <Route path="/warehouse/insert" component={CustomerInsert} />
+      <Route path="/customers/insert" component={CustomerInsert} />
     </div>
   </HashRouter>,
   document.getElementById('root')
