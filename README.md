@@ -2,4 +2,4 @@
 
 # JoyRide
 
-fttyr
+noe annet
