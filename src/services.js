@@ -102,5 +102,28 @@ class CustomerService {
       };
   }
 }
+<<<<<<< HEAD
+
+class CustomerService {
+  getCustomers(success) {
+    connection.query('select * from Customers', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
+  getCustomer(id, success) {
+    connection.query('select * from Customers where id=?', [id], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results[0]);
+    });
+  }
+}
+
+export let subjectService = new SubjectService();
+=======
 export let customerService = new CustomerService();
+>>>>>>> ea2ece9c1cf455791130467a050c29f6485b3489
 export let bookingService = new BookingService();
