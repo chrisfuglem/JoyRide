@@ -29,7 +29,7 @@ class Home extends Component {
   }
 }
 
-class Booking extends Component {
+class Bookings extends Component {
   bookings = [];
 
   render() {
