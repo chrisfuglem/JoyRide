@@ -40,9 +40,9 @@ class BookingList extends Component {
         <p>Click the bookings to edit or delete them</p>
         <List>
           {this.rentals.map(rental => (
-            <List.Item key={rental.id}>
-              <NavLink to={'/sales/' + rental.id + '/edit'}>
-                {rental.RentalId} | {rental.CustomerId}
+            <List.Item key={rental.RentalID}>
+              <NavLink to={'/sales/' + rental.RentalID + '/edit'}>
+                Rental ID: {rental.RentalID} | Name: {rental.FirstName} | SUM: {rental.SUM} | BicycleCount: {rental["COUNT(RentedBicycles.BicycleID)"]}
               </NavLink>
             </List.Item>
           ))}
