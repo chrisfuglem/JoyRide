@@ -83,5 +83,50 @@ class SubjectService {
     };
   }
 }
+
+class CustomerService {
+  getCustomers(success) {
+    connection.query('select * from Students', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
+  getStudent(id, success) {
+    connection.query('select * from Students where id=?', [id], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results[0]);
+    });
+  }
+
+  /*
+  updateStudent(id, name, email, success) {
+    connection.query('update Students set name=?, email=? where id=?', [name, email, id], (error, results) => {
+      if (error) return console.error(error);
+
+      success();
+    });
+  }
+
+  insertStudent(name, email, success) {
+    connection.query('insert into Students (name, email) values (?, ?)', [name, email]), (error, results) => {
+      if (error) return console.error(error);
+
+      success();
+    };
+  }
+
+  deleteStudent(id) {
+    connection.query('delete from Students where id=?', [id]), (error, results) => {
+      if (error) return console.error(error);
+
+      success();
+    };
+  }
+  */
+}
+
 export let subjectService = new SubjectService();
 export let studentService = new StudentService();
