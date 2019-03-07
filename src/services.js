@@ -41,7 +41,7 @@ class BookingService {
   }
 
   deleteBooking(id) {
-    connection.query('delete from Students where id=?', [id]),
+    connection.query('delete from Rentals where id=?', [id]),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -60,7 +60,8 @@ class CustomerService {
   }
 
   getCustomer(id, success) {
-    connection.query('select * from Customers where id=?', [id], (error, results) => {
+    console.log(id);
+    connection.query('select * from Customers where CustomerID=?', [id], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);
