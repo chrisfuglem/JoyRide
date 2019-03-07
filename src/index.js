@@ -11,9 +11,10 @@ const history = createHashHistory(); // Use history.push(...) to programmaticall
 class Menu extends Component {
   render() {
     return (
-      <NavBar brand="WhiteBoard">
-        <NavBar.Link to="/students">Students</NavBar.Link>
-        <NavBar.Link to="/subjects">Subjects</NavBar.Link>
+      <NavBar brand="Joyride">
+        <NavBar.Link to="/sales">Sales</NavBar.Link>
+        <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+        <NavBar.Link to="/customers">Customers</NavBar.Link>
       </NavBar>
     );
   }
@@ -230,12 +231,15 @@ ReactDOM.render(
     <div>
       <Menu />
       <Route exact path="/" component={Home} />
-      <Route exact path="/students" component={StudentList} />
-      <Route exact path="/subjects" component={SubjectList} />
-      <Route path="/students/:id/edit" component={StudentEdit} />
-      <Route path="/subjects/:id/edit" component={SubjectEdit} />
-      <Route path="/students/insert" component={StudentInsert} />
-      <Route path="/subjects/insert" component={SubjectInsert} />
+      <Route exact path="/sales" component={StudentList} />
+      <Route exact path="/warehouse" component={SubjectList} />
+      <Route exact path="/customers" component={SubjectList} />
+      <Route path="/sales/:id/edit" component={StudentEdit} />
+      <Route path="/warehouse/:id/edit" component={SubjectEdit} />
+      <Route path="/customers/:id/edit" component={SubjectEdit} />
+      <Route path="/sales/insert" component={StudentInsert} />
+      <Route path="/warehouse/insert" component={SubjectInsert} />
+      <Route path="/customers/insert" component={SubjectInsert} />
     </div>
   </HashRouter>,
   document.getElementById('root')
