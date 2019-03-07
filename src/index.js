@@ -39,9 +39,9 @@ class BookingList extends Component {
         <p>Click the bookings to edit or delete them</p>
         <List>
           {this.rentals.map(rental => (
-            <List.Item key={rental.id}>
+            <List.Item key={rental.RentalID}>
               <NavLink to={'/sales/' + rental.id + '/edit'}>
-                {rental.RentalId} | {rental.CustomerId}
+                Rental ID: {rental.RentalID} | {rental.FirstName} | SUM: {rental.SUM}
               </NavLink>
             </List.Item>
           ))}
@@ -57,6 +57,7 @@ class BookingList extends Component {
   mounted() {
     bookingService.getBookings(rentals => {
       this.rentals = rentals;
+      console.log(this.rentals)
     });
   }
 }

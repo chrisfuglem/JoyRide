@@ -2,7 +2,8 @@ import { connection } from './mysql_connection';
 
 class BookingService {
   getBookings(success) {
-    connection.query('select * from Rentals', (error, results) => {
+    connection.query("SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID",
+                       (error, results) => {
       if (error) return console.error(error);
 
       success(results);
@@ -10,7 +11,7 @@ class BookingService {
   }
 
   getBooking(id, success) {
-    connection.query('select * from Rentals where id=?', [id], (error, results) => {
+    connection.query('select * from Rentals where RentalID=?', [RentalID], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);
