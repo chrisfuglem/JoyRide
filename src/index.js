@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { studentService, subjectService } from './services';
+import { bookingService, subjectService } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form } from './widgets';
 
 import createHashHistory from 'history/createHashHistory';
@@ -40,14 +40,14 @@ class StudentList extends Component {
         <List>
           {this.students.map(student => (
             <List.Item key={student.id}>
-              <NavLink to={'/students/' + student.id + '/edit'}>
+              <NavLink to={'/sales/' + student.id + '/edit'}>
                 {student.name} | {student.email}
               </NavLink>
             </List.Item>
           ))}
         </List>
         <br />
-        <NavLink to="/students/insert">
+        <NavLink to="/sales/insert">
           <Button.Light>Add New Student</Button.Light>
         </NavLink>
       </Card>
@@ -55,7 +55,7 @@ class StudentList extends Component {
   }
 
   mounted() {
-    studentService.getStudents(students => {
+    bookingService.getBookings(students => {
       this.students = students;
     });
   }
@@ -73,12 +73,12 @@ class StudentEdit extends Component {
         <Form.Label>Email</Form.Label>
         <Form.Input type="text" value={this.email} onChange={e => (this.email = e.target.value)} />
         <br />
-        <NavLink to="/students">
+        <NavLink to="/sales">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/students">
+        <NavLink to="/sales">
           <Button.Danger onClick={this.delete}>Delete Student</Button.Danger>
         </NavLink>
       </Card>
@@ -86,21 +86,21 @@ class StudentEdit extends Component {
   }
 
   mounted() {
-    studentService.getStudent(this.props.match.params.id, student => {
+    bookingService.getStudent(this.props.match.params.id, student => {
       this.name = student.name;
       this.email = student.email;
     });
   }
 
   save() {
-    studentService.updateStudent(this.props.match.params.id, this.name, this.email, () => {
-      history.push('/students');
+    bookingService.updateStudent(this.props.match.params.id, this.name, this.email, () => {
+      history.push('/sales');
     });
   }
 
   delete() {
-    studentService.deleteStudent(this.props.match.params.id, () => {
-      history.push('/students');
+    bookingService.deleteStudent(this.props.match.params.id, () => {
+      history.push('/sales');
     });
   }
 }
@@ -114,7 +114,7 @@ class StudentInsert extends Component {
         <Form.Label>Email:</Form.Label>
         <Form.Input type="text" value={this.email} onChange={e => (this.email = e.target.value)} />
         <br />
-        <NavLink to="/students">
+        <NavLink to="/sales">
           <Button.Success onClick={this.insert}>Add New Student</Button.Success>
         </NavLink>
       </Card>
@@ -122,8 +122,8 @@ class StudentInsert extends Component {
   }
 
   insert() {
-    studentService.insertStudent(this.name, this.email, () => {
-      history.push('/students');
+    bookingService.insertStudent(this.name, this.email, () => {
+      history.push('/sales');
     });
   }
 }
@@ -138,14 +138,14 @@ class SubjectList extends Component {
         <List>
           {this.subjects.map(subject => (
             <List.Item key={subject.id}>
-              <NavLink to={'/subjects/' + subject.id + '/edit'}>
+              <NavLink to={'/warehouse/' + subject.id + '/edit'}>
                 {subject.SubjectName} | {subject.SubjectCode}
               </NavLink>
             </List.Item>
           ))}
         </List>
         <br />
-        <NavLink to="/subjects/insert">
+        <NavLink to="/warehouse/insert">
           <Button.Light>Add New Subject</Button.Light>
         </NavLink>
       </Card>
@@ -171,12 +171,12 @@ class SubjectEdit extends Component {
         <Form.Label>Subject Name</Form.Label>
         <Form.Input type="text" value={this.SubjectName} onChange={e => (this.email = e.target.value)} />
         <br />
-        <NavLink to="/subjects">
+        <NavLink to="/warehouse">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/subjects">
+        <NavLink to="/warehouse">
           <Button.Danger onClick={this.delete}>Delete Subject</Button.Danger>
         </NavLink>
       </Card>
@@ -192,13 +192,13 @@ class SubjectEdit extends Component {
 
   save() {
     subjectService.updateSubject(this.props.match.params.id, this.SubjectCode, this.SubjectName, () => {
-      history.push('/subjects');
+      history.push('/warehouse');
     });
   }
 
   delete() {
     subjectService.deleteSubject(this.props.match.params.id, () => {
-      history.push('/subjects');
+      history.push('/warehouse');
     });
   }
 }
@@ -212,7 +212,7 @@ class SubjectInsert extends Component {
         <Form.Label>Subject Name:</Form.Label>
         <Form.Input type="text" value={this.SubjectName} onChange={e => (this.SubjectName = e.target.value)} />
         <br />
-        <NavLink to="/subjects">
+        <NavLink to="/warehouse">
           <Button.Success onClick={this.insert}>Add New Subject</Button.Success>
         </NavLink>
       </Card>
@@ -221,7 +221,7 @@ class SubjectInsert extends Component {
 
   insert() {
     subjectService.insertSubject(this.SubjectCode, this.SubjectName, () => {
-      history.push('/subjects');
+      history.push('/warehouse');
     });
   }
 }

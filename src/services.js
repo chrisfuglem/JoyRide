@@ -1,7 +1,7 @@
 import { connection } from './mysql_connection';
 
-class StudentService {
-  getStudents(success) {
+class BookingService {
+  getBookings(success) {
     connection.query('select * from Students', (error, results) => {
       if (error) return console.error(error);
 
@@ -26,19 +26,21 @@ class StudentService {
   }
 
   insertStudent(name, email, success) {
-    connection.query('insert into Students (name, email) values (?, ?)', [name, email]), (error, results) => {
-      if (error) return console.error(error);
+    connection.query('insert into Students (name, email) values (?, ?)', [name, email]),
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success();
-    };
+        success();
+      };
   }
 
   deleteStudent(id) {
-    connection.query('delete from Students where id=?', [id]), (error, results) => {
-      if (error) return console.error(error);
+    connection.query('delete from Students where id=?', [id]),
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success();
-    };
+        success();
+      };
   }
 }
 
@@ -60,27 +62,33 @@ class SubjectService {
   }
 
   updateSubject(id, SubjectCode, SubjectName, success) {
-    connection.query('update Subjects set SubjectCode=?, SubjectName=? where id=?', [SubjectCode, SubjectName, id], (error, results) => {
-      if (error) return console.error(error);
+    connection.query(
+      'update Subjects set SubjectCode=?, SubjectName=? where id=?',
+      [SubjectCode, SubjectName, id],
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success();
-    });
+        success();
+      }
+    );
   }
 
   insertSubject(SubjectCode, SubjectName, success) {
-    connection.query('insert into Subjects (SubjectCode, SubjectName) values (?, ?)', [SubjectCode, SubjectName]), (error, results) => {
-      if (error) return console.error(error);
+    connection.query('insert into Subjects (SubjectCode, SubjectName) values (?, ?)', [SubjectCode, SubjectName]),
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success();
-    };
+        success();
+      };
   }
 
   deleteSubject(id) {
-    connection.query('delete from Subjects where id=?', [id]), (error, results) => {
-      if (error) return console.error(error);
+    connection.query('delete from Subjects where id=?', [id]),
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success();
-    };
+        success();
+      };
   }
 }
 
@@ -129,4 +137,4 @@ class CustomerService {
 }
 
 export let subjectService = new SubjectService();
-export let studentService = new StudentService();
+export let bookingService = new BookingService();
