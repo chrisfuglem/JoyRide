@@ -10,7 +10,7 @@ class BookingService {
   }
 
   getBooking(id, success) {
-    connection.query('select * from Students where id=?', [id], (error, results) => {
+    connection.query('select * from Rentals where id=?', [id], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);
@@ -18,7 +18,7 @@ class BookingService {
   }
 
   updateBooking(id, name, email, success) {
-    connection.query('update Students set name=?, email=? where id=?', [name, email, id], (error, results) => {
+    connection.query('update Rentals set name=?, email=? where id=?', [name, email, id], (error, results) => {
       if (error) return console.error(error);
 
       success();
@@ -102,28 +102,7 @@ class CustomerService {
       };
   }
 }
-<<<<<<< HEAD
 
-class CustomerService {
-  getCustomers(success) {
-    connection.query('select * from Customers', (error, results) => {
-      if (error) return console.error(error);
-
-      success(results);
-    });
-  }
-
-  getCustomer(id, success) {
-    connection.query('select * from Customers where id=?', [id], (error, results) => {
-      if (error) return console.error(error);
-
-      success(results[0]);
-    });
-  }
-}
-
-export let subjectService = new SubjectService();
-=======
 export let customerService = new CustomerService();
->>>>>>> ea2ece9c1cf455791130467a050c29f6485b3489
+
 export let bookingService = new BookingService();
