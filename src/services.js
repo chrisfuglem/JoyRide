@@ -177,6 +177,57 @@ class BicycleService {
   }
 }
 
+class AccessoryService {
+  getAccessories(success) {
+    connection.query('select * from Accessories', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
+  getAccessory(id, success) {
+    connection.query('select * from Accessories where AccessoryID=?', [id], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results[0]);
+    });
+  }
+
+  updateAccessory(id, Type, DailyPrice, success) {
+    connection.query(
+      'update Accessories set Type=?, DailyPrice=? where id=?',
+      [type, dailyprice, id],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      }
+    );
+  }
+
+  insertAccessory(Type, DailyPrice, success) {
+    connection.query('insert into Customers (Type, DailyPrice) values (?, ?)', [
+      type,
+      dilyprice
+    ]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+
+  deleteAccessory(id) {
+    connection.query('delete from Accessories where id=?', [id]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+}
+
 export let customerService = new CustomerService();
 
 export let bookingService = new BookingService();
@@ -184,3 +235,5 @@ export let bookingService = new BookingService();
 export let employeeService = new EmployeeService();
 
 export let bicycleService = new BicycleService();
+
+export let accessoryService = new AccessoryService();
