@@ -298,6 +298,21 @@ class EmployeeList extends Component {
   }
 }
 
+<<<<<<< HEAD
+class EmployeeEdit extends Component {
+  FirstName = '';
+  SurName = '';
+
+  render() {
+    return (
+      <Card title="Editing Employee">
+        <Form.Label>Firstname</Form.Label>
+        <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
+        <Form.Label>Surname</Form.Label>
+        <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
+        <br />
+        <NavLink to="/warehouse">
+=======
 class BicycleList extends Component {
   bicycles = [];
 
@@ -362,18 +377,29 @@ class BicycleEdit extends Component {
         <Form.Input type="text" value={this.currentlocation} onChange={e => (this.currentlocation = e.target.value)} />
         <br />
         <NavLink to="/bicycles">
+>>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
+<<<<<<< HEAD
+        <NavLink to="/warehouse">
+          <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
+=======
         <NavLink to="/bicycles">
           <Button.Danger onClick={this.delete}>Delete Bicycle</Button.Danger>
+>>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
         </NavLink>
       </Card>
     );
   }
 
   mounted() {
+<<<<<<< HEAD
+    employeeService.getEmployee(this.props.match.params.id, employee => {
+      this.Firstname = employee.Firstname;
+      this.Surname = employee.Surname;
+=======
     bicycleService.getBicycle(this.props.match.params.id, bicycle => {
       this.bicycletype = bicycle.bicycletype;
       this.frametype = bicycle.frametype;
@@ -383,10 +409,21 @@ class BicycleEdit extends Component {
       this.homelocation = bicycle.homelocation;
       this.dailyprice = bicycle.dailyprice;
       this.currentlocation = bicycle.currentlocation;
+>>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
     });
   }
 
   save() {
+<<<<<<< HEAD
+    employeeService.updateEmployee(this.props.match.params.id, this.Firstname, this.Surname, () => {
+      history.push('/employees');
+    });
+  }
+
+  delete() {
+    employeeService.deleteEmployee(this.props.match.params.id, () => {
+      history.push('/employees');
+=======
     bicycleService.updateBicycle(
       this.props.match.params.id,
       this.bicycletype,
@@ -406,10 +443,13 @@ class BicycleEdit extends Component {
   delete() {
     bicycleService.deleteBicycle(this.props.match.params.id, () => {
       history.push('/bicycles');
+>>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
     });
   }
 }
 
+<<<<<<< HEAD
+=======
 class BicycleInsert extends Component {
   render() {
     return (
@@ -455,6 +495,7 @@ class BicycleInsert extends Component {
   }
 }
 
+>>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
 ReactDOM.render(
   <HashRouter>
     <div>
@@ -466,6 +507,7 @@ ReactDOM.render(
       <Route exact path="/employees" component={EmployeeList} />
       <Route path="/sales/:id/edit" component={BookingEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
+      <Route path="/empoloyees/:id/edit" component={EmployeeEdit} />
       <Route path="/sales/insert" component={BookingInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
     </div>
