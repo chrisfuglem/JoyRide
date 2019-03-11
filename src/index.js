@@ -56,8 +56,8 @@ class BookingList extends Component {
               <NavLink to={'/rentals/' + rental.RentalID + '/edit'}>
                 Rental {rental.RentalID} by {rental.FirstName} on {rental.RentalDate}
               </NavLink>
-                <br></br>
-                BicycleCount: {rental.BicycleCount} | SUM: {rental.SUM}
+              <br />
+              BicycleCount: {rental.BicycleCount} | SUM: {rental.SUM}
             </List.Item>
           ))}
         </List>
@@ -78,15 +78,20 @@ class BookingList extends Component {
         let rentalDate = JSON.stringify(rentals[i].Date);
         rentalDate = rentalDate.slice(1, 11);
         this.rentals[i].RentalDate = rentalDate;
-      };
+      }
     });
   }
 }
 
 class BookingEdit extends Component {
+<<<<<<< HEAD
   RentalID = "";
   FirstName = "";
   RentalDate = "";
+=======
+  RentalID = '';
+  FirstName = '';
+>>>>>>> bb6b4af4e2a22046e728f9cd1d6cc20fdfa929c4
 
   render() {
     return (
@@ -387,7 +392,7 @@ class BicycleList extends Component {
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
               <NavLink to={'/bicycles/' + bicycle.BicycleID + '/edit'}>
-                Bicycle ID: {bicycle.BicycleID} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
+                Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
                 Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.HomeLocation}{' '}
                 | Daily Price: {bicycle.DailyPrice} | Current Location: {bicycle.CurrentLocation}
               </NavLink>
@@ -410,34 +415,34 @@ class BicycleList extends Component {
 }
 
 class BicycleEdit extends Component {
-  bicycletype = '';
-  frametype = '';
-  braketype = '';
-  wheelsize = '';
-  bicyclestatus = '';
-  homelocation = '';
-  dailyprice = '';
-  currentlocation = '';
+  BicycleType = '';
+  FrameType = '';
+  BrakeType = '';
+  Wheelsize = '';
+  BicycleStatus = '';
+  HomeLocation = '';
+  DailyPrice = '';
+  CurrentLocation = '';
 
   render() {
     return (
       <Card title="Editing bicycle">
         <Form.Label>Bicycle Type</Form.Label>
-        <Form.Input type="text" value={this.bicycletype} onChange={e => (this.bicycletype = e.target.value)} />
+        <Form.Input type="text" value={this.BicycleType} onChange={e => (this.BicycleType = e.target.value)} />
         <Form.Label>Frame Type</Form.Label>
-        <Form.Input type="text" value={this.frametype} onChange={e => (this.frametype = e.target.value)} />
+        <Form.Input type="text" value={this.FrameType} onChange={e => (this.FrameType = e.target.value)} />
         <Form.Label>Brake Type</Form.Label>
-        <Form.Input type="text" value={this.braketype} onChange={e => (this.BrakeType = e.target.value)} />
+        <Form.Input type="text" value={this.BrakeType} onChange={e => (this.BrakeType = e.target.value)} />
         <Form.Label>Wheelsize</Form.Label>
-        <Form.Input type="text" value={this.wheelsize} onChange={e => (this.wheelsize = e.target.value)} />
+        <Form.Input type="text" value={this.Wheelsize} onChange={e => (this.Wheelsize = e.target.value)} />
         <Form.Label>Bicycle Status</Form.Label>
-        <Form.Input type="text" value={this.bicyclestatus} onChange={e => (this.bicyclestatus = e.target.value)} />
+        <Form.Input type="text" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)} />
         <Form.Label>Home Location</Form.Label>
-        <Form.Input type="text" value={this.homelocation} onChange={e => (this.homelocation = e.target.value)} />
+        <Form.Input type="text" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)} />
         <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <Form.Label>Current Location</Form.Label>
-        <Form.Input type="text" value={this.currentlocation} onChange={e => (this.currentlocation = e.target.value)} />
+        <Form.Input type="text" value={this.CurrentLocation} onChange={e => (this.CurrentLocation = e.target.value)} />
         <br />
         <NavLink to="/bicycles">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
@@ -453,28 +458,28 @@ class BicycleEdit extends Component {
 
   mounted() {
     bicycleService.getBicycle(this.props.match.params.id, bicycle => {
-      this.bicycletype = bicycle.bicycletype;
-      this.frametype = bicycle.frametype;
-      this.braketype = bicycle.braketype;
-      this.wheelsize = bicycle.wheelsize;
-      this.bicyclestatus = bicycle.bicyclestatus;
-      this.homelocation = bicycle.homelocation;
-      this.dailyprice = bicycle.dailyprice;
-      this.currentlocation = bicycle.currentlocation;
+      this.BicycleType = bicycle.BicycleType;
+      this.FrameType = bicycle.FrameType;
+      this.BrakeType = bicycle.BrakeType;
+      this.Wheelsize = bicycle.Wheelsize;
+      this.BicycleStatus = bicycle.BicycleStatus;
+      this.HomeLocation = bicycle.HomeLocation;
+      this.DailyPrice = bicycle.DailyPrice;
+      this.CurrentLocation = bicycle.CurrentLocation;
     });
   }
 
   save() {
     bicycleService.updateBicycle(
       this.props.match.params.id,
-      this.bicycletype,
-      this.frametype,
-      this.braketype,
-      this.wheelsize,
-      this.bicyclestatus,
-      this.homelocation,
-      this.dailyprice,
-      this.currentlocation,
+      this.BicycleType,
+      this.FrameType,
+      this.BrakeType,
+      this.Wheelsize,
+      this.BicycleStatus,
+      this.HomeLocation,
+      this.DailyPrice,
+      this.CurrentLocation,
       () => {
         history.push('/bicycles');
       }
@@ -493,21 +498,21 @@ class BicycleInsert extends Component {
     return (
       <Card title="Adding Bicycle">
         <Form.Label>Bicycle Type</Form.Label>
-        <Form.Input type="text" value={this.bicycletype} onChange={e => (this.bicycletype = e.target.value)} />
+        <Form.Input type="text" value={this.BicycleType} onChange={e => (this.BicycleType = e.target.value)} />
         <Form.Label>Frame Type</Form.Label>
-        <Form.Input type="text" value={this.frametype} onChange={e => (this.frametype = e.target.value)} />
+        <Form.Input type="text" value={this.FrameType} onChange={e => (this.FrameType = e.target.value)} />
         <Form.Label>Brake Type</Form.Label>
-        <Form.Input type="text" value={this.braketype} onChange={e => (this.BrakeType = e.target.value)} />
+        <Form.Input type="text" value={this.BrakeType} onChange={e => (this.BrakeType = e.target.value)} />
         <Form.Label>Wheelsize</Form.Label>
-        <Form.Input type="text" value={this.wheelsize} onChange={e => (this.wheelsize = e.target.value)} />
+        <Form.Input type="text" value={this.Wheelsize} onChange={e => (this.Wheelsize = e.target.value)} />
         <Form.Label>Bicycle Status</Form.Label>
-        <Form.Input type="text" value={this.bicyclestatus} onChange={e => (this.bicyclestatus = e.target.value)} />
+        <Form.Input type="text" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)} />
         <Form.Label>Home Location</Form.Label>
-        <Form.Input type="text" value={this.homelocation} onChange={e => (this.homelocation = e.target.value)} />
+        <Form.Input type="text" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)} />
         <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <Form.Label>Current Location</Form.Label>
-        <Form.Input type="text" value={this.currentlocation} onChange={e => (this.currentlocation = e.target.value)} />
+        <Form.Input type="text" value={this.CurrentLocation} onChange={e => (this.CurrentLocation = e.target.value)} />
         <br />
         <NavLink to="/bicycles">
           <Button.Success onClick={this.insert}>Add New Bicycle</Button.Success>
@@ -518,14 +523,14 @@ class BicycleInsert extends Component {
 
   insert() {
     bicycleService.insertBooking(
-      this.bicycletype,
-      this.frametype,
-      this.braketype,
-      this.wheelsize,
-      this.bicyclestatus,
-      this.homelocation,
-      this.dailyprice,
-      this.currentlocation,
+      this.BicycleType,
+      this.FrameType,
+      this.BrakeType,
+      this.Wheelsize,
+      this.BicycleStatus,
+      this.HomeLocation,
+      this.DailyPrice,
+      this.CurrentLocation,
       () => {
         history.push('/bicycles');
       }
@@ -565,16 +570,16 @@ class AccessoryList extends Component {
 }
 
 class AccessoryEdit extends Component {
-  type = '';
-  dailyprice = '';
+  Type = '';
+  DailyPrice = '';
 
   render() {
     return (
-      <Card title="Editing accessory">
+      <Card title="Editing Accessory">
         <Form.Label>Accessory Type</Form.Label>
-        <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
-        <Form.Label>Daily price</Form.Label>
-        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <Form.Input type="text" value={this.Type} onChange={e => (this.Type = e.target.value)} />
+        <Form.Label>Daily Price</Form.Label>
+        <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <br />
         <NavLink to="/accessories">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
@@ -589,14 +594,14 @@ class AccessoryEdit extends Component {
   }
 
   mounted() {
-    accessoryService.getAccessory(this.props.match.params.id, bicycle => {
-      this.type = accessory.rtpe;
-      this.dailyprice = accessory.dailyprice;
+    accessoryService.getAccessory(this.props.match.params.id, accessory => {
+      this.Type = accessory.Type;
+      this.DailyPrice = accessory.DailyPrice;
     });
   }
 
   save() {
-    accessoryService.updateAccessory(this.props.match.params.id, this.type, this.dailyprice, () => {
+    accessoryService.updateAccessory(this.props.match.params.id, this.Type, this.DailyPrice, () => {
       history.push('/accessories');
     });
   }
@@ -647,7 +652,11 @@ ReactDOM.render(
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
       <Route path="/bicycles/:id/edit" component={BicycleEdit} />
       <Route path="/accessories/:id/edit" component={AccessoryEdit} />
+<<<<<<< HEAD
       <Route path="/rentals/insert" component={BookingInsert} />
+=======
+      <Route path="/sales/insert" component={BookingInsert} />
+>>>>>>> bb6b4af4e2a22046e728f9cd1d6cc20fdfa929c4
       <Route path="/customers/insert" component={CustomerInsert} />
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
