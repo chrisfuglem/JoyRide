@@ -155,8 +155,8 @@ class CustomerList extends Component {
         <p>Click the customers to edit or delete them</p>
         <List>
           {this.customers.map(customer => (
-            <List.Item key={customer.id}>
-              <NavLink to={'/customers/' + customer.id + '/edit'}>
+            <List.Item key={customer.CustomerID}>
+              <NavLink to={'/customers/' + customer.CustomerID + '/edit'}>
                 {customer.FirstName} {customer.SurName} | {customer.Email} | {customer.Phone} | {customer.Address}
               </NavLink>
             </List.Item>
