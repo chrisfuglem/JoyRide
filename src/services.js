@@ -13,7 +13,7 @@ class BookingService {
   }
 
   getBooking(id, success) {
-    connection.query('SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) where RentalID=?', [id], (error, results) => {
+    connection.query('SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) where Rentals.RentalID=?', [id], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);

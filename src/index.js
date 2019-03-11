@@ -12,7 +12,7 @@ class Menu extends Component {
   render() {
     return (
       <NavBar brand="Joyride">
-        <NavBar.Link to="/sales">Bookings</NavBar.Link>
+        <NavBar.Link to="/rentals">Bookings</NavBar.Link>
         <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
         <NavBar.Link to="/customers">Customers</NavBar.Link>
         <NavBar.Link to="/employees">Employees</NavBar.Link>
@@ -53,8 +53,8 @@ class BookingList extends Component {
         <List>
           {this.rentals.map(rental => (
             <List.Item key={rental.RentalID}>
-              <NavLink to={'/sales/' + rental.RentalID + '/edit'}>
-                Order {rental.RentalID} by {rental.FirstName} on {rental.RentalDate}
+              <NavLink to={'/rentals/' + rental.RentalID + '/edit'}>
+                Rental {rental.RentalID} by {rental.FirstName} on {rental.RentalDate}
               </NavLink>
                 <br></br>
                 BicycleCount: {rental.BicycleCount} | SUM: {rental.SUM}
@@ -62,7 +62,7 @@ class BookingList extends Component {
           ))}
         </List>
         <br />
-        <NavLink to="/sales/insert">
+        <NavLink to="/rentals/insert">
           <Button.Light>Add New Booking</Button.Light>
         </NavLink>
       </Card>
@@ -74,7 +74,7 @@ class BookingList extends Component {
       this.rentals = rentals;
       for (let i = 0; i < rentals.length; i++) {
         this.rentals[i].BicycleCount = rentals[i]['COUNT(RentedBicycles.BicycleID)'];
-        // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
+        // Siden Date-typer fra databasen lagres som et Object må de gjøres om til Strings
         let rentalDate = JSON.stringify(rentals[i].Date);
         rentalDate = rentalDate.slice(1, 11);
         this.rentals[i].RentalDate = rentalDate;
@@ -86,19 +86,19 @@ class BookingList extends Component {
 class BookingEdit extends Component {
   RentalID = "";
   FirstName = "";
+  RentalDate = "";
 
   render() {
     return (
       <Card title="Editing booking">
-        <h2>Rental ID: {this.RentalID}</h2>
-        <h2>Rented by: {this.FirstName}</h2>
+        Rental {this.RentalID} by {this.FirstName} on {this.RentalDate}
         <br />
-        <NavLink to="/sales">
+        <NavLink to="/rentals">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/sales">
+        <NavLink to="/rentals">
           <Button.Danger onClick={this.delete}>Delete Student</Button.Danger>
         </NavLink>
       </Card>
@@ -109,18 +109,21 @@ class BookingEdit extends Component {
     bookingService.getBooking(this.props.match.params.id, rental => {
       this.RentalID = rental.RentalID;
       this.FirstName = rental.FirstName;
+      let rentalDate = JSON.stringify(rental.Date);
+      rentalDate = rentalDate.slice(1, 11);
+      this.RentalDate = rentalDate;
     });
   }
 
   save() {
     bookingService.updateBooking(this.props.match.params.id, this.name, this.email, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 
   delete() {
     bookingService.deleteBooking(this.props.match.params.id, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 }
@@ -138,7 +141,7 @@ class BookingInsert extends Component {
         <Form.Label>End date:</Form.Label>
         <Form.Input type="text" value={this.RentEnd} onChange={e => (this.RentEnd = e.target.value)} />
         <br />
-        <NavLink to="/sales">
+        <NavLink to="/rentals">
           <Button.Success onClick={this.insert}>Add New Booking</Button.Success>
         </NavLink>
       </Card>
@@ -147,7 +150,7 @@ class BookingInsert extends Component {
 
   insert() {
     bookingService.insertBooking(this.name, this.email, this.RentEnd, this.RendEnd, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 }
@@ -633,21 +636,18 @@ ReactDOM.render(
     <div>
       <Menu />
       <Route exact path="/" component={Home} />
-      <Route exact path="/sales" component={BookingList} />
+      <Route exact path="/rentals" component={BookingList} />
       <Route exact path="/warehouse" component={Warehouse} />
       <Route exact path="/customers" component={CustomerList} />
       <Route exact path="/employees" component={EmployeeList} />
       <Route exact path="/bicycles" component={BicycleList} />
       <Route exact path="/accessories" component={AccessoryList} />
-      <Route path="/sales/:id/edit" component={BookingEdit} />
+      <Route path="/rentals/:id/edit" component={BookingEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
-<<<<<<< HEAD
-=======
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
       <Route path="/bicycles/:id/edit" component={BicycleEdit} />
       <Route path="/accessories/:id/edit" component={AccessoryEdit} />
->>>>>>> baf9a62c8d6c2ecfe265458a1b6190d5936a23f7
-      <Route path="/sales/insert" component={BookingInsert} />
+      <Route path="/rentals/insert" component={BookingInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
