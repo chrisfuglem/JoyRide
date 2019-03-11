@@ -57,7 +57,6 @@ class BookingList extends Component {
   mounted() {
     bookingService.getBookings(rentals => {
       this.rentals = rentals;
-      console.log(this.rentals)
     });
   }
 }
