@@ -163,8 +163,8 @@ class BicycleService {
     });
   }
 
-  getBicycle(id, success) {
-    connection.query('select * from Bicycle where BicycleID=?', [id], (error, results) => {
+  getBicycle(BicycleID, success) {
+    connection.query('select * from Bicycles where BicycleID=?', [BicycleID], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);
@@ -172,29 +172,28 @@ class BicycleService {
   }
 
   updateBicycle(
-    id,
-    type,
-    framtype,
-    braketype,
-    wheelsize,
-    bicyclestatus,
-    homelocation,
-    dailyprice,
-    currentlocation,
+    BicycleType,
+    FrameType,
+    BrakeType,
+    Wheelsize,
+    BicycleStatus,
+    HomeLocation,
+    DailyPrice,
+    CurrentLocation,
     success
   ) {
     connection.query(
       'update Bicycles set BicycleType=?, FrameType=?, BrakeType=?, Wheelsize=?, BicycleStatus=?, HomeLocation=?, DailyPrice=?, CurrentLocation=? where BicycleID=?',
       [
-        Bicycles.BicycleType,
-        Bicycles.FrameType,
-        Bicycles.BrakeType,
-        Bicycles.Wheelsize,
-        Bicycles.BicycleStatus,
-        Bicycles.HomeLocation,
-        Bicycles.DailyPrice,
-        Bicycles.CurrentLocation,
-        Bicycles.BicycleID
+        BicycleType,
+        FrameType,
+        BrakeType,
+        Wheelsize,
+        BicycleStatus,
+        HomeLocation,
+        DailyPrice,
+        CurrentLocation,
+        BicycleID
       ],
       (error, results) => {
         if (error) return console.error(error);
@@ -205,19 +204,29 @@ class BicycleService {
   }
 
   insertBicycle(
-    type,
-    framtype,
-    braketype,
-    wheelsize,
-    bicyclestatus,
-    homelocation,
-    dailyprice,
-    currentlocation,
+    BicycleType,
+    FrameType,
+    BrakeType,
+    Wheelsize,
+    BicycleStatus,
+    HomeLocation,
+    DailyPrice,
+    CurrentLocation,
     success
   ) {
     connection.query(
       'insert into Bicycles (BicycleType, FrameType, BrakeType, Wheelsize, BicycleStatus, HomeLocation, DailyPrice, CurrentLocation) values (?, ?, ?, ?, ?, ?, ?, ?)',
-      [type, frametype, braketype, wheelsize, bicyclestatus, homelocation, dailyprice, currentlocation]
+      [
+        BicycleType,
+        FrameType,
+        BrakeType,
+        Wheelsize,
+        BicycleStatus,
+        HomeLocation,
+        DailyPrice,
+        CurrentLocation,
+        BicycleID
+      ]
     ),
       (error, results) => {
         if (error) return console.error(error);
@@ -226,8 +235,56 @@ class BicycleService {
       };
   }
 
-  deleteBicycle(id) {
-    connection.query('delete from Bicycles where id=?', [id]),
+  deleteBicycle(BicycleID) {
+    connection.query('delete from Bicycles where BicycleID=?', [BicycleID]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+}
+
+class AccessoryService {
+  getAccessories(success) {
+    connection.query('select * from Accessories', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
+  getAccessory(AccessoryID, success) {
+    connection.query('select * from Accessories where AccessoryID=?', [AccessoryID], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results[0]);
+    });
+  }
+
+  updateAccessory(AccessoryID, Type, success) {
+    connection.query(
+      'update Accessories set Type=?, DailyPrice=? where AccessoryID=?',
+      [Type, DailyPrice],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      }
+    );
+  }
+
+  insertAccessory(Type, DailyPrice, success) {
+    connection.query('insert into Accessories (Type, DailyPrice) values (?, ?)', [Type, DailyPrice]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+
+  deleteAccessory(AccessoryID) {
+    connection.query('delete from Accessories where AccessoryID=?', [AccessoryID]),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -243,3 +300,5 @@ export let bookingService = new BookingService();
 export let employeeService = new EmployeeService();
 
 export let bicycleService = new BicycleService();
+
+export let accessoryService = new AccessoryService();

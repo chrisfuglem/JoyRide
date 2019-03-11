@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { bookingService, customerService, employeeService, bicycleService } from './services';
+import { bookingService, customerService, employeeService, bicycleService, accessoryService } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form } from './widgets';
 
 import createHashHistory from 'history/createHashHistory';
@@ -524,6 +524,104 @@ class BicycleInsert extends Component {
   }
 }
 
+class AccessoryList extends Component {
+  accessories = [];
+
+  render() {
+    return (
+      <Card title="Accessory List">
+        <p>Click the accessories to edit or delete them</p>
+        <List>
+          {this.accessories.map(accessory => (
+            <List.Item key={accessory.AccessoryID}>
+              <NavLink to={'/accessories/' + accessory.AccessoryID + '/edit'}>
+                {accessory.Type} {accessory.DailyPrice}
+              </NavLink>
+            </List.Item>
+          ))}
+        </List>
+        <br />
+        <NavLink to="/accessories/insert">
+          <Button.Light>Add New accessory</Button.Light>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    accessoryService.getAccessories(accessories => {
+      this.accessories = accessories;
+    });
+  }
+}
+
+class AccessoryEdit extends Component {
+  type = '';
+  dailyprice = '';
+
+  render() {
+    return (
+      <Card title="Editing accessory">
+        <Form.Label>Accessory Type</Form.Label>
+        <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
+        <Form.Label>Daily price</Form.Label>
+        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <br />
+        <NavLink to="/accessories">
+          <Button.Success onClick={this.save}>Save Changes</Button.Success>
+        </NavLink>
+        <br />
+        <br />
+        <NavLink to="/accessories">
+          <Button.Danger onClick={this.delete}>Delete Accessory</Button.Danger>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    accessoryService.getAccessory(this.props.match.params.id, bicycle => {
+      this.type = accessory.rtpe;
+      this.dailyprice = accessory.dailyprice;
+    });
+  }
+
+  save() {
+    accessoryService.updateAccessory(this.props.match.params.id, this.type, this.dailyprice, () => {
+      history.push('/accessories');
+    });
+  }
+
+  delete() {
+    accessoryService.deleteAccessory(this.props.match.params.id, () => {
+      history.push('/accessories');
+    });
+  }
+}
+
+class AccessoryInsert extends Component {
+  render() {
+    return (
+      <Card title="Adding Accessory">
+        <Form.Label>Accessory Type</Form.Label>
+        <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
+        <Form.Label>Daily Price</Form.Label>
+        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <br />
+        <NavLink to="/accessories">
+          <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  insert() {
+    accessoryService.insertAccessory(this.type, this.dailyprice, () => {
+      history.push('/accessories');
+    });
+  }
+}
+
 ReactDOM.render(
   <HashRouter>
     <div>
@@ -533,31 +631,18 @@ ReactDOM.render(
       <Route exact path="/warehouse" component={Warehouse} />
       <Route exact path="/customers" component={CustomerList} />
       <Route exact path="/employees" component={EmployeeList} />
+      <Route exact path="/bicycles" component={BicycleList} />
+      <Route exact path="/accessories" component={AccessoryList} />
       <Route path="/sales/:id/edit" component={BookingEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
+      <Route path="/bicycles/:id/edit" component={BicycleEdit} />
+      <Route path="/accessories/:id/edit" component={AccessoryEdit} />
       <Route path="/sales/insert" component={BookingInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
       <Route path="/employees/insert" component={EmployeeInsert} />
-    </div>
-  </HashRouter>,
-  document.getElementById('root')
-);
-
-ReactDOM.render(
-  <HashRouter>
-    <div>
-      <Warehouse />
-      <Route exact path="/" component={Home} />
-      <Route exact path="/bicycles" component={BicycleList} />
-      <Route exact path="/accessories" component={AccessoriesList} />
-      <Route exact path="/employees" component={EmployeeList} />
-      <Route path="/bicycles/:id/edit" component={BicycleEdit} />
-      <Route path="/accessories/:id/edit" component={AccessoriesEdit} />
-      <Route path="/employees/:id/edit" component={EmployeesEdit} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
-      <Route path="/accessories/insert" component={AccessoriesInsert} />
-      <Route path="/employees/insert" component={EmployeesInsert} />
+      <Route path="/accessories/insert" component={AccessoryInsert} />
     </div>
   </HashRouter>,
   document.getElementById('root')
