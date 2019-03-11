@@ -62,7 +62,6 @@ class CustomerService {
   }
 
   getCustomer(id, success) {
-    console.log(id);
     connection.query('select * from Customers where CustomerID=?', [id], (error, results) => {
       if (error) return console.error(error);
 
@@ -73,7 +72,7 @@ class CustomerService {
   updateCustomer(CustomerID, FirstName, SurName, Email, Phone, Address, success) {
     connection.query(
       'update Customers set FirstName=?, SurName=?, Email=?, Phone=?, Address=? where CustomerID=?',
-      [CustomerID, FirstName, SurName, Email, Phone, Address],
+      [FirstName, SurName, Email, Phone, Address, CustomerID],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -116,24 +115,33 @@ class EmployeeService {
     });
   }
 
-  getEmployee(id, success) {
-    connection.query('select * from Employees where EmployeeID=?', [id], (error, results) => {
+  getEmployee(EmployeeID, success) {
+    connection.query('select * from Employees where EmployeeID=?', [EmployeeID], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);
     });
   }
 
-  updateEmployee(EmployeeID, Firstname, Surname) {
+  updateEmployee(EmployeeID, Firstname, Surname, success) {
     connection.query(
       'update Employees set Firstname=?, Surname=? where EmployeeID=?',
-      [Firstname, Surname],
+      [Firstname, Surname, EmployeeID],
       (error, results) => {
         if (error) return console.error(error);
 
         success();
       }
     );
+  }
+
+  insertEmployee(Firstname, Surname, success) {
+    connection.query('insert into Employees (Firstname, Surname) values (?, ?)', [Firstname, Surname]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
   }
 
   deleteEmployee(EmployeeID) {

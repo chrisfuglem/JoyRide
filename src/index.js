@@ -286,7 +286,9 @@ class EmployeeList extends Component {
           ))}
         </List>
         <br />
-        <NavLink to="/employees/edit/" />
+        <NavLink to="/employees/insert/">
+          <Button.Light>Add New Employee</Button.Light>
+        </NavLink>
       </Card>
     );
   }
@@ -316,7 +318,7 @@ class EmployeeEdit extends Component {
         <br />
         <br />
         <NavLink to="/employees">
-          <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
+          <Button.Danger onClick={this.delete}>Delete Employee</Button.Danger>
         </NavLink>
       </Card>
     );
@@ -337,6 +339,29 @@ class EmployeeEdit extends Component {
 
   delete() {
     employeeService.deleteEmployee(this.props.match.params.id, () => {
+      history.push('/employees');
+    });
+  }
+}
+
+class EmployeeInsert extends Component {
+  render() {
+    return (
+      <Card title="Adding Employee">
+        <Form.Label>Firstname:</Form.Label>
+        <Form.Input type="text" value={this.Firstname} onChange={e => (this.Firstname = e.target.value)} />
+        <Form.Label>Surname:</Form.Label>
+        <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
+        <br />
+        <NavLink to="/employees">
+          <Button.Success onClick={this.insert}>Add New Employee</Button.Success>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  insert() {
+    employeeService.insertEmployee(this.Firstname, this.Surname, () => {
       history.push('/employees');
     });
   }
@@ -513,6 +538,7 @@ ReactDOM.render(
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
       <Route path="/sales/insert" component={BookingInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
+      <Route path="/employees/insert" component={EmployeeInsert} />
     </div>
   </HashRouter>,
   document.getElementById('root')
