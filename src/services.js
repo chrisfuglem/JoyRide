@@ -72,7 +72,7 @@ class CustomerService {
 
   updateCustomer(id, FirstName, SurName, Email, Phone, Address, success) {
     connection.query(
-      'update Customers set FirstName=?, SurName=?, Email=?, Phone=?, Address=? where id=?',
+      'update Customers set FirstName=?, SurName=?, Email=?, Phone=?, Address=? where CustomerID=?',
       [firstname, surname, email, phone, address, id],
       (error, results) => {
         if (error) return console.error(error);
@@ -84,11 +84,11 @@ class CustomerService {
 
   insertCustomer(FirstName, SurName, Email, Phone, Address, success) {
     connection.query('insert into Customers (FirstName, SurName, Email, Phone, Address) values (?, ?, ?, ?, ?)', [
-      firstname,
-      surname,
-      email,
-      phone,
-      address
+      FirstName,
+      SurName,
+      Email,
+      Phone,
+      Address
     ]),
       (error, results) => {
         if (error) return console.error(error);
@@ -157,7 +157,17 @@ class BicycleService {
   ) {
     connection.query(
       'update Bicycles set BicycleType=?, FrameType=?, BrakeType=?, Wheelsize=?, BicycleStatus=?, HomeLocation=?, DailyPrice=?, CurrentLocation=? where BicycleID=?',
-      [type, framtype, braketype, wheelsize, bicyclestatus, homelocation, dailyprice, currentlocation, id],
+      [
+        Bicycles.BicycleType,
+        Bicycles.FrameType,
+        Bicycles.BrakeType,
+        Bicycles.Wheelsize,
+        Bicycles.BicycleStatus,
+        Bicycles.HomeLocation,
+        Bicycles.DailyPrice,
+        Bicycles.CurrentLocation,
+        Bicycles.BicycleID
+      ],
       (error, results) => {
         if (error) return console.error(error);
 
