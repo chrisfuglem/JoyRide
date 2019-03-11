@@ -113,7 +113,6 @@ class EmployeeService {
       if (error) return console.error(error);
 
       success(results);
-      console.log(results);
     });
   }
 
@@ -123,6 +122,27 @@ class EmployeeService {
 
       success(results[0]);
     });
+  }
+
+  updateEmployee(id, Firstname, Surname) {
+    connection.query(
+      'update Employees set Firstname=?, Surname=? where id=?',
+      [firstname, surname],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      }
+    );
+  }
+
+  deleteEmployee(id) {
+    connection.query('delete from Employees where id=?', [id]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
   }
 }
 
