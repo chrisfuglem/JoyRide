@@ -310,12 +310,12 @@ class EmployeeEdit extends Component {
         <Form.Label>Surname</Form.Label>
         <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
         <br />
-        <NavLink to="/warehouse">
+        <NavLink to="/employees">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/warehouse">
+        <NavLink to="/employees">
           <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
         </NavLink>
       </Card>
@@ -510,6 +510,7 @@ ReactDOM.render(
       <Route exact path="/employees" component={EmployeeList} />
       <Route path="/sales/:id/edit" component={BookingEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
+      <Route path="/employees/:id/edit" component={EmployeeEdit} />
       <Route path="/sales/insert" component={BookingInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
     </div>

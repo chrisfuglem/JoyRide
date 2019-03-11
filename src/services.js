@@ -70,10 +70,10 @@ class CustomerService {
     });
   }
 
-  updateCustomer(id, FirstName, SurName, Email, Phone, Address, success) {
+  updateCustomer(CustomerID, FirstName, SurName, Email, Phone, Address, success) {
     connection.query(
       'update Customers set FirstName=?, SurName=?, Email=?, Phone=?, Address=? where CustomerID=?',
-      [firstname, surname, email, phone, address, id],
+      [CustomerID, FirstName, SurName, Email, Phone, Address],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -97,8 +97,8 @@ class CustomerService {
       };
   }
 
-  deleteCustomer(id) {
-    connection.query('delete from Customers where id=?', [id]),
+  deleteCustomer(CustomerID) {
+    connection.query('delete from Customers where CustomerID=?', [CustomerID]),
       (error, results) => {
         if (error) return console.error(error);
 
