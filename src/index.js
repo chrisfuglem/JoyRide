@@ -54,7 +54,8 @@ class BookingList extends Component {
           {this.rentals.map(rental => (
             <List.Item key={rental.RentalID}>
               <NavLink to={'/sales/' + rental.RentalID + '/edit'}>
-                Rental ID: {rental.RentalID} | Name: {rental.FirstName} | SUM: {rental.SUM} | BicycleCount: {rental["COUNT(RentedBicycles.BicycleID)"]}
+                Rental ID: {rental.RentalID} | Name: {rental.FirstName} | SUM: {rental.SUM} | BicycleCount:{' '}
+                {rental['COUNT(RentedBicycles.BicycleID)']}
               </NavLink>
             </List.Item>
           ))}
@@ -80,7 +81,7 @@ class BookingEdit extends Component {
 
   render() {
     return (
-      <Card title="Editing student">
+      <Card title="Editing booking">
         <Form.Label>Firstname</Form.Label>
         <Form.Input type="text" value={this.name} onChange={e => (this.name = e.target.value)} />
         <Form.Label>Surname</Form.Label>
@@ -155,14 +156,14 @@ class CustomerList extends Component {
         <List>
           {this.customers.map(customer => (
             <List.Item key={customer.id}>
-              <NavLink to={'/warehouse/' + customer.id + '/edit'}>
+              <NavLink to={'/customers/' + customer.id + '/edit'}>
                 {customer.FirstName} {customer.SurName} | {customer.Email} | {customer.Phone} | {customer.Address}
               </NavLink>
             </List.Item>
           ))}
         </List>
         <br />
-        <NavLink to="/warehouse/insert">
+        <NavLink to="/customers/insert">
           <Button.Light>Add New Customer</Button.Light>
         </NavLink>
       </Card>
@@ -197,12 +198,12 @@ class CustomerEdit extends Component {
         <Form.Label>Address</Form.Label>
         <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
         <br />
-        <NavLink to="/warehouse">
+        <NavLink to="/customers">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/warehouse">
+        <NavLink to="/customers">
           <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
         </NavLink>
       </Card>
@@ -228,14 +229,14 @@ class CustomerEdit extends Component {
       this.Phone,
       this.Address,
       () => {
-        history.push('/warehouse');
+        history.push('/customers');
       }
     );
   }
 
   delete() {
     customerService.deleteCustomer(this.props.match.params.id, () => {
-      history.push('/warehouse');
+      history.push('/customers');
     });
   }
 }
@@ -255,7 +256,7 @@ class CustomerInsert extends Component {
         <Form.Label>Address:</Form.Label>
         <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
         <br />
-        <NavLink to="/warehouse">
+        <NavLink to="/customers">
           <Button.Success onClick={this.insert}>Add New Customer</Button.Success>
         </NavLink>
       </Card>
@@ -264,7 +265,7 @@ class CustomerInsert extends Component {
 
   insert() {
     customerService.insertCustomer(this.FirstName, this.SurName, this.Email, this.Phone, this.Address, () => {
-      history.push('/warehouse');
+      history.push('/customers');
     });
   }
 }
@@ -278,14 +279,14 @@ class EmployeeList extends Component {
         <List>
           {this.employees.map(employee => (
             <List.Item key={employee.EmployeeID}>
-              <NavLink to={'/warehouse/' + employee.EmployeeID}>
+              <NavLink to={'/employees/' + employee.EmployeeID}>
                 {employee.Firstname} {employee.Surname}
               </NavLink>
             </List.Item>
           ))}
         </List>
         <br />
-        <NavLink to="/warehouse/insert" />
+        <NavLink to="/employees/insert" />
       </Card>
     );
   }
@@ -307,8 +308,10 @@ class BicycleList extends Component {
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
-              <NavLink to={'/bicycles/' + bicycle.BicyclesID + '/edit'}>
-                Bicycle ID: {bicycle.BicycleID} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} | Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.HomeLocation} | Daily Price: {bicycle.DailyPrice} | Current Location: {bicycle.CurrentLocation}
+              <NavLink to={'/bicycles/' + bicycle.BicycleID + '/edit'}>
+                Bicycle ID: {bicycle.BicycleID} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
+                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.HomeLocation}{' '}
+                | Daily Price: {bicycle.DailyPrice} | Current Location: {bicycle.CurrentLocation}
               </NavLink>
             </List.Item>
           ))}
@@ -327,37 +330,6 @@ class BicycleList extends Component {
     });
   }
 }
-
-// class BookingList extends Component {
-//   rentals = [];
-//
-//   render() {
-//     return (
-//       <Card title="Booking List">
-//         <p>Click the bookings to edit or delete them</p>
-//         <List>
-//           {this.rentals.map(rental => (
-//             <List.Item key={rental.RentalID}>
-//               <NavLink to={'/sales/' + rental.RentalID + '/edit'}>
-//                 Rental ID: {rental.RentalID} | Name: {rental.FirstName} | SUM: {rental.SUM} | BicycleCount: {rental["COUNT(RentedBicycles.BicycleID)"]}
-//               </NavLink>
-//             </List.Item>
-//           ))}
-//         </List>
-//         <br />
-//         <NavLink to="/sales/insert">
-//           <Button.Light>Add New Booking</Button.Light>
-//         </NavLink>
-//       </Card>
-//     );
-//   }
-//
-//   mounted() {
-//     bookingService.getBookings(rentals => {
-//       this.rentals = rentals;
-//     });
-//   }
-// }
 
 class BicycleEdit extends Component {
   bicycletype = '';
@@ -415,9 +387,20 @@ class BicycleEdit extends Component {
   }
 
   save() {
-    bicycleService.updateBicycle(this.props.match.params.id, this.bicycletype, this.frametype, this.braketype, this.wheelsize, this.bicyclestatus, this.homelocation, this.dailyprice, this.currentlocation, () => {
-      history.push('/bicycles');
-    });
+    bicycleService.updateBicycle(
+      this.props.match.params.id,
+      this.bicycletype,
+      this.frametype,
+      this.braketype,
+      this.wheelsize,
+      this.bicyclestatus,
+      this.homelocation,
+      this.dailyprice,
+      this.currentlocation,
+      () => {
+        history.push('/bicycles');
+      }
+    );
   }
 
   delete() {
@@ -456,9 +439,19 @@ class BicycleInsert extends Component {
   }
 
   insert() {
-    bicycleService.insertBooking(this.bicycletype, this.frametype, this.braketype, this.wheelsize, this.bicyclestatus, this.homelocation, this.dailyprice, this.currentlocation , () => {
-      history.push('/bicycles');
-    });
+    bicycleService.insertBooking(
+      this.bicycletype,
+      this.frametype,
+      this.braketype,
+      this.wheelsize,
+      this.bicyclestatus,
+      this.homelocation,
+      this.dailyprice,
+      this.currentlocation,
+      () => {
+        history.push('/bicycles');
+      }
+    );
   }
 }
 
@@ -488,10 +481,10 @@ ReactDOM.render(
       <Route exact path="/bicycles" component={BicycleList} />
       <Route exact path="/accessories" component={AccessoriesList} />
       <Route exact path="/employees" component={EmployeeList} />
-      <Route path="/bicycle/:id/edit" component={BicycleEdit} />
+      <Route path="/bicycles/:id/edit" component={BicycleEdit} />
       <Route path="/accessories/:id/edit" component={AccessoriesEdit} />
       <Route path="/employees/:id/edit" component={EmployeesEdit} />
-      <Route path="/bicycle/insert" component={BicycleInsert} />
+      <Route path="/bicycles/insert" component={BicycleInsert} />
       <Route path="/accessories/insert" component={AccessoriesInsert} />
       <Route path="/employees/insert" component={EmployeesInsert} />
     </div>

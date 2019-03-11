@@ -2,12 +2,14 @@ import { connection } from './mysql_connection';
 
 class BookingService {
   getBookings(success) {
-    connection.query("SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) GROUP BY Rentals.RentalID;",
-                       (error, results) => {
-      if (error) return console.error(error);
+    connection.query(
+      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) GROUP BY Rentals.RentalID;',
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success(results);
-    });
+        success(results);
+      }
+    );
   }
 
   getBooking(id, success) {
@@ -141,25 +143,44 @@ class BicycleService {
     });
   }
 
-  updateBicycle(id, type, framtype, braketype, wheelsize, bicyclestatus, homelocation, dailyprice, currentlocation, success) {
-    connection.query('update Bicycles set BicycleType=?, FrameType=?, BrakeType=?, Wheelsize=?, BicycleStatus=?, HomeLocation=?, DailyPrice=?, CurrentLocation=? where id=?', [name, email, id], (error, results) => {
-      if (error) return console.error(error);
+  updateBicycle(
+    id,
+    type,
+    framtype,
+    braketype,
+    wheelsize,
+    bicyclestatus,
+    homelocation,
+    dailyprice,
+    currentlocation,
+    success
+  ) {
+    connection.query(
+      'update Bicycles set BicycleType=?, FrameType=?, BrakeType=?, Wheelsize=?, BicycleStatus=?, HomeLocation=?, DailyPrice=?, CurrentLocation=? where BicycleID=?',
+      [type, framtype, braketype, wheelsize, bicyclestatus, homelocation, dailyprice, currentlocation, id],
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success();
-    });
+        success();
+      }
+    );
   }
 
-  insertBicycle(type, framtype, braketype, wheelsize, bicyclestatus, homelocation, dailyprice, currentlocation, success) {
-    connection.query('insert into Bicycles (BicycleType, FrameType, BrakeType, Wheelsize, BicycleStatus, HomeLocation, DailyPrice, CurrentLocation) values (?, ?, ?, ?, ?, ?, ?, ?)', [
-      type,
-      frametype,
-      braketype,
-      wheelsize,
-      bicyclestatus,
-      homelocation,
-      dailyprice,
-      currentlocation
-    ]),
+  insertBicycle(
+    type,
+    framtype,
+    braketype,
+    wheelsize,
+    bicyclestatus,
+    homelocation,
+    dailyprice,
+    currentlocation,
+    success
+  ) {
+    connection.query(
+      'insert into Bicycles (BicycleType, FrameType, BrakeType, Wheelsize, BicycleStatus, HomeLocation, DailyPrice, CurrentLocation) values (?, ?, ?, ?, ?, ?, ?, ?)',
+      [type, frametype, braketype, wheelsize, bicyclestatus, homelocation, dailyprice, currentlocation]
+    ),
       (error, results) => {
         if (error) return console.error(error);
 
