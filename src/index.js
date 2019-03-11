@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { bookingService, customerService, employeeService } from './services';
+import { bookingService, customerService, employeeService, bicycleService } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form } from './widgets';
 
 import createHashHistory from 'history/createHashHistory';
@@ -12,7 +12,7 @@ class Menu extends Component {
   render() {
     return (
       <NavBar brand="Joyride">
-        <NavBar.Link to="/sales">Sales</NavBar.Link>
+        <NavBar.Link to="/sales">Bookings</NavBar.Link>
         <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
         <NavBar.Link to="/customers">Customers</NavBar.Link>
         <NavBar.Link to="/employees">Employees</NavBar.Link>
@@ -27,6 +27,18 @@ class Home extends Component {
       <div>
         <Card title="Welcome to Joyride">Navigate using the buttons above</Card>
       </div>
+    );
+  }
+}
+
+class Warehouse extends Component {
+  render() {
+    return (
+      <NavBar brand="Warehouse">
+        <NavBar.Link to="/bicycles">Bicycles</NavBar.Link>
+        <NavBar.Link to="/accessories">Accessories</NavBar.Link>
+        <NavBar.Link to="/sales">Bookings</NavBar.Link>
+      </NavBar>
     );
   }
 }
@@ -69,7 +81,7 @@ class BookingEdit extends Component {
 
   render() {
     return (
-      <Card title="Editing student">
+      <Card title="Editing booking">
         <Form.Label>Firstname</Form.Label>
         <Form.Input type="text" value={this.name} onChange={e => (this.name = e.target.value)} />
         <Form.Label>Surname</Form.Label>
@@ -144,14 +156,14 @@ class CustomerList extends Component {
         <List>
           {this.customers.map(customer => (
             <List.Item key={customer.id}>
-              <NavLink to={'/warehouse/' + customer.id + '/edit'}>
-                {customer.FirstName} | {customer.SurName} | {customer.Email} | {customer.Phone} | {customer.Address}
+              <NavLink to={'/customers/' + customer.id + '/edit'}>
+                {customer.FirstName} {customer.SurName} | {customer.Email} | {customer.Phone} | {customer.Address}
               </NavLink>
             </List.Item>
           ))}
         </List>
         <br />
-        <NavLink to="/warehouse/insert">
+        <NavLink to="/customers/insert">
           <Button.Light>Add New Customer</Button.Light>
         </NavLink>
       </Card>
@@ -186,12 +198,12 @@ class CustomerEdit extends Component {
         <Form.Label>Address</Form.Label>
         <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
         <br />
-        <NavLink to="/warehouse">
+        <NavLink to="/customers">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/warehouse">
+        <NavLink to="/customers">
           <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
         </NavLink>
       </Card>
@@ -217,14 +229,14 @@ class CustomerEdit extends Component {
       this.Phone,
       this.Address,
       () => {
-        history.push('/warehouse');
+        history.push('/customers');
       }
     );
   }
 
   delete() {
     customerService.deleteCustomer(this.props.match.params.id, () => {
-      history.push('/warehouse');
+      history.push('/customers');
     });
   }
 }
@@ -244,7 +256,7 @@ class CustomerInsert extends Component {
         <Form.Label>Address:</Form.Label>
         <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
         <br />
-        <NavLink to="/warehouse">
+        <NavLink to="/customers">
           <Button.Success onClick={this.insert}>Add New Customer</Button.Success>
         </NavLink>
       </Card>
@@ -253,7 +265,7 @@ class CustomerInsert extends Component {
 
   insert() {
     customerService.insertCustomer(this.FirstName, this.SurName, this.Email, this.Phone, this.Address, () => {
-      history.push('/warehouse');
+      history.push('/customers');
     });
   }
 }
@@ -267,14 +279,14 @@ class EmployeeList extends Component {
         <List>
           {this.employees.map(employee => (
             <List.Item key={employee.EmployeeID}>
-              <NavLink to={'/warehouse/' + employee.EmployeeID}>
+              <NavLink to={'/employees/' + employee.EmployeeID}>
                 {employee.Firstname} {employee.Surname}
               </NavLink>
             </List.Item>
           ))}
         </List>
         <br />
-        <NavLink to="/warehouse/insert" />
+        <NavLink to="/employees/insert" />
       </Card>
     );
   }
@@ -286,6 +298,7 @@ class EmployeeList extends Component {
   }
 }
 
+<<<<<<< HEAD
 class EmployeeEdit extends Component {
   FirstName = '';
   SurName = '';
@@ -299,25 +312,109 @@ class EmployeeEdit extends Component {
         <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
         <br />
         <NavLink to="/warehouse">
-          <Button.Success onClick={this.save}>Save Changes</Button.Success>
-        </NavLink>
+=======
+class BicycleList extends Component {
+  bicycles = [];
+
+  render() {
+    return (
+      <Card title="Bicycle List">
+        <p>Click the bicycles to edit or delete them</p>
+        <List>
+          {this.bicycles.map(bicycle => (
+            <List.Item key={bicycle.BicycleID}>
+              <NavLink to={'/bicycles/' + bicycle.BicycleID + '/edit'}>
+                Bicycle ID: {bicycle.BicycleID} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
+                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.HomeLocation}{' '}
+                | Daily Price: {bicycle.DailyPrice} | Current Location: {bicycle.CurrentLocation}
+              </NavLink>
+            </List.Item>
+          ))}
+        </List>
         <br />
-        <br />
-        <NavLink to="/warehouse">
-          <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
+        <NavLink to="/bicycles/insert">
+          <Button.Light>Add New Bicycle</Button.Light>
         </NavLink>
       </Card>
     );
   }
 
   mounted() {
+    bicycleService.getBicycles(bicycles => {
+      this.bicycles = bicycles;
+    });
+  }
+}
+
+class BicycleEdit extends Component {
+  bicycletype = '';
+  frametype = '';
+  braketype = '';
+  wheelsize = '';
+  bicyclestatus = '';
+  homelocation = '';
+  dailyprice = '';
+  currentlocation = '';
+
+  render() {
+    return (
+      <Card title="Editing bicycle">
+        <Form.Label>Bicycle Type</Form.Label>
+        <Form.Input type="text" value={this.bicycletype} onChange={e => (this.bicycletype = e.target.value)} />
+        <Form.Label>Frame Type</Form.Label>
+        <Form.Input type="text" value={this.frametype} onChange={e => (this.frametype = e.target.value)} />
+        <Form.Label>Brake Type</Form.Label>
+        <Form.Input type="text" value={this.braketype} onChange={e => (this.BrakeType = e.target.value)} />
+        <Form.Label>Wheelsize</Form.Label>
+        <Form.Input type="text" value={this.wheelsize} onChange={e => (this.wheelsize = e.target.value)} />
+        <Form.Label>Bicycle Status</Form.Label>
+        <Form.Input type="text" value={this.bicyclestatus} onChange={e => (this.bicyclestatus = e.target.value)} />
+        <Form.Label>Home Location</Form.Label>
+        <Form.Input type="text" value={this.homelocation} onChange={e => (this.homelocation = e.target.value)} />
+        <Form.Label>Daily Price</Form.Label>
+        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <Form.Label>Current Location</Form.Label>
+        <Form.Input type="text" value={this.currentlocation} onChange={e => (this.currentlocation = e.target.value)} />
+        <br />
+        <NavLink to="/bicycles">
+>>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
+          <Button.Success onClick={this.save}>Save Changes</Button.Success>
+        </NavLink>
+        <br />
+        <br />
+<<<<<<< HEAD
+        <NavLink to="/warehouse">
+          <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
+=======
+        <NavLink to="/bicycles">
+          <Button.Danger onClick={this.delete}>Delete Bicycle</Button.Danger>
+>>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+<<<<<<< HEAD
     employeeService.getEmployee(this.props.match.params.id, employee => {
       this.Firstname = employee.Firstname;
       this.Surname = employee.Surname;
+=======
+    bicycleService.getBicycle(this.props.match.params.id, bicycle => {
+      this.bicycletype = bicycle.bicycletype;
+      this.frametype = bicycle.frametype;
+      this.braketype = bicycle.braketype;
+      this.wheelsize = bicycle.wheelsize;
+      this.bicyclestatus = bicycle.bicyclestatus;
+      this.homelocation = bicycle.homelocation;
+      this.dailyprice = bicycle.dailyprice;
+      this.currentlocation = bicycle.currentlocation;
+>>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
     });
   }
 
   save() {
+<<<<<<< HEAD
     employeeService.updateEmployee(this.props.match.params.id, this.Firstname, this.Surname, () => {
       history.push('/employees');
     });
@@ -326,26 +423,112 @@ class EmployeeEdit extends Component {
   delete() {
     employeeService.deleteEmployee(this.props.match.params.id, () => {
       history.push('/employees');
+=======
+    bicycleService.updateBicycle(
+      this.props.match.params.id,
+      this.bicycletype,
+      this.frametype,
+      this.braketype,
+      this.wheelsize,
+      this.bicyclestatus,
+      this.homelocation,
+      this.dailyprice,
+      this.currentlocation,
+      () => {
+        history.push('/bicycles');
+      }
+    );
+  }
+
+  delete() {
+    bicycleService.deleteBicycle(this.props.match.params.id, () => {
+      history.push('/bicycles');
+>>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
     });
   }
 }
 
+<<<<<<< HEAD
+=======
+class BicycleInsert extends Component {
+  render() {
+    return (
+      <Card title="Adding Bicycle">
+        <Form.Label>Bicycle Type</Form.Label>
+        <Form.Input type="text" value={this.bicycletype} onChange={e => (this.bicycletype = e.target.value)} />
+        <Form.Label>Frame Type</Form.Label>
+        <Form.Input type="text" value={this.frametype} onChange={e => (this.frametype = e.target.value)} />
+        <Form.Label>Brake Type</Form.Label>
+        <Form.Input type="text" value={this.braketype} onChange={e => (this.BrakeType = e.target.value)} />
+        <Form.Label>Wheelsize</Form.Label>
+        <Form.Input type="text" value={this.wheelsize} onChange={e => (this.wheelsize = e.target.value)} />
+        <Form.Label>Bicycle Status</Form.Label>
+        <Form.Input type="text" value={this.bicyclestatus} onChange={e => (this.bicyclestatus = e.target.value)} />
+        <Form.Label>Home Location</Form.Label>
+        <Form.Input type="text" value={this.homelocation} onChange={e => (this.homelocation = e.target.value)} />
+        <Form.Label>Daily Price</Form.Label>
+        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <Form.Label>Current Location</Form.Label>
+        <Form.Input type="text" value={this.currentlocation} onChange={e => (this.currentlocation = e.target.value)} />
+        <br />
+        <NavLink to="/bicycles">
+          <Button.Success onClick={this.insert}>Add New Bicycle</Button.Success>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  insert() {
+    bicycleService.insertBooking(
+      this.bicycletype,
+      this.frametype,
+      this.braketype,
+      this.wheelsize,
+      this.bicyclestatus,
+      this.homelocation,
+      this.dailyprice,
+      this.currentlocation,
+      () => {
+        history.push('/bicycles');
+      }
+    );
+  }
+}
+
+>>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
 ReactDOM.render(
   <HashRouter>
     <div>
       <Menu />
       <Route exact path="/" component={Home} />
       <Route exact path="/sales" component={BookingList} />
-      <Route exact path="/warehouse" component={CustomerList} />
+      <Route exact path="/warehouse" component={Warehouse} />
       <Route exact path="/customers" component={CustomerList} />
       <Route exact path="/employees" component={EmployeeList} />
       <Route path="/sales/:id/edit" component={BookingEdit} />
-      <Route path="/warehouse/:id/edit" component={CustomerEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/empoloyees/:id/edit" component={EmployeeEdit} />
       <Route path="/sales/insert" component={BookingInsert} />
-      <Route path="/warehouse/insert" component={CustomerInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
+    </div>
+  </HashRouter>,
+  document.getElementById('root')
+);
+
+ReactDOM.render(
+  <HashRouter>
+    <div>
+      <Warehouse />
+      <Route exact path="/" component={Home} />
+      <Route exact path="/bicycles" component={BicycleList} />
+      <Route exact path="/accessories" component={AccessoriesList} />
+      <Route exact path="/employees" component={EmployeeList} />
+      <Route path="/bicycles/:id/edit" component={BicycleEdit} />
+      <Route path="/accessories/:id/edit" component={AccessoriesEdit} />
+      <Route path="/employees/:id/edit" component={EmployeesEdit} />
+      <Route path="/bicycles/insert" component={BicycleInsert} />
+      <Route path="/accessories/insert" component={AccessoriesInsert} />
+      <Route path="/employees/insert" component={EmployeesInsert} />
     </div>
   </HashRouter>,
   document.getElementById('root')

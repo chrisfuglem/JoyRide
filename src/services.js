@@ -13,7 +13,7 @@ class BookingService {
   }
 
   getBooking(id, success) {
-    connection.query('select * from Rentals where RentalID=?', [RentalID], (error, results) => {
+    connection.query('select * from Rentals where RentalID=?', [id], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);
@@ -72,7 +72,7 @@ class CustomerService {
 
   updateCustomer(id, FirstName, SurName, Email, Phone, Address, success) {
     connection.query(
-      'update Customers set FirstName=?, SurName=?, Email=?, Phone=?, Address=? where id=?',
+      'update Customers set FirstName=?, SurName=?, Email=?, Phone=?, Address=? where CustomerID=?',
       [firstname, surname, email, phone, address, id],
       (error, results) => {
         if (error) return console.error(error);
@@ -84,11 +84,11 @@ class CustomerService {
 
   insertCustomer(FirstName, SurName, Email, Phone, Address, success) {
     connection.query('insert into Customers (FirstName, SurName, Email, Phone, Address) values (?, ?, ?, ?, ?)', [
-      firstname,
-      surname,
-      email,
-      phone,
-      address
+      FirstName,
+      SurName,
+      Email,
+      Phone,
+      Address
     ]),
       (error, results) => {
         if (error) return console.error(error);
@@ -146,8 +146,92 @@ class EmployeeService {
   }
 }
 
+class BicycleService {
+  getBicycles(success) {
+    connection.query('select * from Bicycles', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
+  getBicycle(id, success) {
+    connection.query('select * from Bicycle where BicycleID=?', [id], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results[0]);
+    });
+  }
+
+  updateBicycle(
+    id,
+    type,
+    framtype,
+    braketype,
+    wheelsize,
+    bicyclestatus,
+    homelocation,
+    dailyprice,
+    currentlocation,
+    success
+  ) {
+    connection.query(
+      'update Bicycles set BicycleType=?, FrameType=?, BrakeType=?, Wheelsize=?, BicycleStatus=?, HomeLocation=?, DailyPrice=?, CurrentLocation=? where BicycleID=?',
+      [
+        Bicycles.BicycleType,
+        Bicycles.FrameType,
+        Bicycles.BrakeType,
+        Bicycles.Wheelsize,
+        Bicycles.BicycleStatus,
+        Bicycles.HomeLocation,
+        Bicycles.DailyPrice,
+        Bicycles.CurrentLocation,
+        Bicycles.BicycleID
+      ],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      }
+    );
+  }
+
+  insertBicycle(
+    type,
+    framtype,
+    braketype,
+    wheelsize,
+    bicyclestatus,
+    homelocation,
+    dailyprice,
+    currentlocation,
+    success
+  ) {
+    connection.query(
+      'insert into Bicycles (BicycleType, FrameType, BrakeType, Wheelsize, BicycleStatus, HomeLocation, DailyPrice, CurrentLocation) values (?, ?, ?, ?, ?, ?, ?, ?)',
+      [type, frametype, braketype, wheelsize, bicyclestatus, homelocation, dailyprice, currentlocation]
+    ),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+
+  deleteBicycle(id) {
+    connection.query('delete from Bicycles where id=?', [id]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+}
+
 export let customerService = new CustomerService();
 
 export let bookingService = new BookingService();
 
 export let employeeService = new EmployeeService();
+
+export let bicycleService = new BicycleService();
