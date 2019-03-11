@@ -56,8 +56,8 @@ class BookingList extends Component {
               <NavLink to={'/sales/' + rental.RentalID + '/edit'}>
                 Order {rental.RentalID} by {rental.FirstName} on {rental.RentalDate}
               </NavLink>
-                <br></br>
-                BicycleCount: {rental.BicycleCount} | SUM: {rental.SUM}
+              <br />
+              BicycleCount: {rental.BicycleCount} | SUM: {rental.SUM}
             </List.Item>
           ))}
         </List>
@@ -78,14 +78,14 @@ class BookingList extends Component {
         let rentalDate = JSON.stringify(rentals[i].Date);
         rentalDate = rentalDate.slice(1, 11);
         this.rentals[i].RentalDate = rentalDate;
-      };
+      }
     });
   }
 }
 
 class BookingEdit extends Component {
-  RentalID = "";
-  FirstName = "";
+  RentalID = '';
+  FirstName = '';
 
   render() {
     return (
@@ -562,16 +562,16 @@ class AccessoryList extends Component {
 }
 
 class AccessoryEdit extends Component {
-  type = '';
-  dailyprice = '';
+  Type = '';
+  DailyPrice = '';
 
   render() {
     return (
-      <Card title="Editing accessory">
+      <Card title="Editing Accessory">
         <Form.Label>Accessory Type</Form.Label>
-        <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
-        <Form.Label>Daily price</Form.Label>
-        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <Form.Input type="text" value={this.Type} onChange={e => (this.Type = e.target.value)} />
+        <Form.Label>Daily Price</Form.Label>
+        <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <br />
         <NavLink to="/accessories">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
@@ -586,14 +586,14 @@ class AccessoryEdit extends Component {
   }
 
   mounted() {
-    accessoryService.getAccessory(this.props.match.params.id, bicycle => {
-      this.type = accessory.rtpe;
-      this.dailyprice = accessory.dailyprice;
+    accessoryService.getAccessory(this.props.match.params.id, accessory => {
+      this.Type = accessory.Type;
+      this.DailyPrice = accessory.DailyPrice;
     });
   }
 
   save() {
-    accessoryService.updateAccessory(this.props.match.params.id, this.type, this.dailyprice, () => {
+    accessoryService.updateAccessory(this.props.match.params.id, this.Type, this.DailyPrice, () => {
       history.push('/accessories');
     });
   }
@@ -641,12 +641,9 @@ ReactDOM.render(
       <Route exact path="/accessories" component={AccessoryList} />
       <Route path="/sales/:id/edit" component={BookingEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
-<<<<<<< HEAD
-=======
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
       <Route path="/bicycles/:id/edit" component={BicycleEdit} />
       <Route path="/accessories/:id/edit" component={AccessoryEdit} />
->>>>>>> baf9a62c8d6c2ecfe265458a1b6190d5936a23f7
       <Route path="/sales/insert" component={BookingInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
       <Route path="/employees/insert" component={EmployeeInsert} />
