@@ -298,7 +298,6 @@ class EmployeeList extends Component {
   }
 }
 
-<<<<<<< HEAD
 class EmployeeEdit extends Component {
   Firstname = '';
   Surname = '';
@@ -343,8 +342,6 @@ class EmployeeEdit extends Component {
   }
 }
 
-=======
->>>>>>> 8fb34d0c84e902235f0f3403258625a311d04f03
 class BicycleList extends Component {
   bicycles = [];
 
