@@ -127,7 +127,7 @@ class EmployeeService {
   updateEmployee(id, Firstname, Surname) {
     connection.query(
       'update Employees set Firstname=?, Surname=? where id=?',
-      [firstname, surname],
+      [Firstname, Surname],
       (error, results) => {
         if (error) return console.error(error);
 

@@ -100,9 +100,9 @@ class BookingEdit extends Component {
   }
 
   mounted() {
-    bookingService.getBooking(this.props.match.params.id, student => {
-      this.name = student.name;
-      this.email = student.email;
+    bookingService.getBooking(this.props.match.params.id, customer => {
+      this.name = customer.name;
+      this.email = customer.email;
     });
   }
 
@@ -155,8 +155,8 @@ class CustomerList extends Component {
         <p>Click the customers to edit or delete them</p>
         <List>
           {this.customers.map(customer => (
-            <List.Item key={customer.id}>
-              <NavLink to={'/customers/' + customer.id + '/edit'}>
+            <List.Item key={customer.CustomerID}>
+              <NavLink to={'/customers/' + customer.CustomerID + '/edit'}>
                 {customer.FirstName} {customer.SurName} | {customer.Email} | {customer.Phone} | {customer.Address}
               </NavLink>
             </List.Item>
@@ -279,14 +279,14 @@ class EmployeeList extends Component {
         <List>
           {this.employees.map(employee => (
             <List.Item key={employee.EmployeeID}>
-              <NavLink to={'/employees/' + employee.EmployeeID}>
+              <NavLink to={'/employees/' + employee.EmployeeID + '/edit'}>
                 {employee.Firstname} {employee.Surname}
               </NavLink>
             </List.Item>
           ))}
         </List>
         <br />
-        <NavLink to="/employees/insert" />
+        <NavLink to="/employees/edit/" />
       </Card>
     );
   }
@@ -298,21 +298,50 @@ class EmployeeList extends Component {
   }
 }
 
-<<<<<<< HEAD
 class EmployeeEdit extends Component {
-  FirstName = '';
-  SurName = '';
+  Firstname = '';
+  Surname = '';
 
   render() {
     return (
       <Card title="Editing Employee">
         <Form.Label>Firstname</Form.Label>
-        <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
+        <Form.Input type="text" value={this.Firstname} onChange={e => (this.Firstname = e.target.value)} />
         <Form.Label>Surname</Form.Label>
-        <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
+        <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
         <br />
         <NavLink to="/warehouse">
-=======
+          <Button.Success onClick={this.save}>Save Changes</Button.Success>
+        </NavLink>
+        <br />
+        <br />
+        <NavLink to="/warehouse">
+          <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    employeeService.getEmployee(this.props.match.params.id, employee => {
+      this.Firstname = employee.Firstname;
+      this.Surname = employee.Surname;
+    });
+  }
+
+  save() {
+    employeeService.updateEmployee(this.props.match.params.id, this.Firstname, this.Surname, () => {
+      history.push('/employees');
+    });
+  }
+
+  delete() {
+    employeeService.deleteEmployee(this.props.match.params.id, () => {
+      history.push('/employees');
+    });
+  }
+}
+
 class BicycleList extends Component {
   bicycles = [];
 
@@ -377,29 +406,18 @@ class BicycleEdit extends Component {
         <Form.Input type="text" value={this.currentlocation} onChange={e => (this.currentlocation = e.target.value)} />
         <br />
         <NavLink to="/bicycles">
->>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-<<<<<<< HEAD
-        <NavLink to="/warehouse">
-          <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
-=======
         <NavLink to="/bicycles">
           <Button.Danger onClick={this.delete}>Delete Bicycle</Button.Danger>
->>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
         </NavLink>
       </Card>
     );
   }
 
   mounted() {
-<<<<<<< HEAD
-    employeeService.getEmployee(this.props.match.params.id, employee => {
-      this.Firstname = employee.Firstname;
-      this.Surname = employee.Surname;
-=======
     bicycleService.getBicycle(this.props.match.params.id, bicycle => {
       this.bicycletype = bicycle.bicycletype;
       this.frametype = bicycle.frametype;
@@ -409,21 +427,10 @@ class BicycleEdit extends Component {
       this.homelocation = bicycle.homelocation;
       this.dailyprice = bicycle.dailyprice;
       this.currentlocation = bicycle.currentlocation;
->>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
     });
   }
 
   save() {
-<<<<<<< HEAD
-    employeeService.updateEmployee(this.props.match.params.id, this.Firstname, this.Surname, () => {
-      history.push('/employees');
-    });
-  }
-
-  delete() {
-    employeeService.deleteEmployee(this.props.match.params.id, () => {
-      history.push('/employees');
-=======
     bicycleService.updateBicycle(
       this.props.match.params.id,
       this.bicycletype,
@@ -443,13 +450,10 @@ class BicycleEdit extends Component {
   delete() {
     bicycleService.deleteBicycle(this.props.match.params.id, () => {
       history.push('/bicycles');
->>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
     });
   }
 }
 
-<<<<<<< HEAD
-=======
 class BicycleInsert extends Component {
   render() {
     return (
@@ -495,7 +499,6 @@ class BicycleInsert extends Component {
   }
 }
 
->>>>>>> 5a4ce4b93ec2dab8d1d86292a379b10b2b3e64ea
 ReactDOM.render(
   <HashRouter>
     <div>
