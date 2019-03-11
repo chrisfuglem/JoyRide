@@ -650,11 +650,8 @@ ReactDOM.render(
       <Route path="/sales/insert" component={BookingInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
       <Route path="/employees/insert" component={EmployeeInsert} />
-<<<<<<< HEAD
       <Route path="/bicycles/insert" component={BicycleInsert} />
       <Route path="/accessories/insert" component={AccessoryInsert} />
-=======
->>>>>>> 0e3c5a11241ed28f48d056838a5c27e3cbc3f416
     </div>
   </HashRouter>,
   document.getElementById('root')
