@@ -124,9 +124,9 @@ class EmployeeService {
     });
   }
 
-  updateEmployee(id, Firstname, Surname) {
+  updateEmployee(EmployeeID, Firstname, Surname) {
     connection.query(
-      'update Employees set Firstname=?, Surname=? where id=?',
+      'update Employees set Firstname=?, Surname=? where EmployeeID=?',
       [Firstname, Surname],
       (error, results) => {
         if (error) return console.error(error);
@@ -136,8 +136,8 @@ class EmployeeService {
     );
   }
 
-  deleteEmployee(id) {
-    connection.query('delete from Employees where id=?', [id]),
+  deleteEmployee(EmployeeID) {
+    connection.query('delete from Employees where EmployeeID=?', [EmployeeID]),
       (error, results) => {
         if (error) return console.error(error);
 
