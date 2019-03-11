@@ -54,9 +54,10 @@ class BookingList extends Component {
           {this.rentals.map(rental => (
             <List.Item key={rental.RentalID}>
               <NavLink to={'/sales/' + rental.RentalID + '/edit'}>
-                Rental ID: {rental.RentalID} | Name: {rental.FirstName} | SUM: {rental.SUM} | BicycleCount:{' '}
-                {rental['COUNT(RentedBicycles.BicycleID)']}
+                Order {rental.RentalID} by {rental.FirstName} on {rental.RentalDate}
               </NavLink>
+              <br />
+              BicycleCount: {rental.BicycleCount} | SUM: {rental.SUM}
             </List.Item>
           ))}
         </List>
@@ -71,21 +72,26 @@ class BookingList extends Component {
   mounted() {
     bookingService.getBookings(rentals => {
       this.rentals = rentals;
+      for (let i = 0; i < rentals.length; i++) {
+        this.rentals[i].BicycleCount = rentals[i]['COUNT(RentedBicycles.BicycleID)'];
+        // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
+        let rentalDate = JSON.stringify(rentals[i].Date);
+        rentalDate = rentalDate.slice(1, 11);
+        this.rentals[i].RentalDate = rentalDate;
+      }
     });
   }
 }
 
 class BookingEdit extends Component {
-  name = '';
-  email = '';
+  RentalID = '';
+  FirstName = '';
 
   render() {
     return (
       <Card title="Editing booking">
-        <Form.Label>Firstname</Form.Label>
-        <Form.Input type="text" value={this.name} onChange={e => (this.name = e.target.value)} />
-        <Form.Label>Surname</Form.Label>
-        <Form.Input type="text" value={this.email} onChange={e => (this.email = e.target.value)} />
+        <h2>Rental ID: {this.RentalID}</h2>
+        <h2>Rented by: {this.FirstName}</h2>
         <br />
         <NavLink to="/sales">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
@@ -100,9 +106,9 @@ class BookingEdit extends Component {
   }
 
   mounted() {
-    bookingService.getBooking(this.props.match.params.id, customer => {
-      this.name = customer.name;
-      this.email = customer.email;
+    bookingService.getBooking(this.props.match.params.id, rental => {
+      this.RentalID = rental.RentalID;
+      this.FirstName = rental.FirstName;
     });
   }
 
@@ -556,16 +562,16 @@ class AccessoryList extends Component {
 }
 
 class AccessoryEdit extends Component {
-  type = '';
-  dailyprice = '';
+  Type = '';
+  DailyPrice = '';
 
   render() {
     return (
-      <Card title="Editing accessory">
+      <Card title="Editing Accessory">
         <Form.Label>Accessory Type</Form.Label>
-        <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
-        <Form.Label>Daily price</Form.Label>
-        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <Form.Input type="text" value={this.Type} onChange={e => (this.Type = e.target.value)} />
+        <Form.Label>Daily Price</Form.Label>
+        <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <br />
         <NavLink to="/accessories">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
@@ -580,14 +586,14 @@ class AccessoryEdit extends Component {
   }
 
   mounted() {
-    accessoryService.getAccessory(this.props.match.params.id, bicycle => {
-      this.type = accessory.rtpe;
-      this.dailyprice = accessory.dailyprice;
+    accessoryService.getAccessory(this.props.match.params.id, accessory => {
+      this.Type = accessory.Type;
+      this.DailyPrice = accessory.DailyPrice;
     });
   }
 
   save() {
-    accessoryService.updateAccessory(this.props.match.params.id, this.type, this.dailyprice, () => {
+    accessoryService.updateAccessory(this.props.match.params.id, this.Type, this.DailyPrice, () => {
       history.push('/accessories');
     });
   }
