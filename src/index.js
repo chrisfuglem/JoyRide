@@ -543,22 +543,3 @@ ReactDOM.render(
   </HashRouter>,
   document.getElementById('root')
 );
-
-ReactDOM.render(
-  <HashRouter>
-    <div>
-      <Warehouse />
-      <Route exact path="/" component={Home} />
-      <Route exact path="/bicycles" component={BicycleList} />
-      <Route exact path="/accessories" component={AccessoriesList} />
-      <Route exact path="/employees" component={EmployeeList} />
-      <Route path="/bicycles/:id/edit" component={BicycleEdit} />
-      <Route path="/accessories/:id/edit" component={AccessoriesEdit} />
-      <Route path="/employees/:id/edit" component={EmployeesEdit} />
-      <Route path="/bicycles/insert" component={BicycleInsert} />
-      <Route path="/accessories/insert" component={AccessoriesInsert} />
-      <Route path="/employees/insert" component={EmployeesInsert} />
-    </div>
-  </HashRouter>,
-  document.getElementById('root')
-);
