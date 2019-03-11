@@ -298,6 +298,7 @@ class EmployeeList extends Component {
   }
 }
 
+<<<<<<< HEAD
 class EmployeeEdit extends Component {
   Firstname = '';
   Surname = '';
@@ -342,6 +343,8 @@ class EmployeeEdit extends Component {
   }
 }
 
+=======
+>>>>>>> 8fb34d0c84e902235f0f3403258625a311d04f03
 class BicycleList extends Component {
   bicycles = [];
 
@@ -509,8 +512,7 @@ ReactDOM.render(
       <Route exact path="/customers" component={CustomerList} />
       <Route exact path="/employees" component={EmployeeList} />
       <Route path="/sales/:id/edit" component={BookingEdit} />
-      <Route path="/customers/:id/edit" component={CustomerEdit} />
-      <Route path="/empoloyees/:id/edit" component={EmployeeEdit} />
+      <Route path="/customers/:CustomerID/edit" component={CustomerEdit} />
       <Route path="/sales/insert" component={BookingInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
     </div>
@@ -526,7 +528,7 @@ ReactDOM.render(
       <Route exact path="/bicycles" component={BicycleList} />
       <Route exact path="/accessories" component={AccessoriesList} />
       <Route exact path="/employees" component={EmployeeList} />
-      <Route path="/bicycles/:id/edit" component={BicycleEdit} />
+      <Route path="/bicycles/:BicycleID/edit" component={BicycleEdit} />
       <Route path="/accessories/:id/edit" component={AccessoriesEdit} />
       <Route path="/employees/:id/edit" component={EmployeesEdit} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
