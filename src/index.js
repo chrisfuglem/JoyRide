@@ -155,8 +155,8 @@ class CustomerList extends Component {
         <p>Click the customers to edit or delete them</p>
         <List>
           {this.customers.map(customer => (
-            <List.Item key={customer.id}>
-              <NavLink to={'/customers/' + customer.id + '/edit'}>
+            <List.Item key={customer.CustomerID}>
+              <NavLink to={'/customers/' + customer.CustomerID + '/edit'}>
                 {customer.FirstName} {customer.SurName} | {customer.Email} | {customer.Phone} | {customer.Address}
               </NavLink>
             </List.Item>
@@ -465,7 +465,7 @@ ReactDOM.render(
       <Route exact path="/customers" component={CustomerList} />
       <Route exact path="/employees" component={EmployeeList} />
       <Route path="/sales/:id/edit" component={BookingEdit} />
-      <Route path="/customers/:id/edit" component={CustomerEdit} />
+      <Route path="/customers/:CustomerID/edit" component={CustomerEdit} />
       <Route path="/sales/insert" component={BookingInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
     </div>
@@ -481,7 +481,7 @@ ReactDOM.render(
       <Route exact path="/bicycles" component={BicycleList} />
       <Route exact path="/accessories" component={AccessoriesList} />
       <Route exact path="/employees" component={EmployeeList} />
-      <Route path="/bicycles/:id/edit" component={BicycleEdit} />
+      <Route path="/bicycles/:BicycleID/edit" component={BicycleEdit} />
       <Route path="/accessories/:id/edit" component={AccessoriesEdit} />
       <Route path="/employees/:id/edit" component={EmployeesEdit} />
       <Route path="/bicycles/insert" component={BicycleInsert} />

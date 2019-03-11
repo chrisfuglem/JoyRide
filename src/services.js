@@ -73,7 +73,7 @@ class CustomerService {
   updateCustomer(id, FirstName, SurName, Email, Phone, Address, success) {
     connection.query(
       'update Customers set FirstName=?, SurName=?, Email=?, Phone=?, Address=? where CustomerID=?',
-      [firstname, surname, email, phone, address, id],
+      [FirstName, SurName, Email, Phone, Address, CustomerID],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -98,7 +98,7 @@ class CustomerService {
   }
 
   deleteCustomer(id) {
-    connection.query('delete from Customers where id=?', [id]),
+    connection.query('delete from Customers where id=?', [CustomerID]),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -136,7 +136,7 @@ class BicycleService {
   }
 
   getBicycle(id, success) {
-    connection.query('select * from Bicycle where BicycleID=?', [id], (error, results) => {
+    connection.query('select * from Bicycle where BicycleID=?', [BicycleID], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);
@@ -158,15 +158,15 @@ class BicycleService {
     connection.query(
       'update Bicycles set BicycleType=?, FrameType=?, BrakeType=?, Wheelsize=?, BicycleStatus=?, HomeLocation=?, DailyPrice=?, CurrentLocation=? where BicycleID=?',
       [
-        Bicycles.BicycleType,
-        Bicycles.FrameType,
-        Bicycles.BrakeType,
-        Bicycles.Wheelsize,
-        Bicycles.BicycleStatus,
-        Bicycles.HomeLocation,
-        Bicycles.DailyPrice,
-        Bicycles.CurrentLocation,
-        Bicycles.BicycleID
+        BicycleType,
+        FrameType,
+        BrakeType,
+        Wheelsize,
+        BicycleStatus,
+        HomeLocation,
+        DailyPrice,
+        CurrentLocation,
+        BicycleID
       ],
       (error, results) => {
         if (error) return console.error(error);
@@ -189,7 +189,16 @@ class BicycleService {
   ) {
     connection.query(
       'insert into Bicycles (BicycleType, FrameType, BrakeType, Wheelsize, BicycleStatus, HomeLocation, DailyPrice, CurrentLocation) values (?, ?, ?, ?, ?, ?, ?, ?)',
-      [type, frametype, braketype, wheelsize, bicyclestatus, homelocation, dailyprice, currentlocation]
+      [
+        Bicycles.BicycleType,
+        Bicycles.FrameType,
+        Bicycles.BrakeType,
+        Bicycles.Wheelsize,
+        Bicycles.BicycleStatus,
+        Bicycles.HomeLocation,
+        Bicycles.DailyPrice,
+        Bicycles.CurrentLocation
+      ]
     ),
       (error, results) => {
         if (error) return console.error(error);
