@@ -54,9 +54,10 @@ class BookingList extends Component {
           {this.rentals.map(rental => (
             <List.Item key={rental.RentalID}>
               <NavLink to={'/sales/' + rental.RentalID + '/edit'}>
-                Rental ID: {rental.RentalID} | Name: {rental.FirstName} | SUM: {rental.SUM} | BicycleCount:{' '}
-                {rental['COUNT(RentedBicycles.BicycleID)']}
+                Order {rental.RentalID} by {rental.FirstName} on {rental.RentalDate}
               </NavLink>
+                <br></br>
+                BicycleCount: {rental.BicycleCount} | SUM: {rental.SUM}
             </List.Item>
           ))}
         </List>
@@ -71,21 +72,26 @@ class BookingList extends Component {
   mounted() {
     bookingService.getBookings(rentals => {
       this.rentals = rentals;
+      for (let i = 0; i < rentals.length; i++) {
+        this.rentals[i].BicycleCount = rentals[i]['COUNT(RentedBicycles.BicycleID)'];
+        // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
+        let rentalDate = JSON.stringify(rentals[i].Date);
+        rentalDate = rentalDate.slice(1, 11);
+        this.rentals[i].RentalDate = rentalDate;
+      };
     });
   }
 }
 
 class BookingEdit extends Component {
-  name = '';
-  email = '';
+  RentalID = "";
+  FirstName = "";
 
   render() {
     return (
       <Card title="Editing booking">
-        <Form.Label>Firstname</Form.Label>
-        <Form.Input type="text" value={this.name} onChange={e => (this.name = e.target.value)} />
-        <Form.Label>Surname</Form.Label>
-        <Form.Input type="text" value={this.email} onChange={e => (this.email = e.target.value)} />
+        <h2>Rental ID: {this.RentalID}</h2>
+        <h2>Rented by: {this.FirstName}</h2>
         <br />
         <NavLink to="/sales">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
@@ -100,9 +106,9 @@ class BookingEdit extends Component {
   }
 
   mounted() {
-    bookingService.getBooking(this.props.match.params.id, customer => {
-      this.name = customer.name;
-      this.email = customer.email;
+    bookingService.getBooking(this.props.match.params.id, rental => {
+      this.RentalID = rental.RentalID;
+      this.FirstName = rental.FirstName;
     });
   }
 
@@ -509,7 +515,7 @@ ReactDOM.render(
       <Route exact path="/customers" component={CustomerList} />
       <Route exact path="/employees" component={EmployeeList} />
       <Route path="/sales/:id/edit" component={BookingEdit} />
-      <Route path="/customers/:CustomerID/edit" component={CustomerEdit} />
+      <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/sales/insert" component={BookingInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
     </div>
