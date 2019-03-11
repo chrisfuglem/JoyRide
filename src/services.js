@@ -2,12 +2,14 @@ import { connection } from './mysql_connection';
 
 class BookingService {
   getBookings(success) {
-    connection.query("SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) GROUP BY Rentals.RentalID;",
-                       (error, results) => {
-      if (error) return console.error(error);
+    connection.query(
+      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) GROUP BY Rentals.RentalID;',
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success(results);
-    });
+        success(results);
+      }
+    );
   }
 
   getBooking(id, success) {
@@ -111,7 +113,6 @@ class EmployeeService {
       if (error) return console.error(error);
 
       success(results);
-      console.log(results);
     });
   }
 
@@ -121,6 +122,27 @@ class EmployeeService {
 
       success(results[0]);
     });
+  }
+
+  updateEmployee(id, Firstname, Surname) {
+    connection.query(
+      'update Employees set Firstname=?, Surname=? where id=?',
+      [firstname, surname],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      }
+    );
+  }
+
+  deleteEmployee(id) {
+    connection.query('delete from Employees where id=?', [id]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
   }
 }
 

@@ -42,7 +42,8 @@ class BookingList extends Component {
           {this.rentals.map(rental => (
             <List.Item key={rental.RentalID}>
               <NavLink to={'/sales/' + rental.RentalID + '/edit'}>
-                Rental ID: {rental.RentalID} | Name: {rental.FirstName} | SUM: {rental.SUM} | BicycleCount: {rental["COUNT(RentedBicycles.BicycleID)"]}
+                Rental ID: {rental.RentalID} | Name: {rental.FirstName} | SUM: {rental.SUM} | BicycleCount:{' '}
+                {rental['COUNT(RentedBicycles.BicycleID)']}
               </NavLink>
             </List.Item>
           ))}
@@ -285,6 +286,50 @@ class EmployeeList extends Component {
   }
 }
 
+class EmployeeEdit extends Component {
+  FirstName = '';
+  SurName = '';
+
+  render() {
+    return (
+      <Card title="Editing Employee">
+        <Form.Label>Firstname</Form.Label>
+        <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
+        <Form.Label>Surname</Form.Label>
+        <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
+        <br />
+        <NavLink to="/warehouse">
+          <Button.Success onClick={this.save}>Save Changes</Button.Success>
+        </NavLink>
+        <br />
+        <br />
+        <NavLink to="/warehouse">
+          <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    employeeService.getEmployee(this.props.match.params.id, employee => {
+      this.Firstname = employee.Firstname;
+      this.Surname = employee.Surname;
+    });
+  }
+
+  save() {
+    employeeService.updateEmployee(this.props.match.params.id, this.Firstname, this.Surname, () => {
+      history.push('/employees');
+    });
+  }
+
+  delete() {
+    employeeService.deleteEmployee(this.props.match.params.id, () => {
+      history.push('/employees');
+    });
+  }
+}
+
 ReactDOM.render(
   <HashRouter>
     <div>
@@ -297,6 +342,7 @@ ReactDOM.render(
       <Route path="/sales/:id/edit" component={BookingEdit} />
       <Route path="/warehouse/:id/edit" component={CustomerEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
+      <Route path="/empoloyees/:id/edit" component={EmployeeEdit} />
       <Route path="/sales/insert" component={BookingInsert} />
       <Route path="/warehouse/insert" component={CustomerInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
