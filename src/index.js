@@ -384,7 +384,7 @@ class BicycleList extends Component {
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
               <NavLink to={'/bicycles/' + bicycle.BicycleID + '/edit'}>
-                Bicycle ID: {bicycle.BicycleID} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
+                Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
                 Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.HomeLocation}{' '}
                 | Daily Price: {bicycle.DailyPrice} | Current Location: {bicycle.CurrentLocation}
               </NavLink>
