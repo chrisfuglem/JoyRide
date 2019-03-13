@@ -1,7 +1,7 @@
 import { connection } from './mysql_connection';
 
-class BookingService {
-  getBookings(success) {
+class RentalService {
+  getRentals(success) {
     connection.query(
       'SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) GROUP BY Rentals.RentalID;',
       (error, results) => {
@@ -12,9 +12,9 @@ class BookingService {
     );
   }
 
-  getBooking(id, success) {
+  getRental(id, success) {
     connection.query(
-      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) where Rentals.RentalID=?',
+      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
       [id],
       (error, results) => {
         if (error) return console.error(error);
@@ -24,7 +24,19 @@ class BookingService {
     );
   }
 
-  updateBooking(id, name, email, success) {
+  getRentedStuff(id, success) {
+    connection.query(
+      'SELECT RentedBicycles.BicycleID, Bicycles.BicycleType, Bicycles.DailyPrice FROM RentedBicycles INNER JOIN Bicycles ON RentedBicycles.BicycleID = Bicycles.BicycleID WHERE RentalID = 1 UNION ALL SELECT RentedAccessories.AccessoryID, Accessories.Type, Accessories.DailyPrice FROM RentedAccessories INNER JOIN Accessories ON RentedAccessories.AccessoryID = Accessories.AccessoryID WHERE RentalID = 1;',
+      [id],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
+  }
+
+  updateRental(id, name, email, success) {
     connection.query('update Rentals set name=?, email=? where id=?', [name, email, id], (error, results) => {
       if (error) return console.error(error);
 
@@ -32,7 +44,7 @@ class BookingService {
     });
   }
 
-  insertBooking(name, email, success) {
+  insertRental(name, email, success) {
     connection.query('insert into Rentals (name, email, RentStart, RentEnd) values (?, ?)', [
       name,
       email,
@@ -46,7 +58,7 @@ class BookingService {
       };
   }
 
-  deleteBooking(id) {
+  deleteRental(id) {
     connection.query('delete from Rentals where id=?', [id]),
       (error, results) => {
         if (error) return console.error(error);
@@ -300,7 +312,7 @@ class AccessoryService {
 
 export let customerService = new CustomerService();
 
-export let bookingService = new BookingService();
+export let rentalService = new RentalService();
 
 export let employeeService = new EmployeeService();
 

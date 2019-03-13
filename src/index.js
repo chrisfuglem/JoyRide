@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { bookingService, customerService, employeeService, bicycleService, accessoryService } from './services';
+import { rentalService, customerService, employeeService, bicycleService, accessoryService } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form } from './widgets';
 
 import createHashHistory from 'history/createHashHistory';
@@ -12,7 +12,7 @@ class Menu extends Component {
   render() {
     return (
       <NavBar brand="Joyride">
-        <NavBar.Link to="/sales">Bookings</NavBar.Link>
+        <NavBar.Link to="/sales">Rentals</NavBar.Link>
         <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
         <NavBar.Link to="/customers">Customers</NavBar.Link>
         <NavBar.Link to="/employees">Employees</NavBar.Link>
@@ -37,19 +37,19 @@ class Warehouse extends Component {
       <NavBar brand="Warehouse">
         <NavBar.Link to="/bicycles">Bicycles</NavBar.Link>
         <NavBar.Link to="/accessories">Accessories</NavBar.Link>
-        <NavBar.Link to="/sales">Bookings</NavBar.Link>
+        <NavBar.Link to="/sales">Rentals</NavBar.Link>
       </NavBar>
     );
   }
 }
 
-class BookingList extends Component {
+class RentalList extends Component {
   rentals = [];
 
   render() {
     return (
-      <Card title="Booking List">
-        <p>Click the bookings to edit or delete them</p>
+      <Card title="Rental List">
+        <p>Click the rentals to edit or delete them</p>
         <List>
           {this.rentals.map(rental => (
             <List.Item key={rental.RentalID}>
@@ -63,14 +63,14 @@ class BookingList extends Component {
         </List>
         <br />
         <NavLink to="/sales/insert">
-          <Button.Light>Add New Booking</Button.Light>
+          <Button.Light>Add New Rental</Button.Light>
         </NavLink>
       </Card>
     );
   }
 
   mounted() {
-    bookingService.getBookings(rentals => {
+    rentalService.getRentals(rentals => {
       this.rentals = rentals;
       for (let i = 0; i < rentals.length; i++) {
         this.rentals[i].BicycleCount = rentals[i]['COUNT(RentedBicycles.BicycleID)'];
@@ -83,52 +83,60 @@ class BookingList extends Component {
   }
 }
 
-class BookingEdit extends Component {
+class RentalEdit extends Component {
   RentalID = '';
   FirstName = '';
+  rentedStuff = [];
 
   render() {
     return (
-      <Card title="Editing booking">
-        <h2>Rental ID: {this.RentalID}</h2>
-        <h2>Rented by: {this.FirstName}</h2>
-        <br />
+      <Card>
+        <h3>Rental #{this.props.match.params.id} items</h3>
+        {this.rentedStuff.map(stuff => (
+          <List.Item key={stuff.BicycleID}>
+            <p>
+              {stuff.BicycleType} #{stuff.BicycleID} - {stuff.DailyPrice}kr per day
+            </p>
+          </List.Item>
+        ))}
         <NavLink to="/sales">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
         <NavLink to="/sales">
-          <Button.Danger onClick={this.delete}>Delete Student</Button.Danger>
+          <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
         </NavLink>
       </Card>
     );
   }
 
   mounted() {
-    bookingService.getBooking(this.props.match.params.id, rental => {
-      this.RentalID = rental.RentalID;
-      this.FirstName = rental.FirstName;
+    rentalService.getRentedStuff(this.props.match.params.id, stuff => {
+      this.rentedStuff = stuff;
+      console.log(this.rentedStuff);
+      console.log(this.rentedStuff[0]);
+      console.log(this.rentedStuff[0]["BicycleType"]);
     });
   }
 
   save() {
-    bookingService.updateBooking(this.props.match.params.id, this.name, this.email, () => {
+    rentalService.updateRental(this.props.match.params.id, this.name, this.email, () => {
       history.push('/sales');
     });
   }
 
   delete() {
-    bookingService.deleteBooking(this.props.match.params.id, () => {
+    rentalService.deleteRental(this.props.match.params.id, () => {
       history.push('/sales');
     });
   }
 }
 
-class BookingInsert extends Component {
+class RentalInsert extends Component {
   render() {
     return (
-      <Card title="Adding Booking">
+      <Card title="Adding Rental">
         <Form.Label>Firstname:</Form.Label>
         <Form.Input type="text" value={this.name} onChange={e => (this.name = e.target.value)} />
         <Form.Label>Surname:</Form.Label>
@@ -139,14 +147,14 @@ class BookingInsert extends Component {
         <Form.Input type="text" value={this.RentEnd} onChange={e => (this.RentEnd = e.target.value)} />
         <br />
         <NavLink to="/sales">
-          <Button.Success onClick={this.insert}>Add New Booking</Button.Success>
+          <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
         </NavLink>
       </Card>
     );
   }
 
   insert() {
-    bookingService.insertBooking(this.name, this.email, this.RentEnd, this.RendEnd, () => {
+    rentalService.insertRental(this.name, this.email, this.RentEnd, this.RendEnd, () => {
       history.push('/sales');
     });
   }
@@ -514,7 +522,7 @@ class BicycleInsert extends Component {
   }
 
   insert() {
-    bicycleService.insertBooking(
+    bicycleService.insertRental(
       this.BicycleType,
       this.FrameType,
       this.BrakeType,
@@ -633,18 +641,18 @@ ReactDOM.render(
     <div>
       <Menu />
       <Route exact path="/" component={Home} />
-      <Route exact path="/sales" component={BookingList} />
+      <Route exact path="/sales" component={RentalList} />
       <Route exact path="/warehouse" component={Warehouse} />
       <Route exact path="/customers" component={CustomerList} />
       <Route exact path="/employees" component={EmployeeList} />
       <Route exact path="/bicycles" component={BicycleList} />
       <Route exact path="/accessories" component={AccessoryList} />
-      <Route path="/sales/:id/edit" component={BookingEdit} />
+      <Route path="/sales/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
       <Route path="/bicycles/:id/edit" component={BicycleEdit} />
       <Route path="/accessories/:id/edit" component={AccessoryEdit} />
-      <Route path="/sales/insert" component={BookingInsert} />
+      <Route path="/sales/insert" component={RentalInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
