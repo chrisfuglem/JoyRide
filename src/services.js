@@ -326,6 +326,10 @@ class TransportService {
       success(results[0]);
     });
   }
+
+  getBikeLocation() {
+    connection.query('select * from Bicycles inner join Locations on Bicycles.CurrentLocation = Locations.LocationID where Locations.LocationID=?')
+  }
 }
 
 export let customerService = new CustomerService();
