@@ -38,6 +38,8 @@ class Warehouse extends Component {
         <NavBar.Link to="/bicycles">Bicycles</NavBar.Link>
         <NavBar.Link to="/accessories">Accessories</NavBar.Link>
         <NavBar.Link to="/sales">Rentals</NavBar.Link>
+        <NavBar.Link to="/repair">Order Repair</NavBar.Link>
+        <NavBar.Link to="/transport">Order Transport</NavBar.Link>
       </NavBar>
     );
   }
@@ -116,7 +118,7 @@ class RentalEdit extends Component {
       this.rentedStuff = stuff;
       console.log(this.rentedStuff);
       console.log(this.rentedStuff[0]);
-      console.log(this.rentedStuff[0]["BicycleType"]);
+      console.log(this.rentedStuff[0]['BicycleType']);
     });
   }
 
@@ -392,7 +394,7 @@ class BicycleList extends Component {
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
               <NavLink to={'/bicycles/' + bicycle.BicycleID + '/edit'}>
-                Bicycle ID: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
+                Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
                 Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.HomeLocation}{' '}
                 | Daily Price: {bicycle.DailyPrice} | Current Location: {bicycle.CurrentLocation}
               </NavLink>
@@ -647,6 +649,7 @@ ReactDOM.render(
       <Route exact path="/employees" component={EmployeeList} />
       <Route exact path="/bicycles" component={BicycleList} />
       <Route exact path="/accessories" component={AccessoryList} />
+      <Route exact path="/repair" component={BicycleList} />
       <Route path="/sales/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
