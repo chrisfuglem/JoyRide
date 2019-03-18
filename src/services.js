@@ -281,8 +281,8 @@ class AccessoryService {
 
   updateAccessory(AccessoryID, Type, DailyPrice, success) {
     connection.query(
-      'update Accessories set Type=?, DailyPrice=? where AccessoryID=?',
-      [Type, DailyPrice, AccessoryID],
+      'update Accessories as A inner join AccessoryTypes as B on A.Type=B.AccessoryType set A.Type=?, B.AccessoryType=?, DailyPrice=? where A.AccessoryID=?',
+      [Type, Type, DailyPrice, AccessoryID],
       (error, results) => {
         if (error) return console.error(error);
 
