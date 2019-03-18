@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { rentalService, customerService, employeeService, bicycleService, accessoryService } from './services';
-import { Card, List, Row, Column, NavBar, Button, Form } from './widgets';
+import { rentalService, customerService, employeeService, bicycleService, accessoryService, transportService } from './services';
+import { Card, List, Row, Column, NavBar, Button, Form, TextInput } from './widgets';
 
 import createHashHistory from 'history/createHashHistory';
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
@@ -638,6 +638,65 @@ class AccessoryInsert extends Component {
   }
 }
 
+class TransportList extends Component {
+    locations = [];
+    bikes = [];
+  
+    render() {
+      return (
+        <Card title="Order Transport From:">
+          <p>Click the location you want transport from</p>
+          <List>
+            {this.locations.map(location => (
+              <List.Item key={location.LocationID}>
+                  {location.LocationName}
+                  {' '}
+                  <input type="checkbox"></input>
+              </List.Item>
+            ))}
+          </List>
+          <br />
+          <p>Click the bike you want to transport</p>
+          <List>
+              {this.bikes.map(bike => (
+                <List.Item key={bike.BicycleID}>
+                    Type: {bike.BicycleType} ID: {bike.BicycleID}
+                    {' '}
+                    <input type="checkbox" id="check"></input>
+                </List.Item>
+              ))}
+          </List>
+          <br />
+          <p>Click the location you want transport to</p>
+          <List>
+            {this.locations.map(location => (
+              <List.Item key={location.LocationID}>
+                {location.LocationName}
+                {' '}
+                <input type="checkbox"></input>
+              </List.Item>
+            ))}
+          </List>
+          <input type="textarea" rows="10" cols="50" placeholder="Enter additional comments"></input>
+          <br />
+          <br />
+          <NavLink to="/transport/booking">
+            <Button.Light>Submit</Button.Light>
+          </NavLink>
+        </Card>
+      );
+    }
+  
+    mounted() {
+      transportService.getLocations(locations => {
+        this.locations = locations;
+      });
+      bicycleService.getBicycles(bikes => {
+        this.bikes = bikes;
+      });
+    }
+  }
+
 ReactDOM.render(
   <HashRouter>
     <div>
@@ -650,6 +709,7 @@ ReactDOM.render(
       <Route exact path="/bicycles" component={BicycleList} />
       <Route exact path="/accessories" component={AccessoryList} />
       <Route exact path="/repair" component={BicycleList} />
+      <Route exact path="/transport" component={TransportList} />
       <Route path="/sales/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />

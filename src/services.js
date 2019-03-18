@@ -310,6 +310,24 @@ class AccessoryService {
   }
 }
 
+class TransportService {
+  getLocations(success) {
+    connection.query('select * from Locations', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
+  getLocation(LocationID, success) {
+    connection.query('select * from Locations where LocationID=?', [LocationID], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results[0]);
+    });
+  }
+}
+
 export let customerService = new CustomerService();
 
 export let rentalService = new RentalService();
@@ -319,3 +337,5 @@ export let employeeService = new EmployeeService();
 export let bicycleService = new BicycleService();
 
 export let accessoryService = new AccessoryService();
+
+export let transportService = new TransportService();
