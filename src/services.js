@@ -328,12 +328,16 @@ class TransportService {
   }
 
   getBikeLocation(CurrentLocation, LocationID, success) {
-    connection.query('select CurrentLocation from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?', [CurrentLocation], [LocationID], (error, results) => {
-      if(error) return console.error(error);
+    connection.query(
+      'select CurrentLocation from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
+      [CurrentLocation],
+      [LocationID],
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success(results[0])
-    });
-
+        success(results[0]);
+      }
+    );
   }
 }
 
