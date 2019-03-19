@@ -640,7 +640,7 @@ class AccessoryInsert extends Component {
 
 class TransportList extends Component {
     locations = [];
-    bikes = [];
+    bicycles = [];
   
     render() {
       return (
@@ -658,11 +658,11 @@ class TransportList extends Component {
           <br />
           <p>Click the bike you want to transport</p>
           <List>
-              {this.bikes.map(bike => (
-                <List.Item key={bike.BicycleID}>
-                    Type: {bike.BicycleType} ID: {bike.BicycleID}
+              {this.bicycles.map(bicycle => (
+                <List.Item key={bicycle.BicycleID}>
+                    Type: {bicycle.BicycleType} ID: {bicycle.BicycleID}
                     {' '}
-                    <input value={bike.BicycleID} type="checkbox"></input>
+                    <input value={bicycle.BicycleID} type="checkbox"></input>
                 </List.Item>
               ))}
           </List>
@@ -677,11 +677,11 @@ class TransportList extends Component {
               </List.Item>
             ))}
           </List>
-          <input type="textarea" rows="10" cols="50" placeholder="Enter additional comments"></input>
+          <input type="textarea" rows="10" cols="50" placeholder="Add additional comments"></input>
           <br />
           <br />
           <NavLink to="/transport/booking">
-            <Button.Light>Submit</Button.Light>
+            <Button.Light>Order Transport</Button.Light>
           </NavLink>
         </Card>
       );
@@ -691,15 +691,50 @@ class TransportList extends Component {
       transportService.getLocations(locations => {
         this.locations = locations;
       });
-      bicycleService.getBicycles(bikes => {
-        this.bikes = bikes;
+      bicycleService.getBicycles(bicycles => {
+        this.bicycles = bicycles;
       });
     }
+
     loadBikeLocation() {
-      transportService.getBikeLocation(locations => {
-        this.locations = locations;
+      transportService.getBikeLocation(locations, bicycles => {
+        this.locations = locations.LocationID;
+        this.bicycles = bicycles.BicycleID;
+        this.bicycles = bicycles.CurrentLocation;
       })
     }
+  }
+
+  class RepairList extends Component {
+    bicycles = [];
+
+  render() {
+    return (
+      <Card title="Order Repair for:">
+        <List>
+          {this.bicycles.map(bicycle => (
+            <List.Item key={bicycle.BicycleID}>
+              {bicycle.BicycleType} {bicycle.BicycleID}
+              {' '}
+              <input type="checkbox" value={bicycle.BicycleID}></input>
+            </List.Item>
+          ))}
+        </List>
+        <input type="textarea" placeholder="Add comments on repair here"></input>
+        <NavLink to="/repairs/summary">
+        <br />
+        <br />
+          <Button.Light>Order Repair</Button.Light>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    bicycleService.getBicycles(bicycles => {
+      this.bicycles = bicycles;
+    });
+  }
   }
 
 
@@ -714,7 +749,7 @@ ReactDOM.render(
       <Route exact path="/employees" component={EmployeeList} />
       <Route exact path="/bicycles" component={BicycleList} />
       <Route exact path="/accessories" component={AccessoryList} />
-      <Route exact path="/repair" component={BicycleList} />
+      <Route exact path="/repair" component={RepairList} />
       <Route exact path="/transport" component={TransportList} />
       <Route path="/sales/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
