@@ -651,7 +651,7 @@ class TransportList extends Component {
               <List.Item key={location.LocationID}>
                   {location.LocationName}
                   {' '}
-                  <input type="checkbox"></input>
+                  <input value={location.LocationID} type="checkbox" onClick={this.loadBikeLocation}></input>
               </List.Item>
             ))}
           </List>
@@ -662,7 +662,7 @@ class TransportList extends Component {
                 <List.Item key={bike.BicycleID}>
                     Type: {bike.BicycleType} ID: {bike.BicycleID}
                     {' '}
-                    <input type="checkbox" id="check"></input>
+                    <input value={bike.BicycleID} type="checkbox"></input>
                 </List.Item>
               ))}
           </List>
@@ -673,7 +673,7 @@ class TransportList extends Component {
               <List.Item key={location.LocationID}>
                 {location.LocationName}
                 {' '}
-                <input type="checkbox"></input>
+                <input value={location.LocationID} type="checkbox"></input>
               </List.Item>
             ))}
           </List>
@@ -695,7 +695,13 @@ class TransportList extends Component {
         this.bikes = bikes;
       });
     }
+    loadBikeLocation() {
+      transportService.getBikeLocation(locations => {
+        this.locations = locations;
+      })
+    }
   }
+
 
 ReactDOM.render(
   <HashRouter>
