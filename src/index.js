@@ -91,7 +91,8 @@ class RentalEdit extends Component {
   render() {
     return (
       <Card>
-        <h3>Rental #{this.props.match.params.id} items</h3>
+        <h3>Rental id {this.props.match.params.id}</h3>
+        <h4>Bicycles</h4>
         {this.rentedStuff.map(stuff => (
           <List.Item key={stuff.BicycleID}>
             <p>
@@ -99,6 +100,7 @@ class RentalEdit extends Component {
             </p>
           </List.Item>
         ))}
+        <h4>Accessories</h4>
         <NavLink to="/sales">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
@@ -112,11 +114,12 @@ class RentalEdit extends Component {
   }
 
   mounted() {
+  }
+
+  GetRentedBicycles() {
     rentalService.getRentedStuff(this.props.match.params.id, stuff => {
       this.rentedStuff = stuff;
-      console.log(this.rentedStuff);
-      console.log(this.rentedStuff[0]);
-      console.log(this.rentedStuff[0]["BicycleType"]);
+      console.log("yoooooo");
     });
   }
 
@@ -162,16 +165,30 @@ class RentalInsert extends Component {
 
 class CustomerList extends Component {
   customers = [];
+  searchCategory= "";
+  searchValue = "";
 
   render() {
     return (
-      <Card title="Customer List">
+      <div>
         <p>Click the customers to edit or delete them</p>
+        <h3>Search by category</h3>
+        <div id="CustromerSearch">
+          <input id="CustomerSearchField" type="text"></input>
+          <select id="CustomerSearchCategory">
+            <option>FirstName</option>
+            <option>SurName</option>
+            <option>Phone</option>
+            <option>Email</option>
+            <option>Address</option>
+          </select>
+          <button id="CustomerSearchButton" onClick={this.mounted}>Search</button>
+        </div>
         <List>
           {this.customers.map(customer => (
             <List.Item key={customer.CustomerID}>
               <NavLink to={'/customers/' + customer.CustomerID + '/edit'}>
-                {customer.FirstName} {customer.SurName} | {customer.Email} | {customer.Phone} | {customer.Address}
+                {customer.FirstName} {customer.SurName} | tlf {customer.Phone}
               </NavLink>
             </List.Item>
           ))}
@@ -180,13 +197,19 @@ class CustomerList extends Component {
         <NavLink to="/customers/insert">
           <Button.Light>Add New Customer</Button.Light>
         </NavLink>
-      </Card>
+      </div>
     );
   }
 
   mounted() {
-    customerService.getCustomers(customers => {
+    console.log("Searching...");
+    this.searchCategory = "" + document.getElementById("CustomerSearchCategory").value;
+    this.searchValue = "%" + document.getElementById("CustomerSearchField").value + "%";
+    console.log("category: " + this.searchCategory + " value: " + this.searchValue);
+    customerService.searchCustomers(this.searchCategory, this.searchValue, customers => {
       this.customers = customers;
+      console.log("Search complete");
+      console.log(this.customers);
     });
   }
 }
