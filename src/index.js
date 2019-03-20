@@ -8,7 +8,8 @@ import {
   employeeService,
   bicycleService,
   accessoryService,
-  transportService
+  transportService,
+  repairService
 } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form, TextInput } from './widgets';
 
@@ -750,9 +751,6 @@ class RepairList extends Component {
           ))}
         </List>
         <NavLink to="/repair/summary">
-          <br />
-          <br />
-          <Button.Light>Order Repair</Button.Light>
         </NavLink>
       </Card>
     );
@@ -777,6 +775,7 @@ class RepairDetails extends Component {
   render() {
     return (
       <Card>
+<<<<<<< HEAD
         <List>
           Bicycle Type:
           <List.Item>{this.BicycleType}</List.Item>
@@ -796,13 +795,26 @@ class RepairDetails extends Component {
           <List.Item>
             {this.BicycleStatus} <input type="checkbox" value={this.BicycleStatus} />
           </List.Item>
+=======
+      <List>
+        Bicycle Type:
+        <List.Item>{this.BicycleType}</List.Item>
+        Frame Type:
+        <List.Item>{this.FrameType} <input type="checkbox" value={this.FrameType}></input></List.Item>
+        Brake Type:
+        <List.Item>{this.BrakeType} <input type="checkbox" value={this.BrakeType}></input></List.Item>
+        Wheelsize:
+        <List.Item>{this.Wheelsize} <input type="checkbox"  value={this.Wheelsize}></input></List.Item>
+        Bicycle Status:
+        <List.Item>{this.BicycleStatus}</List.Item>
+>>>>>>> 3df519c29fedb78101355f09be831fd030532992
         </List>
         <br />
         <input type="textarea" placeholder="Add additional comments" />
         <br />
         <br />
         <NavLink to="/bicycles">
-          <Button.Success onClick={this.save}>Order Repair</Button.Success>
+          <Button.Success onClick={this.save} onClick={this.orderRepair()}>Order Repair</Button.Success>
         </NavLink>
         <br />
         <br />
@@ -820,6 +832,15 @@ class RepairDetails extends Component {
       this.BicycleStatus = bicycle.BicycleStatus;
       this.HomeLocation = bicycle.HomeLocation;
       this.CurrentLocation = bicycle.CurrentLocation;
+    });
+  }
+
+  orderRepair() {
+    repairService.updateStatus(this.props.match.params.id, bicycle => {
+      this.FrameType = bicycle.Frametype;
+      this.BrakeType = bicycle.Braketype;
+      this.Wheelsize = bicycle.Wheelsize;
+      this.BicycleStatus = bicycle.BicycleStatus;
     });
   }
 }

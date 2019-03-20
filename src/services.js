@@ -357,6 +357,14 @@ class TransportService {
   }
 }
 
+class RepairService {
+  updateStatus(BicycleID, BicycleStatus) {
+    connection.query("update Bicycles set BicycleStatus = 'In Repair' where BicycleID=?", [BicycleID, BicycleStatus], (error, results) => {
+      if(error) return console.error(error);
+    })
+  }
+}
+
 export let customerService = new CustomerService();
 
 export let rentalService = new RentalService();
@@ -368,3 +376,5 @@ export let bicycleService = new BicycleService();
 export let accessoryService = new AccessoryService();
 
 export let transportService = new TransportService();
+
+export let repairService = new RepairService();
