@@ -24,7 +24,7 @@ class RentalService {
     );
   }
 
-  getRentedStuff(id, success) {
+  getRentedBicycles(id, success) {
     connection.query(
       'SELECT RentedBicycles.BicycleID, Bicycles.BicycleType, Bicycles.DailyPrice FROM RentedBicycles INNER JOIN Bicycles ON RentedBicycles.BicycleID = Bicycles.BicycleID WHERE RentalID = 1;',
       [id],
@@ -36,8 +36,30 @@ class RentalService {
     );
   }
 
+  getRentedAccessories(id, success) {
+    connection.query(
+      'SELECT RentedAccessories.AccessoryID, Accessories.Type, Accessories.DailyPrice FROM RentedAccessories INNER JOIN Accessories ON RentedAccessories.AccessoryID = Accessories.AccessoryID WHERE RentalID = 1;',
+      [id],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
+  }
+
+  removeBicycle(id) {
+    connection.query('', [id],
+    (error, results) => {
+      if (error) return console.error(error);
+
+      success();
+    });
+  }
+
   updateRental(id, name, email, success) {
-    connection.query('update Rentals set name=?, email=? where id=?', [name, email, id], (error, results) => {
+    connection.query('update Rentals set name=?, email=? where id=?', [name, email, id],
+    (error, results) => {
       if (error) return console.error(error);
 
       success();

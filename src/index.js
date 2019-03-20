@@ -93,23 +93,30 @@ class RentalList extends Component {
 }
 
 class RentalEdit extends Component {
-  RentalID = '';
-  FirstName = '';
-  rentedStuff = [];
+  rentedBicycles = [];
+  rentedAccessories = [];
 
   render() {
     return (
       <Card>
         <h3>Rental id {this.props.match.params.id}</h3>
         <h4>Bicycles</h4>
-        {this.rentedStuff.map(stuff => (
-          <List.Item key={stuff.BicycleID}>
+        {this.rentedBicycles.map(bicycle => (
+          <List.Item key={bicycle.BicycleID}>
             <p>
-              {stuff.BicycleType} #{stuff.BicycleID} - {stuff.DailyPrice}kr per day
+              {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
             </p>
+            <button>Remove Bicycle</button>
           </List.Item>
         ))}
         <h4>Accessories</h4>
+        {this.rentedAccessories.map(accessory => (
+          <List.Item key={accessory.AccessoryID}>
+            <p>
+              {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
+            </p>
+          </List.Item>
+        ))}
         <NavLink to="/sales">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
@@ -123,15 +130,18 @@ class RentalEdit extends Component {
   }
 
   mounted() {
+    rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
+      this.rentedBicycles = bicycles;
+      console.log(this.rentedBicycles);
+    });
+    rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
+      this.rentedAccessories = accessories;
+      console.log(this.rentedAccessories);
+    });
   }
 
-  GetRentedBicycles() {
-    rentalService.getRentedStuff(this.props.match.params.id, stuff => {
-      this.rentedStuff = stuff;
-      console.log(this.rentedStuff);
-      console.log(this.rentedStuff[0]);
-      console.log(this.rentedStuff[0]['BicycleType']);
-    });
+  removeBicycle() {
+    
   }
 
   save() {
