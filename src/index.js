@@ -100,7 +100,8 @@ class RentalEdit extends Component {
   render() {
     return (
       <Card>
-        <h3>Rental #{this.props.match.params.id} items</h3>
+        <h3>Rental id {this.props.match.params.id}</h3>
+        <h4>Bicycles</h4>
         {this.rentedStuff.map(stuff => (
           <List.Item key={stuff.BicycleID}>
             <p>
@@ -108,6 +109,7 @@ class RentalEdit extends Component {
             </p>
           </List.Item>
         ))}
+        <h4>Accessories</h4>
         <NavLink to="/sales">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
@@ -121,6 +123,9 @@ class RentalEdit extends Component {
   }
 
   mounted() {
+  }
+
+  GetRentedBicycles() {
     rentalService.getRentedStuff(this.props.match.params.id, stuff => {
       this.rentedStuff = stuff;
       console.log(this.rentedStuff);
@@ -171,16 +176,30 @@ class RentalInsert extends Component {
 
 class CustomerList extends Component {
   customers = [];
+  searchCategory= "";
+  searchValue = "";
 
   render() {
     return (
-      <Card title="Customer List">
+      <div>
         <p>Click the customers to edit or delete them</p>
+        <h3>Search by category</h3>
+        <div id="CustromerSearch">
+          <input id="CustomerSearchField" type="text"></input>
+          <select id="CustomerSearchCategory">
+            <option>FirstName</option>
+            <option>SurName</option>
+            <option>Phone</option>
+            <option>Email</option>
+            <option>Address</option>
+          </select>
+          <button id="CustomerSearchButton" onClick={this.mounted}>Search</button>
+        </div>
         <List>
           {this.customers.map(customer => (
             <List.Item key={customer.CustomerID}>
               <NavLink to={'/customers/' + customer.CustomerID + '/edit'}>
-                {customer.FirstName} {customer.SurName} | {customer.Email} | {customer.Phone} | {customer.Address}
+                {customer.FirstName} {customer.SurName} | tlf {customer.Phone}
               </NavLink>
             </List.Item>
           ))}
@@ -189,13 +208,19 @@ class CustomerList extends Component {
         <NavLink to="/customers/insert">
           <Button.Light>Add New Customer</Button.Light>
         </NavLink>
-      </Card>
+      </div>
     );
   }
 
   mounted() {
-    customerService.getCustomers(customers => {
+    console.log("Searching...");
+    this.searchCategory = "" + document.getElementById("CustomerSearchCategory").value;
+    this.searchValue = "%" + document.getElementById("CustomerSearchField").value + "%";
+    console.log("category: " + this.searchCategory + " value: " + this.searchValue);
+    customerService.searchCustomers(this.searchCategory, this.searchValue, customers => {
       this.customers = customers;
+      console.log("Search complete");
+      console.log(this.customers);
     });
   }
 }
@@ -684,7 +709,7 @@ class TransportList extends Component {
         <br />
         <br />
         <NavLink to="/transport/booking">
-          <Button.Light>Order Transport</Button.Light>
+          <Button.Success>Order Transport</Button.Success>
         </NavLink>
       </Card>
     );
@@ -717,12 +742,15 @@ class RepairList extends Component {
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
-              {bicycle.BicycleType} {bicycle.BicycleID} <input type="checkbox" value={bicycle.BicycleID} />
+            <NavLink to={'/repair/' + bicycle.BicycleID + '/edit'}>
+                Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
+                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus}{' '}
+               | Current Location: {bicycle.CurrentLocation}
+              </NavLink>
             </List.Item>
           ))}
         </List>
-        <input type="textarea" placeholder="Add comments on repair here" />
-        <NavLink to="/repairs/summary">
+        <NavLink to="/repair/summary">
           <br />
           <br />
           <Button.Light>Order Repair</Button.Light>
@@ -734,6 +762,58 @@ class RepairList extends Component {
   mounted() {
     bicycleService.getBicycles(bicycles => {
       this.bicycles = bicycles;
+    });
+  }
+}
+
+class RepairDetails extends Component {
+  BicycleType = '';
+  FrameType = '';
+  BrakeType = '';
+  Wheelsize = '';
+  BicycleStatus = '';
+  HomeLocation = '';
+  CurrentLocation = '';
+
+  render() {
+    return (
+      <Card>
+      <List>
+        Bicycle Type:
+        <List.Item>{this.BicycleType}</List.Item>
+        Frame Type:
+        <List.Item>{this.FrameType} <input type="checkbox" value={this.FrameType}></input></List.Item>
+        Brake Type:
+        <List.Item>{this.BrakeType} <input type="checkbox" value={this.BrakeType}></input></List.Item>
+        Wheelsize:
+        <List.Item>{this.Wheelsize} <input type="checkbox"  value={this.Wheelsize}></input></List.Item>
+        Bicycle Status:
+        <List.Item>{this.BicycleStatus} <input type="checkbox" value={this.BicycleStatus}></input></List.Item>
+        </List>
+        <br />
+        <input type="textarea" placeholder="Add additional comments"></input>
+        <br />
+        <br />
+        <NavLink to="/bicycles">
+          <Button.Success onClick={this.save}>Order Repair</Button.Success>
+        </NavLink>
+        <br />
+        <br />
+        <NavLink to="/bicycles">
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    bicycleService.getBicycle(this.props.match.params.id, bicycle => {
+      this.BicycleType = bicycle.BicycleType;
+      this.FrameType = bicycle.FrameType;
+      this.BrakeType = bicycle.BrakeType;
+      this.Wheelsize = bicycle.Wheelsize;
+      this.BicycleStatus = bicycle.BicycleStatus;
+      this.HomeLocation = bicycle.HomeLocation;
+      this.CurrentLocation = bicycle.CurrentLocation;
     });
   }
 }
@@ -761,6 +841,7 @@ ReactDOM.render(
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
       <Route path="/accessories/insert" component={AccessoryInsert} />
+      <Route path="/repair/:id/edit" component={RepairDetails} />
     </div>
   </HashRouter>,
   document.getElementById('root')
