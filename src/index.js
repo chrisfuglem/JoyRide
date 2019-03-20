@@ -8,7 +8,8 @@ import {
   employeeService,
   bicycleService,
   accessoryService,
-  transportService
+  transportService,
+  repairService
 } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form, TextInput } from './widgets';
 
@@ -718,7 +719,7 @@ class TransportList extends Component {
         <br />
         <br />
         <NavLink to="/transport/booking">
-          <Button.Light>Order Transport</Button.Light>
+          <Button.Success>Order Transport</Button.Success>
         </NavLink>
       </Card>
     );
@@ -751,15 +752,15 @@ class RepairList extends Component {
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
-              {bicycle.BicycleType} {bicycle.BicycleID} <input type="checkbox" value={bicycle.BicycleID} />
+            <NavLink to={'/repair/' + bicycle.BicycleID + '/edit'}>
+                Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
+                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus}{' '}
+               | Current Location: {bicycle.CurrentLocation}
+              </NavLink>
             </List.Item>
           ))}
         </List>
-        <input type="textarea" placeholder="Add comments on repair here" />
-        <NavLink to="/repairs/summary">
-          <br />
-          <br />
-          <Button.Light>Order Repair</Button.Light>
+        <NavLink to="/repair/summary">
         </NavLink>
       </Card>
     );
@@ -768,6 +769,67 @@ class RepairList extends Component {
   mounted() {
     bicycleService.getBicycles(bicycles => {
       this.bicycles = bicycles;
+    });
+  }
+}
+
+class RepairDetails extends Component {
+  BicycleType = '';
+  FrameType = '';
+  BrakeType = '';
+  Wheelsize = '';
+  BicycleStatus = '';
+  HomeLocation = '';
+  CurrentLocation = '';
+
+  render() {
+    return (
+      <Card>
+      <List>
+        Bicycle Type:
+        <List.Item>{this.BicycleType}</List.Item>
+        Frame Type:
+        <List.Item>{this.FrameType} <input type="checkbox" value={this.FrameType}></input></List.Item>
+        Brake Type:
+        <List.Item>{this.BrakeType} <input type="checkbox" value={this.BrakeType}></input></List.Item>
+        Wheelsize:
+        <List.Item>{this.Wheelsize} <input type="checkbox"  value={this.Wheelsize}></input></List.Item>
+        Bicycle Status:
+        <List.Item>{this.BicycleStatus}</List.Item>
+        </List>
+        <br />
+        <input type="textarea" placeholder="Add additional comments"></input>
+        <br />
+        <br />
+        <NavLink to="/bicycles">
+          <Button.Success onClick={this.save} onClick={this.orderRepair()}>Order Repair</Button.Success>
+        </NavLink>
+        <br />
+        <br />
+        <NavLink to="/bicycles">
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    bicycleService.getBicycle(this.props.match.params.id, bicycle => {
+      this.BicycleType = bicycle.BicycleType;
+      this.FrameType = bicycle.FrameType;
+      this.BrakeType = bicycle.BrakeType;
+      this.Wheelsize = bicycle.Wheelsize;
+      this.BicycleStatus = bicycle.BicycleStatus;
+      this.HomeLocation = bicycle.HomeLocation;
+      this.CurrentLocation = bicycle.CurrentLocation;
+    });
+  }
+
+  orderRepair() {
+    repairService.updateStatus(this.props.match.params.id, bicycle => {
+      this.FrameType = bicycle.Frametype;
+      this.BrakeType = bicycle.Braketype;
+      this.Wheelsize = bicycle.Wheelsize;
+      this.BicycleStatus = bicycle.BicycleStatus;
     });
   }
 }
@@ -795,6 +857,7 @@ ReactDOM.render(
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
       <Route path="/accessories/insert" component={AccessoryInsert} />
+      <Route path="/repair/:id/edit" component={RepairDetails} />
     </div>
   </HashRouter>,
   document.getElementById('root')
