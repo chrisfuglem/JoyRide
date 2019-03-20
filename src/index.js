@@ -200,8 +200,8 @@ class RentalInsert extends Component {
 
 class CustomerList extends Component {
   customers = [];
-  searchCategory= "";
-  searchValue = "";
+  searchCategory = '';
+  searchValue = '';
 
   render() {
     return (
@@ -209,7 +209,7 @@ class CustomerList extends Component {
         <p>Click the customers to edit or delete them</p>
         <h3>Search by category</h3>
         <div id="CustromerSearch">
-          <input id="CustomerSearchField" type="text"></input>
+          <input id="CustomerSearchField" type="text" />
           <select id="CustomerSearchCategory">
             <option>FirstName</option>
             <option>SurName</option>
@@ -217,7 +217,9 @@ class CustomerList extends Component {
             <option>Email</option>
             <option>Address</option>
           </select>
-          <button id="CustomerSearchButton" onClick={this.mounted}>Search</button>
+          <button id="CustomerSearchButton" onClick={this.mounted}>
+            Search
+          </button>
         </div>
         <List>
           {this.customers.map(customer => (
@@ -237,13 +239,13 @@ class CustomerList extends Component {
   }
 
   mounted() {
-    console.log("Searching...");
-    this.searchCategory = "" + document.getElementById("CustomerSearchCategory").value;
-    this.searchValue = "%" + document.getElementById("CustomerSearchField").value + "%";
-    console.log("category: " + this.searchCategory + " value: " + this.searchValue);
+    console.log('Searching...');
+    this.searchCategory = '' + document.getElementById('CustomerSearchCategory').value;
+    this.searchValue = '%' + document.getElementById('CustomerSearchField').value + '%';
+    console.log('category: ' + this.searchCategory + ' value: ' + this.searchValue);
     customerService.searchCustomers(this.searchCategory, this.searchValue, customers => {
       this.customers = customers;
-      console.log("Search complete");
+      console.log('Search complete');
       console.log(this.customers);
     });
   }
@@ -714,7 +716,7 @@ class TransportList extends Component {
         <p>Click the bike you want to transport</p>
         <List>
           {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.BicycleID}>
+            <List.Item key={bicycle.CurrentLocation}>
               Type: {bicycle.BicycleType} ID: {bicycle.BicycleID} <input value={bicycle.BicycleID} type="checkbox" />
             </List.Item>
           ))}
@@ -748,10 +750,9 @@ class TransportList extends Component {
   }
 
   loadBikeLocation() {
-    transportService.getBikeLocation(locations, bicycles => {
-      this.locations = locations.LocationID;
+    transportService.getBikeLocation(location, bicycles, bicycleslocation => {
+      this.location = location.LocationID;
       this.bicycles = bicycles.BicycleID;
-      this.bicycles = bicycles.CurrentLocation;
     });
   }
 }
@@ -765,16 +766,15 @@ class RepairList extends Component {
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
-            <NavLink to={'/repair/' + bicycle.BicycleID + '/edit'}>
+              <NavLink to={'/repair/' + bicycle.BicycleID + '/edit'}>
                 Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
-                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus}{' '}
-               | Current Location: {bicycle.CurrentLocation}
+                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Current Location:{' '}
+                {bicycle.CurrentLocation}
               </NavLink>
             </List.Item>
           ))}
         </List>
-        <NavLink to="/repair/summary">
-        </NavLink>
+        <NavLink to="/repair/summary" />
       </Card>
     );
   }
@@ -798,29 +798,36 @@ class RepairDetails extends Component {
   render() {
     return (
       <Card>
-      <List>
-        Bicycle Type:
-        <List.Item>{this.BicycleType}</List.Item>
-        Frame Type:
-        <List.Item>{this.FrameType} <input type="checkbox" value={this.FrameType}></input></List.Item>
-        Brake Type:
-        <List.Item>{this.BrakeType} <input type="checkbox" value={this.BrakeType}></input></List.Item>
-        Wheelsize:
-        <List.Item>{this.Wheelsize} <input type="checkbox"  value={this.Wheelsize}></input></List.Item>
-        Bicycle Status:
-        <List.Item>{this.BicycleStatus}</List.Item>
+        <List>
+          Bicycle Type:
+          <List.Item>{this.BicycleType}</List.Item>
+          Frame Type:
+          <List.Item>
+            {this.FrameType} <input type="checkbox" value={this.FrameType} />
+          </List.Item>
+          Brake Type:
+          <List.Item>
+            {this.BrakeType} <input type="checkbox" value={this.BrakeType} />
+          </List.Item>
+          Wheelsize:
+          <List.Item>
+            {this.Wheelsize} <input type="checkbox" value={this.Wheelsize} />
+          </List.Item>
+          Bicycle Status:
+          <List.Item>{this.BicycleStatus}</List.Item>
         </List>
         <br />
-        <input type="textarea" placeholder="Add additional comments"></input>
+        <input type="textarea" placeholder="Add additional comments" />
         <br />
         <br />
         <NavLink to="/bicycles">
-          <Button.Success onClick={this.save} onClick={this.orderRepair()}>Order Repair</Button.Success>
+          <Button.Success onClick={this.save} onClick={this.orderRepair()}>
+            Order Repair
+          </Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/bicycles">
-        </NavLink>
+        <NavLink to="/bicycles" />
       </Card>
     );
   }
