@@ -8,7 +8,8 @@ import {
   employeeService,
   bicycleService,
   accessoryService,
-  transportService
+  transportService,
+  repairService
 } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form, TextInput } from './widgets';
 
@@ -750,9 +751,6 @@ class RepairList extends Component {
           ))}
         </List>
         <NavLink to="/repair/summary">
-          <br />
-          <br />
-          <Button.Light>Order Repair</Button.Light>
         </NavLink>
       </Card>
     );
@@ -787,14 +785,14 @@ class RepairDetails extends Component {
         Wheelsize:
         <List.Item>{this.Wheelsize} <input type="checkbox"  value={this.Wheelsize}></input></List.Item>
         Bicycle Status:
-        <List.Item>{this.BicycleStatus} <input type="checkbox" value={this.BicycleStatus}></input></List.Item>
+        <List.Item>{this.BicycleStatus}</List.Item>
         </List>
         <br />
         <input type="textarea" placeholder="Add additional comments"></input>
         <br />
         <br />
         <NavLink to="/bicycles">
-          <Button.Success onClick={this.save}>Order Repair</Button.Success>
+          <Button.Success onClick={this.save} onClick={this.orderRepair()}>Order Repair</Button.Success>
         </NavLink>
         <br />
         <br />
@@ -813,6 +811,15 @@ class RepairDetails extends Component {
       this.BicycleStatus = bicycle.BicycleStatus;
       this.HomeLocation = bicycle.HomeLocation;
       this.CurrentLocation = bicycle.CurrentLocation;
+    });
+  }
+
+  orderRepair() {
+    repairService.updateStatus(this.props.match.params.id, bicycle => {
+      this.FrameType = bicycle.Frametype;
+      this.BrakeType = bicycle.Braketype;
+      this.Wheelsize = bicycle.Wheelsize;
+      this.BicycleStatus = bicycle.BicycleStatus;
     });
   }
 }
