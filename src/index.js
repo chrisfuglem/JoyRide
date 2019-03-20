@@ -128,13 +128,9 @@ class RentalEdit extends Component {
   GetRentedBicycles() {
     rentalService.getRentedStuff(this.props.match.params.id, stuff => {
       this.rentedStuff = stuff;
-<<<<<<< HEAD
-      console.log("yoooooo");
-=======
       console.log(this.rentedStuff);
       console.log(this.rentedStuff[0]);
       console.log(this.rentedStuff[0]['BicycleType']);
->>>>>>> 24e4f02a25bb7db76dc74ae5564c40f36818c456
     });
   }
 
