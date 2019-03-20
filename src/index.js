@@ -665,8 +665,9 @@ class TransportList extends Component {
         <p>Click the bike you want to transport</p>
         <List>
           {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.BicycleID}>
-              Type: {bicycle.BicycleType} ID: {bicycle.BicycleID} <input value={bicycle.BicycleID} type="checkbox" />
+            <List.Item key={bicycle.CurrentLocation}>
+              Type: {bicycle.BicycleType} ID: {bicycle.BicycleID} Location: {bicycle.LocationName}{' '}
+              <input value={bicycle.BicycleID} type="checkbox" />
             </List.Item>
           ))}
         </List>
@@ -693,18 +694,18 @@ class TransportList extends Component {
     transportService.getLocations(locations => {
       this.locations = locations;
     });
-    bicycleService.getBicycles(bicycles => {
+    transportService.getBikeLocation(bicycles => {
       this.bicycles = bicycles;
     });
   }
 
-  loadBikeLocation() {
-    transportService.getBikeLocation(locations, bicycles => {
-      this.locations = locations.LocationID;
-      this.bicycles = bicycles.BicycleID;
-      this.bicycles = bicycles.CurrentLocation;
-    });
-  }
+  //   loadBikeLocation() {
+  //     transportService.getBikeLocation(locations, bicyclesid, bicycleslocation => {
+  //       this.locations = locations.LocationID;
+  //       this.bicyclesid = bicycles.BicycleID;
+  //       this.bicycleslocation = bicycles.CurrentLocation;
+  //     });
+  //   }
 }
 
 class RepairList extends Component {
