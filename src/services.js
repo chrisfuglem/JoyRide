@@ -26,7 +26,7 @@ class RentalService {
 
   getRentedBicycles(id, success) {
     connection.query(
-      'SELECT RentedBicycles.BicycleID, Bicycles.BicycleType, Bicycles.DailyPrice FROM RentedBicycles INNER JOIN Bicycles ON RentedBicycles.BicycleID = Bicycles.BicycleID WHERE RentalID = 1;',
+      'SELECT RentedBicycles.BicycleID, Bicycles.BicycleType, Bicycles.DailyPrice FROM RentedBicycles INNER JOIN Bicycles ON RentedBicycles.BicycleID = Bicycles.BicycleID WHERE RentalID = ?;',
       [id],
       (error, results) => {
         if (error) return console.error(error);
@@ -38,7 +38,7 @@ class RentalService {
 
   getRentedAccessories(id, success) {
     connection.query(
-      'SELECT RentedAccessories.AccessoryID, Accessories.Type, Accessories.DailyPrice FROM RentedAccessories INNER JOIN Accessories ON RentedAccessories.AccessoryID = Accessories.AccessoryID WHERE RentalID = 1;',
+      'SELECT RentedAccessories.AccessoryID, Accessories.Type, Accessories.DailyPrice FROM RentedAccessories INNER JOIN Accessories ON RentedAccessories.AccessoryID = Accessories.AccessoryID WHERE RentalID = ?;',
       [id],
       (error, results) => {
         if (error) return console.error(error);
@@ -49,16 +49,25 @@ class RentalService {
   }
 
   removeBicycle(id) {
-    connection.query('', [id],
+    connection.query('delete from RentedBicycles where BicycleID = ?', [id]),
     (error, results) => {
       if (error) return console.error(error);
 
       success();
-    });
+    };
+  }
+
+  removeAccessory(id) {
+    connection.query('delete from RentedAccessories where AccessoryID = ?', [id]),
+    (error, results) => {
+      if (error) return console.error(error);
+
+      success();
+    };
   }
 
   updateRental(id, name, email, success) {
-    connection.query('update Rentals set name=?, email=? where id=?', [name, email, id],
+    connection.query('update Rentals set name=?, email=? where id= ?', [name, email, id],
     (error, results) => {
       if (error) return console.error(error);
 

@@ -107,7 +107,9 @@ class RentalEdit extends Component {
             <p>
               {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
             </p>
-            <button>Remove Bicycle</button>
+            <NavLink to="/sales">
+              <button onClick={this.removeBicycle.bind(this, bicycle.BicycleID)}>Remove Bicycle</button>
+            </NavLink>
           </List.Item>
         ))}
         <h4>Accessories</h4>
@@ -116,6 +118,9 @@ class RentalEdit extends Component {
             <p>
               {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
             </p>
+            <NavLink to="/sales">
+              <button onClick={this.removeAccessory.bind(this, accessory.AccessoryID)}>Remove Accessory</button>
+            </NavLink>
           </List.Item>
         ))}
         <NavLink to="/sales">
@@ -141,8 +146,16 @@ class RentalEdit extends Component {
     });
   }
 
-  removeBicycle() {
-    
+  removeBicycle(id) {
+    rentalService.removeBicycle(id, () => {
+      history.push('/sales');
+    });
+  }
+
+  removeAccessory(id) {
+    rentalService.removeAccessory(id, () => {
+      history.push('/sales');
+    });
   }
 
   save() {
