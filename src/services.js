@@ -26,7 +26,7 @@ class RentalService {
 
   getRentedStuff(id, success) {
     connection.query(
-      'SELECT RentedBicycles.BicycleID, Bicycles.BicycleType, Bicycles.DailyPrice FROM RentedBicycles INNER JOIN Bicycles ON RentedBicycles.BicycleID = Bicycles.BicycleID WHERE RentalID = 1 UNION ALL SELECT RentedAccessories.AccessoryID, Accessories.Type, Accessories.DailyPrice FROM RentedAccessories INNER JOIN Accessories ON RentedAccessories.AccessoryID = Accessories.AccessoryID WHERE RentalID = 1;',
+      'SELECT RentedBicycles.BicycleID, Bicycles.BicycleType, Bicycles.DailyPrice FROM RentedBicycles INNER JOIN Bicycles ON RentedBicycles.BicycleID = Bicycles.BicycleID WHERE RentalID = 1;',
       [id],
       (error, results) => {
         if (error) return console.error(error);
@@ -82,6 +82,16 @@ class CustomerService {
       if (error) return console.error(error);
 
       success(results[0]);
+    });
+  }
+
+  searchCustomers(category, value, success) {
+
+    let query = "SELECT * FROM Customers WHERE " + category + " LIKE " + "'" + value + "'";
+    connection.query("SELECT * FROM Customers WHERE " + category + " LIKE " + "'" + value + "'", [category, value], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
     });
   }
 
