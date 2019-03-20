@@ -291,8 +291,8 @@ class AccessoryService {
 
   updateAccessory(AccessoryID, Type, DailyPrice, success) {
     connection.query(
-      'update Accessories set Type=?, DailyPrice=? where AccessoryID=?',
-      [Type, DailyPrice, AccessoryID],
+      'update Accessories as A inner join AccessoryTypes as B on A.Type=B.AccessoryType set A.Type=?, B.AccessoryType=?, DailyPrice=? where A.AccessoryID=?',
+      [Type, Type, DailyPrice, AccessoryID],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -320,6 +320,37 @@ class AccessoryService {
   }
 }
 
+class TransportService {
+  getLocations(success) {
+    connection.query('select * from Locations', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
+  getLocation(LocationID, success) {
+    connection.query('select * from Locations where LocationID=?', [LocationID], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results[0]);
+    });
+  }
+
+  getBikeLocation(CurrentLocation, LocationID, success) {
+    connection.query(
+      'select CurrentLocation from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
+      [CurrentLocation],
+      [LocationID],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results[0]);
+      }
+    );
+  }
+}
+
 export let customerService = new CustomerService();
 
 export let rentalService = new RentalService();
@@ -329,3 +360,5 @@ export let employeeService = new EmployeeService();
 export let bicycleService = new BicycleService();
 
 export let accessoryService = new AccessoryService();
+
+export let transportService = new TransportService();
