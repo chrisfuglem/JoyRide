@@ -86,13 +86,16 @@ class CustomerService {
   }
 
   searchCustomers(category, value, success) {
+    let query = 'SELECT * FROM Customers WHERE ' + category + ' LIKE ' + "'" + value + "'";
+    connection.query(
+      'SELECT * FROM Customers WHERE ' + category + ' LIKE ' + "'" + value + "'",
+      [category, value],
+      (error, results) => {
+        if (error) return console.error(error);
 
-    let query = "SELECT * FROM Customers WHERE " + category + " LIKE " + "'" + value + "'";
-    connection.query("SELECT * FROM Customers WHERE " + category + " LIKE " + "'" + value + "'", [category, value], (error, results) => {
-      if (error) return console.error(error);
-
-      success(results);
-    });
+        success(results);
+      }
+    );
   }
 
   updateCustomer(CustomerID, FirstName, SurName, Email, Phone, Address, success) {
@@ -291,7 +294,7 @@ class AccessoryService {
 
   updateAccessory(AccessoryID, Type, DailyPrice, success) {
     connection.query(
-      'update Accessories as A inner join AccessoryTypes as B on A.Type=B.AccessoryType set A.Type=?, B.AccessoryType=?, DailyPrice=? where A.AccessoryID=?',
+      'update Accessories inner join AccessoryTypes on Accessories.Type = AccessoryTypes.AccessoryType set AccessoryType=?, DailyPrice=? where Accessories.AccessoryID=?',
       [Type, Type, DailyPrice, AccessoryID],
       (error, results) => {
         if (error) return console.error(error);
@@ -339,7 +342,7 @@ class TransportService {
 
   getBikeLocation(BicycleType, BicycleID, LocationName, LocationID, CurrentLocation, success) {
     connection.query(
-      'select BicycleType, BicycleID, LocationName from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation',
+      'select BicycleType, BicycleID, LocationName from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
       [BicycleType],
       [BicycleID],
       [LocationName],
