@@ -693,9 +693,6 @@ class AccessoryInsert extends Component {
 
 class TransportList extends Component {
   locations = [];
-  bicycles = [];
-  LocationID = [];
-  BicycleID = [];
 
   render() {
     return (
@@ -704,35 +701,10 @@ class TransportList extends Component {
         <List>
           {this.locations.map(location => (
             <List.Item key={location.LocationID}>
-              {location.LocationName}{' '}
-              <input value={location.LocationID} type="checkbox" onClick={this.loadBikeLocation} />
+              <NavLink to={'/transport/' + location.LocationID + '/booking/'}>{location.LocationName}</NavLink>
             </List.Item>
           ))}
         </List>
-        <br />
-        <p>Click the bike you want to transport</p>
-        <List>
-          {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.CurrentLocation}>
-              Type: {bicycle.BicycleType} ID: {bicycle.BicycleID} <input value={bicycle.BicycleID} type="checkbox" />
-            </List.Item>
-          ))}
-        </List>
-        <br />
-        <p>Click the location you want transport to</p>
-        <List>
-          {this.locations.map(location => (
-            <List.Item key={location.LocationID}>
-              {location.LocationName} <input value={location.LocationID} type="checkbox" />
-            </List.Item>
-          ))}
-        </List>
-        <input type="textarea" rows="10" cols="50" placeholder="Add additional comments" />
-        <br />
-        <br />
-        <NavLink to="/transport/booking">
-          <Button.Success>Order Transport</Button.Success>
-        </NavLink>
       </Card>
     );
   }
@@ -741,15 +713,34 @@ class TransportList extends Component {
     transportService.getLocations(locations => {
       this.locations = locations;
     });
+  }
+}
+
+class TransportBooking extends Component {
+  bicycles = [];
+
+  render() {
+    return (
+      <Card title="Bicycle List">
+        <p>Choose Bicycles For Transport</p>
+        <List>
+          {this.bicycles.map(bicycle => (
+            <List.Item key={bicycle.BicycleID}>
+              <input type="checkbox" value={this.BicycleID} /> Bicycle Type: {bicycle.BicycleType} | Bicycle ID:{' '}
+              {bicycle.BicycleID} | Location Name: {bicycle.LocationName}
+            </List.Item>
+          ))}
+        </List>
+        <br />
+        <NavLink to="/transport/booking/order">
+          <Button.Light>Choose Delivery Location</Button.Light>
+        </NavLink>
+      </Card>
+    );
+  }
+  mounted() {
     bicycleService.getBicycles(bicycles => {
       this.bicycles = bicycles;
-    });
-  }
-
-  loadBikeLocation() {
-    transportService.getBikeLocation(location, bicycle, success => {
-      this.LocationID = location.LocationID;
-      this.BicycleID = bicycle.BicycleID;
     });
   }
 }
@@ -815,11 +806,9 @@ class RepairDetails extends Component {
           <List.Item>
             Current status: {this.BicycleStatus}
             <select id="statusDropdown">
-            {this.BicycleStatuses.map(status => (
-              <option value={status.BicycleStatus}>
-                {status.BicycleStatus}
-              </option>
-            ))}
+              {this.BicycleStatuses.map(status => (
+                <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
+              ))}
             </select>
           </List.Item>
         </List>
@@ -852,7 +841,7 @@ class RepairDetails extends Component {
     bicycleService.getBicycleStatuses(statuses => {
       this.BicycleStatuses = statuses;
     });
-    console.log(document.getElementById("statusDropdown").value);
+    console.log(document.getElementById('statusDropdown').value);
   }
 
   orderRepair() {
@@ -878,6 +867,7 @@ ReactDOM.render(
       <Route exact path="/accessories" component={AccessoryList} />
       <Route exact path="/repair" component={RepairList} />
       <Route exact path="/transport" component={TransportList} />
+      <Route path="/transport/:id/booking" component={TransportBooking} />
       <Route path="/sales/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
