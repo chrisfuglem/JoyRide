@@ -675,6 +675,8 @@ class AccessoryInsert extends Component {
 class TransportList extends Component {
   locations = [];
   bicycles = [];
+  LocationID = [];
+  BicycleID = [];
 
   render() {
     return (
@@ -726,9 +728,9 @@ class TransportList extends Component {
   }
 
   loadBikeLocation() {
-    transportService.getBikeLocation(location, bicycles, bicycleslocation => {
-      this.location = location.LocationID;
-      this.bicycles = bicycles.BicycleID;
+    transportService.getBikeLocation(location, bicycle, success => {
+      this.LocationID = location.LocationID;
+      this.BicycleID = bicycle.BicycleID;
     });
   }
 }
