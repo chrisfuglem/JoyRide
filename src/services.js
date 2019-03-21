@@ -50,25 +50,24 @@ class RentalService {
 
   removeBicycle(bicycleID, rentalID) {
     connection.query('delete from RentedBicycles where BicycleID = ? and RentalID = ?', [bicycleID, rentalID]),
-    (error, results) => {
-      if (error) return console.error(error);
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success();
-    };
+        success();
+      };
   }
 
   removeAccessory(accessoryID, rentalID) {
     connection.query('delete from RentedAccessories where AccessoryID = ? and RentalID = ?', [accessoryID, rentalID]),
-    (error, results) => {
-      if (error) return console.error(error);
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success();
-    };
+        success();
+      };
   }
 
   updateRental(id, name, email, success) {
-    connection.query('update Rentals set name=?, email=? where id= ?', [name, email, id],
-    (error, results) => {
+    connection.query('update Rentals set name=?, email=? where id= ?', [name, email, id], (error, results) => {
       if (error) return console.error(error);
 
       success();
@@ -379,14 +378,12 @@ class TransportService {
     });
   }
 
-  getBikeLocation(BicycleType, BicycleID, LocationName, LocationID, CurrentLocation, success) {
+  getBikeLocation(BicycleType, BicycleID, LocationName, success) {
     connection.query(
       'select BicycleType, BicycleID, LocationName from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
       [BicycleType],
       [BicycleID],
       [LocationName],
-      [CurrentLocation],
-      [LocationID],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -394,13 +391,28 @@ class TransportService {
       }
     );
   }
+
+  getBicycles(success) {
+    connection.query(
+      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
+  }
 }
 
 class RepairService {
   updateStatus(BicycleID, BicycleStatus) {
-    connection.query("update Bicycles set BicycleStatus = 'In Repair' where BicycleID=?", [BicycleID, BicycleStatus], (error, results) => {
-      if(error) return console.error(error);
-    })
+    connection.query(
+      "update Bicycles set BicycleStatus = 'In Repair' where BicycleID=?",
+      [BicycleID, BicycleStatus],
+      (error, results) => {
+        if (error) return console.error(error);
+      }
+    );
   }
 }
 

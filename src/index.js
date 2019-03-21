@@ -727,19 +727,19 @@ class TransportBooking extends Component {
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
               <input type="checkbox" value={this.BicycleID} /> Bicycle Type: {bicycle.BicycleType} | Bicycle ID:{' '}
-              {bicycle.BicycleID} | Location Name: {bicycle.LocationName}
+              {bicycle.BicycleID}
             </List.Item>
           ))}
         </List>
         <br />
-        <NavLink to="/transport/booking/order">
+        <NavLink to={'/transport/' + location.LocationID + '/booking/order'}>
           <Button.Light>Choose Delivery Location</Button.Light>
         </NavLink>
       </Card>
     );
   }
   mounted() {
-    bicycleService.getBicycles(bicycles => {
+    transportService.getBicycles(bicycles => {
       this.bicycles = bicycles;
     });
   }
