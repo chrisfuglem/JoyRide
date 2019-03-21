@@ -370,6 +370,14 @@ class TransportService {
     });
   }
 
+  getLocationsRemove(LocationID, success) {
+    connection.query('select * from Locations where LocationID!=?', [LocationID], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
   getLocation(LocationID, success) {
     connection.query('select * from Locations where LocationID=?', [LocationID], (error, results) => {
       if (error) return console.error(error);
@@ -378,10 +386,10 @@ class TransportService {
     });
   }
 
-
   getBicycles(LocationID, success) {
     connection.query(
-      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?', [LocationID],
+      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
+      [LocationID],
       (error, results) => {
         if (error) return console.error(error);
 

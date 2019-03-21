@@ -745,6 +745,33 @@ class TransportBooking extends Component {
   }
 }
 
+class TransportOrder extends Component {
+  locations = [];
+
+  render() {
+    return (
+      <Card title="Order Transport To:">
+        <p>Click the location you want transport to</p>
+        <List>
+          {this.locations.map(location => (
+            <List.Item key={location.LocationID}>
+              <NavLink to={'/transport/' + location.LocationID + '/booking/order/confirm'}>
+                {location.LocationName}
+              </NavLink>
+            </List.Item>
+          ))}
+        </List>
+      </Card>
+    );
+  }
+
+  mounted() {
+    transportService.getLocationsRemove(this.props.match.params.id, locations => {
+      this.locations = locations;
+    });
+  }
+}
+
 class RepairList extends Component {
   bicycles = [];
 
@@ -867,7 +894,8 @@ ReactDOM.render(
       <Route exact path="/accessories" component={AccessoryList} />
       <Route exact path="/repair" component={RepairList} />
       <Route exact path="/transport" component={TransportList} />
-      <Route path="/transport/:id/booking" component={TransportBooking} />
+      <Route exact path="/transport/:id/booking" component={TransportBooking} />
+      <Route exact path="/transport/:id/booking/order" component={TransportOrder} />
       <Route path="/sales/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
