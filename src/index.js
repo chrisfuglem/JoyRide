@@ -739,7 +739,7 @@ class TransportBooking extends Component {
     );
   }
   mounted() {
-    transportService.getBicycles(bicycles => {
+    transportService.getBicycles(this.props.match.params.id, bicycles => {
       this.bicycles = bicycles;
     });
   }

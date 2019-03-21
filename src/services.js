@@ -378,23 +378,10 @@ class TransportService {
     });
   }
 
-  getBikeLocation(BicycleType, BicycleID, LocationName, success) {
-    connection.query(
-      'select BicycleType, BicycleID, LocationName from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
-      [BicycleType],
-      [BicycleID],
-      [LocationName],
-      (error, results) => {
-        if (error) return console.error(error);
 
-        success(results[0]);
-      }
-    );
-  }
-
-  getBicycles(success) {
+  getBicycles(LocationID, success) {
     connection.query(
-      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
+      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?', [LocationID],
       (error, results) => {
         if (error) return console.error(error);
 
