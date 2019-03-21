@@ -62,12 +62,12 @@ class RentalList extends Component {
         <p>Click the rentals to edit or delete them</p>
         <List>
           {this.rentals.map(rental => (
-            <List.Item key={rental.RentalID}>
-              <NavLink to={'/sales/' + rental.RentalID + '/edit'}>
-                Order {rental.RentalID} by {rental.FirstName} on {rental.RentalDate}
+            <List.Item key={rental.ID}>
+              <NavLink to={'/sales/' + rental.ID + '/edit'}>
+                Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
               </NavLink>
               <br />
-              BicycleCount: {rental.BicycleCount} | SUM: {rental.SUM}
+              BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM}
             </List.Item>
           ))}
         </List>
@@ -83,7 +83,6 @@ class RentalList extends Component {
     rentalService.getRentals(rentals => {
       this.rentals = rentals;
       for (let i = 0; i < rentals.length; i++) {
-        this.rentals[i].BicycleCount = rentals[i]['COUNT(RentedBicycles.BicycleID)'];
         // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
         let rentalDate = JSON.stringify(rentals[i].Date);
         rentalDate = rentalDate.slice(1, 11);
@@ -94,23 +93,35 @@ class RentalList extends Component {
 }
 
 class RentalEdit extends Component {
-  RentalID = '';
-  FirstName = '';
-  rentedStuff = [];
+  rentedBicycles = [];
+  rentedAccessories = [];
 
   render() {
     return (
       <Card>
         <h3>Rental id {this.props.match.params.id}</h3>
         <h4>Bicycles</h4>
-        {this.rentedStuff.map(stuff => (
-          <List.Item key={stuff.BicycleID}>
+        {this.rentedBicycles.map(bicycle => (
+          <List.Item key={bicycle.BicycleID}>
             <p>
-              {stuff.BicycleType} #{stuff.BicycleID} - {stuff.DailyPrice}kr per day
+              {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
             </p>
+            <NavLink to="/sales">
+              <button onClick={this.removeBicycle.bind(this, bicycle.BicycleID)}>Remove Bicycle</button>
+            </NavLink>
           </List.Item>
         ))}
         <h4>Accessories</h4>
+        {this.rentedAccessories.map(accessory => (
+          <List.Item key={accessory.AccessoryID}>
+            <p>
+              {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
+            </p>
+            <NavLink to="/sales">
+              <button onClick={this.removeAccessory.bind(this, accessory.AccessoryID)}>Remove Accessory</button>
+            </NavLink>
+          </List.Item>
+        ))}
         <NavLink to="/sales">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
@@ -123,14 +134,26 @@ class RentalEdit extends Component {
     );
   }
 
-  mounted() {}
+  mounted() {
+    rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
+      this.rentedBicycles = bicycles;
+      console.log(this.rentedBicycles);
+    });
+    rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
+      this.rentedAccessories = accessories;
+      console.log(this.rentedAccessories);
+    });
+  }
 
-  GetRentedBicycles() {
-    rentalService.getRentedStuff(this.props.match.params.id, stuff => {
-      this.rentedStuff = stuff;
-      console.log(this.rentedStuff);
-      console.log(this.rentedStuff[0]);
-      console.log(this.rentedStuff[0]['BicycleType']);
+  removeBicycle(id) {
+    rentalService.removeBicycle(id, this.props.match.params.id, () => {
+      history.push('/sales');
+    });
+  }
+
+  removeAccessory(id) {
+    rentalService.removeAccessory(id, this.props.match.params.id, () => {
+      history.push('/sales');
     });
   }
 
@@ -184,7 +207,7 @@ class CustomerList extends Component {
       <div>
         <p>Click the customers to edit or delete them</p>
         <h3>Search by category</h3>
-        <div id="CustromerSearch">
+        <div id="CustomerSearch">
           <input id="CustomerSearchField" type="text" />
           <select id="CustomerSearchCategory">
             <option>FirstName</option>
@@ -215,14 +238,10 @@ class CustomerList extends Component {
   }
 
   mounted() {
-    console.log('Searching...');
     this.searchCategory = '' + document.getElementById('CustomerSearchCategory').value;
     this.searchValue = '%' + document.getElementById('CustomerSearchField').value + '%';
-    console.log('category: ' + this.searchCategory + ' value: ' + this.searchValue);
     customerService.searchCustomers(this.searchCategory, this.searchValue, customers => {
       this.customers = customers;
-      console.log('Search complete');
-      console.log(this.customers);
     });
   }
 }
@@ -772,6 +791,7 @@ class RepairDetails extends Component {
   BicycleStatus = '';
   HomeLocation = '';
   CurrentLocation = '';
+  BicycleStatuses = [];
 
   render() {
     return (
@@ -792,14 +812,23 @@ class RepairDetails extends Component {
             {this.Wheelsize} <input type="checkbox" value={this.Wheelsize} />
           </List.Item>
           Bicycle Status:
-          <List.Item>{this.BicycleStatus}</List.Item>
+          <List.Item>
+            Current status: {this.BicycleStatus}
+            <select id="statusDropdown">
+            {this.BicycleStatuses.map(status => (
+              <option value={status.BicycleStatus}>
+                {status.BicycleStatus}
+              </option>
+            ))}
+            </select>
+          </List.Item>
         </List>
         <br />
         <input type="textarea" placeholder="Add additional comments" />
         <br />
         <br />
         <NavLink to="/bicycles">
-          <Button.Success onClick={this.save} onClick={this.orderRepair()}>
+          <Button.Success onClick={this.save} onClick={this.orderRepair}>
             Order Repair
           </Button.Success>
         </NavLink>
@@ -820,6 +849,10 @@ class RepairDetails extends Component {
       this.HomeLocation = bicycle.HomeLocation;
       this.CurrentLocation = bicycle.CurrentLocation;
     });
+    bicycleService.getBicycleStatuses(statuses => {
+      this.BicycleStatuses = statuses;
+    });
+    console.log(document.getElementById("statusDropdown").value);
   }
 
   orderRepair() {

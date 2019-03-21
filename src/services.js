@@ -3,7 +3,7 @@ import { connection } from './mysql_connection';
 class RentalService {
   getRentals(success) {
     connection.query(
-      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) GROUP BY Rentals.RentalID;',
+      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals',
       (error, results) => {
         if (error) return console.error(error);
 
@@ -24,9 +24,9 @@ class RentalService {
     );
   }
 
-  getRentedStuff(id, success) {
+  getRentedBicycles(id, success) {
     connection.query(
-      'SELECT RentedBicycles.BicycleID, Bicycles.BicycleType, Bicycles.DailyPrice FROM RentedBicycles INNER JOIN Bicycles ON RentedBicycles.BicycleID = Bicycles.BicycleID WHERE RentalID = 1;',
+      'SELECT RentedBicycles.BicycleID, Bicycles.BicycleType, Bicycles.DailyPrice FROM RentedBicycles INNER JOIN Bicycles ON RentedBicycles.BicycleID = Bicycles.BicycleID WHERE RentalID = ?;',
       [id],
       (error, results) => {
         if (error) return console.error(error);
@@ -36,8 +36,39 @@ class RentalService {
     );
   }
 
+  getRentedAccessories(id, success) {
+    connection.query(
+      'SELECT RentedAccessories.AccessoryID, Accessories.Type, Accessories.DailyPrice FROM RentedAccessories INNER JOIN Accessories ON RentedAccessories.AccessoryID = Accessories.AccessoryID WHERE RentalID = ?;',
+      [id],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
+  }
+
+  removeBicycle(bicycleID, rentalID) {
+    connection.query('delete from RentedBicycles where BicycleID = ? and RentalID = ?', [bicycleID, rentalID]),
+    (error, results) => {
+      if (error) return console.error(error);
+
+      success();
+    };
+  }
+
+  removeAccessory(accessoryID, rentalID) {
+    connection.query('delete from RentedAccessories where AccessoryID = ? and RentalID = ?', [accessoryID, rentalID]),
+    (error, results) => {
+      if (error) return console.error(error);
+
+      success();
+    };
+  }
+
   updateRental(id, name, email, success) {
-    connection.query('update Rentals set name=?, email=? where id=?', [name, email, id], (error, results) => {
+    connection.query('update Rentals set name=?, email=? where id= ?', [name, email, id],
+    (error, results) => {
       if (error) return console.error(error);
 
       success();
@@ -192,11 +223,19 @@ class BicycleService {
     });
   }
 
-  getBicycle(BicycleID, success) {
-    connection.query('select * from Bicycles where BicycleID=?', [BicycleID], (error, results) => {
+  getBicycle(bicycleID, success) {
+    connection.query('select * from Bicycles where BicycleID = ?', [bicycleID], (error, results) => {
       if (error) return console.error(error);
 
       success(results[0]);
+    });
+  }
+
+  getBicycleStatuses(success) {
+    connection.query('select * from BicycleStatus', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
     });
   }
 

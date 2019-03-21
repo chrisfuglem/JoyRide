@@ -1,16 +1,11 @@
 #CustomerSearch {
-  height: 100px;
-  width: 100%;
-  background-color: green;
+  height: 50px;
 }
 
 #CustomerSearchCategory, #CustomerSearchField, #CustomerSearchButton, option {
-  height: 100%;
-  width: 10%;
-  border: 2px solid black;
-  margin: 10px;
+
 }
 
 #CustomerSearchCategory, #CustomerSearchField, #CustomerSearchButton, option:focus {
-  outline: 0;
+
 }
