@@ -358,6 +358,15 @@ class AccessoryService {
     });
   }
 
+  //Selects a specific accessory from the database.
+  getAccessoryType(success) {
+    connection.query('select * from AccessoryTypes', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
   //Updates an accessory with all variables.
   updateAccessory(AccessoryID, Type, DailyPrice, success) {
     connection.query(
@@ -371,9 +380,22 @@ class AccessoryService {
     );
   }
 
-  //Adds new accessory to the databse with all variables.
-  insertAccessory(Type, DailyPrice, success) {
-    connection.query('insert into Accessories (Type, DailyPrice) values (?, ?)', [Type, DailyPrice]),
+  //Adds new accessory type to the databse.
+  insertAccessoryType(AccessoryType, success) {
+    connection.query('insert into AccessoryTypes (AccessoryType) values (?)', [AccessoryType]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+
+  //Adds new accessory price to the databse .
+  insertAccessoryPrice(Type, DailyPrice, success) {
+    connection.query(
+      'insert into Accessories (Type, DailyPrice) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?)',
+      [Type, DailyPrice]
+    ),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -404,11 +426,15 @@ class TransportService {
 
   //Selects all locations except the one already chosen for transport. (Doesnt work yet)
   getLocationsRemove(LocationID, success) {
-    connection.query('select * from Locations inner join Bicycles on Bicycles.CurrentLocation = Locations.LocationID where CurrentLocation<>?', [LocationID], (error, results) => {
-      if (error) return console.error(error);
+    connection.query(
+      'select * from Locations inner join Bicycles on Bicycles.CurrentLocation = Locations.LocationID where CurrentLocation<>?',
+      [LocationID],
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success(results);
-    });
+        success(results);
+      }
+    );
   }
 
   //Selects a specific location.

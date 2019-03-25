@@ -449,7 +449,7 @@ class BicycleList extends Component {
               <NavLink to={'/bicycles/' + bicycle.BicycleID + '/edit'}>
                 Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
                 Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.HomeLocation}{' '}
-                | Daily Price: {bicycle.DailyPrice} | Current Location: {bicycle.CurrentLocation}
+                | Daily Price: {bicycle.DailyPrice}kr per day | Current Location: {bicycle.CurrentLocation}
               </NavLink>
             </List.Item>
           ))}
@@ -604,7 +604,7 @@ class AccessoryList extends Component {
           {this.accessories.map(accessory => (
             <List.Item key={accessory.AccessoryID}>
               <NavLink to={'/accessories/' + accessory.AccessoryID + '/edit'}>
-                {accessory.Type} {accessory.DailyPrice}
+                {accessory.Type} | Price: {accessory.DailyPrice}kr per day
               </NavLink>
             </List.Item>
           ))}
@@ -668,16 +668,14 @@ class AccessoryEdit extends Component {
   }
 }
 
-class AccessoryInsert extends Component {
+class AccessoryTypeInsert extends Component {
   render() {
     return (
       <Card title="Adding Accessory">
         <Form.Label>Accessory Type</Form.Label>
         <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
-        <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
         <br />
-        <NavLink to="/accessories">
+        <NavLink to="/accessories/insert/price">
           <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
         </NavLink>
       </Card>
@@ -685,7 +683,41 @@ class AccessoryInsert extends Component {
   }
 
   insert() {
-    accessoryService.insertAccessory(this.type, this.dailyprice, () => {
+    accessoryService.insertAccessoryType(this.type, () => {
+      history.push('/accessories/insert/price');
+    });
+  }
+}
+
+class AccessoryPriceInsert extends Component {
+  accessories = [];
+
+  render() {
+    return (
+      <Card title="Setting Accessory Price">
+        <List>
+          {this.accessories.map(accessory => (
+            <List.Item key={accessory.AccessoryType}>{accessory.AccessoryType}</List.Item>
+          ))}
+        </List>
+        <Form.Label>Daily Price</Form.Label>
+        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <br />
+        <NavLink to="/accessories">
+          <Button.Success onClick={this.insert}>Set Accessory Price</Button.Success>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    accessoryService.getAccessoryType(accessories => {
+      this.accessories = accessories;
+    });
+  }
+
+  insert() {
+    accessoryService.insertAccessoryPrice(this.type, this.dailyprice, () => {
       history.push('/accessories');
     });
   }
@@ -811,11 +843,6 @@ class RepairDetails extends Component {
   CurrentLocation = '';
   BicycleStatuses = [];
 
-  constructor(props) {
-    super(props);
-    this.statusDropdown = React.createRef();
-  }
-
   render() {
     return (
       <Card>
@@ -837,18 +864,14 @@ class RepairDetails extends Component {
           Bicycle Status:
           <List.Item>
             Current status: {this.BicycleStatus}
-            <select ref={this.statusDropdown}>
-            {this.BicycleStatuses.map(status => (
-              <option value={status.BicycleStatus}>
-                {status.BicycleStatus}
-              </option>
-            ))}
+            <select id="statusDropdown">
+              {this.BicycleStatuses.map(status => (
+                <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
+              ))}
             </select>
           </List.Item>
         </List>
-        <p>IKKE FERDIG</p>
-        <p>Denne knappen oppdater lista til den nåværende statusen</p>
-        <button onClick={this.update}>Update</button>
+        <br />
         <input type="textarea" placeholder="Add additional comments" />
         <br />
         <br />
@@ -877,17 +900,7 @@ class RepairDetails extends Component {
     bicycleService.getBicycleStatuses(statuses => {
       this.BicycleStatuses = statuses;
     });
-  }
-
-  update() {
-    console.log("update");
-    let currentStatus = this.BicycleStatus; // Nødvendig siden this.BicyleStatus ikke funker inne i if-setningen
-    for (let i = 0; i < this.BicycleStatuses.length; i++) {
-      if (this.BicycleStatuses[i].BicycleStatus == currentStatus) {
-        this.statusDropdown.current.selectedIndex = i;
-      }
-    }
-    console.log(this.statusDropdown.current.value);
+    console.log(document.getElementById('statusDropdown').value);
   }
 
   orderRepair() {
@@ -924,7 +937,8 @@ ReactDOM.render(
       <Route path="/customers/insert" component={CustomerInsert} />
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
-      <Route path="/accessories/insert" component={AccessoryInsert} />
+      <Route exact path="/accessories/insert" component={AccessoryTypeInsert} />
+      <Route exact path="/accessories/insert/price" component={AccessoryPriceInsert} />
       <Route path="/repair/:id/edit" component={RepairDetails} />
     </div>
   </HashRouter>,
