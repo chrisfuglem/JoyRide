@@ -811,6 +811,11 @@ class RepairDetails extends Component {
   CurrentLocation = '';
   BicycleStatuses = [];
 
+  constructor(props) {
+    super(props);
+    this.statusDropdown = React.createRef();
+  }
+
   render() {
     return (
       <Card>
@@ -832,14 +837,18 @@ class RepairDetails extends Component {
           Bicycle Status:
           <List.Item>
             Current status: {this.BicycleStatus}
-            <select id="statusDropdown">
-              {this.BicycleStatuses.map(status => (
-                <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
-              ))}
+            <select ref={this.statusDropdown}>
+            {this.BicycleStatuses.map(status => (
+              <option value={status.BicycleStatus}>
+                {status.BicycleStatus}
+              </option>
+            ))}
             </select>
           </List.Item>
         </List>
-        <br />
+        <p>IKKE FERDIG</p>
+        <p>Denne knappen oppdater lista til den nåværende statusen</p>
+        <button onClick={this.update}>Update</button>
         <input type="textarea" placeholder="Add additional comments" />
         <br />
         <br />
@@ -868,7 +877,17 @@ class RepairDetails extends Component {
     bicycleService.getBicycleStatuses(statuses => {
       this.BicycleStatuses = statuses;
     });
-    console.log(document.getElementById('statusDropdown').value);
+  }
+
+  update() {
+    console.log("update");
+    let currentStatus = this.BicycleStatus; // Nødvendig siden this.BicyleStatus ikke funker inne i if-setningen
+    for (let i = 0; i < this.BicycleStatuses.length; i++) {
+      if (this.BicycleStatuses[i].BicycleStatus == currentStatus) {
+        this.statusDropdown.current.selectedIndex = i;
+      }
+    }
+    console.log(this.statusDropdown.current.value);
   }
 
   orderRepair() {
