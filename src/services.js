@@ -403,10 +403,11 @@ class TransportService {
 
   //Selects all locations except the one already chosen for transport. (Doesnt work yet)
   getLocationsRemove(LocationID, success) {
-    connection.query('select * from Locations inner join Bicycles on Bicycles.CurrentLocation = Locations.LocationID where CurrentLocation<>?', [LocationID], (error, results) => {
+    connection.query('select distinct LocationName from Locations inner join Bicycles on Bicycles.CurrentLocation = Locations.LocationID where CurrentLocation<>?', [LocationID], (error, results) => {
       if (error) return console.error(error);
 
       success(results);
+      console.log(results);
     });
   }
 
@@ -428,12 +429,22 @@ class TransportService {
         if (error) return console.error(error);
 
         success(results);
+        console.log(results);
       }
     );
   }
 }
 
 class RepairService {
+
+  getBicycles(success) {
+    connection.query('select * from Bicycles where BicycleStatus = "Need Repair"', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
   //Updates bicyclestatus.
   updateStatus(BicycleID, BicycleStatus) {
     connection.query(
