@@ -1,6 +1,7 @@
 import { connection } from './mysql_connection';
 
 class RentalService {
+  //Selects ID,sum date, start and end from rentals in the database, and counts the number of bikes and accessories in the booking.
   getRentals(success) {
     connection.query(
       'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals',
@@ -12,6 +13,7 @@ class RentalService {
     );
   }
 
+  //Selects a specific rental booking and extracts rental and customer information from the database.
   getRental(id, success) {
     connection.query(
       'SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
@@ -24,6 +26,7 @@ class RentalService {
     );
   }
 
+  //Selects the rented bicycles on a specific order from the database.
   getRentedBicycles(id, success) {
     connection.query(
       'SELECT RentedBicycles.BicycleID, Bicycles.BicycleType, Bicycles.DailyPrice FROM RentedBicycles INNER JOIN Bicycles ON RentedBicycles.BicycleID = Bicycles.BicycleID WHERE RentalID = ?;',
@@ -36,6 +39,7 @@ class RentalService {
     );
   }
 
+  //Selects the rented accessories on a specific order from the database.
   getRentedAccessories(id, success) {
     connection.query(
       'SELECT RentedAccessories.AccessoryID, Accessories.Type, Accessories.DailyPrice FROM RentedAccessories INNER JOIN Accessories ON RentedAccessories.AccessoryID = Accessories.AccessoryID WHERE RentalID = ?;',
@@ -48,6 +52,7 @@ class RentalService {
     );
   }
 
+  //Removes a bicycle from an order.
   removeBicycle(bicycleID, rentalID) {
     connection.query('delete from RentedBicycles where BicycleID = ? and RentalID = ?', [bicycleID, rentalID]),
       (error, results) => {
@@ -57,6 +62,7 @@ class RentalService {
       };
   }
 
+  //Removes an accessory from an order.
   removeAccessory(accessoryID, rentalID) {
     connection.query('delete from RentedAccessories where AccessoryID = ? and RentalID = ?', [accessoryID, rentalID]),
       (error, results) => {
@@ -66,6 +72,7 @@ class RentalService {
       };
   }
 
+  //Updates an order with name and email.
   updateRental(id, name, email, success) {
     connection.query('update Rentals set name=?, email=? where id= ?', [name, email, id], (error, results) => {
       if (error) return console.error(error);
@@ -74,6 +81,7 @@ class RentalService {
     });
   }
 
+  //Adds an order with name, email, rent start and rent end.
   insertRental(name, email, success) {
     connection.query('insert into Rentals (name, email, RentStart, RentEnd) values (?, ?)', [
       name,
@@ -88,6 +96,7 @@ class RentalService {
       };
   }
 
+  //Deletes an order.
   deleteRental(id) {
     connection.query('delete from Rentals where id=?', [id]),
       (error, results) => {
@@ -99,6 +108,7 @@ class RentalService {
 }
 
 class CustomerService {
+  //Selects all the customers from the database.
   getCustomers(success) {
     connection.query('select * from Customers', (error, results) => {
       if (error) return console.error(error);
@@ -107,6 +117,7 @@ class CustomerService {
     });
   }
 
+  //Selects all the information about a specific customer.
   getCustomer(id, success) {
     connection.query('select * from Customers where CustomerID=?', [id], (error, results) => {
       if (error) return console.error(error);
@@ -115,6 +126,7 @@ class CustomerService {
     });
   }
 
+  //Search function for customers.
   searchCustomers(category, value, success) {
     let query = 'SELECT * FROM Customers WHERE ' + category + ' LIKE ' + "'" + value + "'";
     connection.query(
@@ -128,6 +140,7 @@ class CustomerService {
     );
   }
 
+  //Updates customers with firstname, surname, email, phone and address.
   updateCustomer(CustomerID, FirstName, SurName, Email, Phone, Address, success) {
     connection.query(
       'update Customers set FirstName=?, SurName=?, Email=?, Phone=?, Address=? where CustomerID=?',
@@ -140,6 +153,7 @@ class CustomerService {
     );
   }
 
+  //Adds new customer with firstname, surname, phone and address.
   insertCustomer(FirstName, SurName, Email, Phone, Address, success) {
     connection.query('insert into Customers (FirstName, SurName, Email, Phone, Address) values (?, ?, ?, ?, ?)', [
       FirstName,
@@ -155,6 +169,7 @@ class CustomerService {
       };
   }
 
+  //Deletes an customer from the database.
   deleteCustomer(CustomerID) {
     connection.query('delete from Customers where CustomerID=?', [CustomerID]),
       (error, results) => {
@@ -166,6 +181,7 @@ class CustomerService {
 }
 
 class EmployeeService {
+  //Selects all the employees from the database.
   getEmployees(success) {
     connection.query('select * from Employees', (error, results) => {
       if (error) return console.error(error);
@@ -174,6 +190,7 @@ class EmployeeService {
     });
   }
 
+  //Selects a specific employee.
   getEmployee(EmployeeID, success) {
     connection.query('select * from Employees where EmployeeID=?', [EmployeeID], (error, results) => {
       if (error) return console.error(error);
@@ -182,6 +199,7 @@ class EmployeeService {
     });
   }
 
+  //Updates an employee on firstname and surname.
   updateEmployee(EmployeeID, Firstname, Surname, success) {
     connection.query(
       'update Employees set Firstname=?, Surname=? where EmployeeID=?',
@@ -194,6 +212,7 @@ class EmployeeService {
     );
   }
 
+  //Adds new employee with firstname and SurName.
   insertEmployee(Firstname, Surname, success) {
     connection.query('insert into Employees (Firstname, Surname) values (?, ?)', [Firstname, Surname]),
       (error, results) => {
@@ -203,6 +222,7 @@ class EmployeeService {
       };
   }
 
+  //Deletes an employee.
   deleteEmployee(EmployeeID) {
     connection.query('delete from Employees where EmployeeID=?', [EmployeeID]),
       (error, results) => {
@@ -214,6 +234,7 @@ class EmployeeService {
 }
 
 class BicycleService {
+  //Selects all the bicycles from the database.
   getBicycles(success) {
     connection.query('select * from Bicycles', (error, results) => {
       if (error) return console.error(error);
@@ -222,6 +243,7 @@ class BicycleService {
     });
   }
 
+  //Selects a specific bicycle.
   getBicycle(bicycleID, success) {
     connection.query('select * from Bicycles where BicycleID = ?', [bicycleID], (error, results) => {
       if (error) return console.error(error);
@@ -230,6 +252,7 @@ class BicycleService {
     });
   }
 
+  //Selects the bicyclestatus from the database.
   getBicycleStatuses(success) {
     connection.query('select * from BicycleStatus', (error, results) => {
       if (error) return console.error(error);
@@ -238,6 +261,7 @@ class BicycleService {
     });
   }
 
+  //Updates a bicycle with type, frametype, braketype, wheelsize, status, homelocation, price and current location.
   updateBicycle(
     BicycleID,
     BicycleType,
@@ -271,6 +295,7 @@ class BicycleService {
     );
   }
 
+  //Adds new bicycle with all variables to the database.
   insertBicycle(
     BicycleType,
     FrameType,
@@ -303,6 +328,7 @@ class BicycleService {
       };
   }
 
+  //Deletes a bicycle from the database.
   deleteBicycle(BicycleID) {
     connection.query('delete from Bicycles where BicycleID=?', [BicycleID]),
       (error, results) => {
@@ -314,6 +340,7 @@ class BicycleService {
 }
 
 class AccessoryService {
+  //Selects all the accessories from the database.
   getAccessories(success) {
     connection.query('select * from Accessories', (error, results) => {
       if (error) return console.error(error);
@@ -322,6 +349,7 @@ class AccessoryService {
     });
   }
 
+  //Selects a specific accessory from the database.
   getAccessory(AccessoryID, success) {
     connection.query('select * from Accessories where AccessoryID=?', [AccessoryID], (error, results) => {
       if (error) return console.error(error);
@@ -330,6 +358,7 @@ class AccessoryService {
     });
   }
 
+  //Updates an accessory with all variables.
   updateAccessory(AccessoryID, Type, DailyPrice, success) {
     connection.query(
       'update Accessories inner join AccessoryTypes on Accessories.Type = AccessoryTypes.AccessoryType set AccessoryType=?, DailyPrice=? where Accessories.AccessoryID=?',
@@ -342,6 +371,7 @@ class AccessoryService {
     );
   }
 
+  //Adds new accessory to the databse with all variables.
   insertAccessory(Type, DailyPrice, success) {
     connection.query('insert into Accessories (Type, DailyPrice) values (?, ?)', [Type, DailyPrice]),
       (error, results) => {
@@ -351,6 +381,7 @@ class AccessoryService {
       };
   }
 
+  //Deletes an accessory from the database.
   deleteAccessory(AccessoryID) {
     connection.query('delete from Accessories where AccessoryID=?', [AccessoryID]),
       (error, results) => {
@@ -362,6 +393,7 @@ class AccessoryService {
 }
 
 class TransportService {
+  // Selects all locations from the database.
   getLocations(success) {
     connection.query('select * from Locations', (error, results) => {
       if (error) return console.error(error);
@@ -370,6 +402,7 @@ class TransportService {
     });
   }
 
+  //Selects all locations except the one already chosen for transport. (Doesnt work yet)
   getLocationsRemove(LocationID, success) {
     connection.query('select * from Locations where LocationID!=?', [LocationID], (error, results) => {
       if (error) return console.error(error);
@@ -378,6 +411,7 @@ class TransportService {
     });
   }
 
+  //Selects a specific location.
   getLocation(LocationID, success) {
     connection.query('select * from Locations where LocationID=?', [LocationID], (error, results) => {
       if (error) return console.error(error);
@@ -386,6 +420,7 @@ class TransportService {
     });
   }
 
+  //Selects all bicycles on the selected location.
   getBicycles(LocationID, success) {
     connection.query(
       'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
@@ -400,6 +435,7 @@ class TransportService {
 }
 
 class RepairService {
+  //Updates bicyclestatus.
   updateStatus(BicycleID, BicycleStatus) {
     connection.query(
       "update Bicycles set BicycleStatus = 'In Repair' where BicycleID=?",
