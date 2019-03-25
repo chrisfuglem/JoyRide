@@ -371,7 +371,7 @@ class TransportService {
   }
 
   getLocationsRemove(LocationID, success) {
-    connection.query('select * from Locations where LocationID!=?', [LocationID], (error, results) => {
+    connection.query('select * from Locations inner join Bicycles on Bicycles.CurrentLocation = Locations.LocationID where CurrentLocation<>?', [LocationID], (error, results) => {
       if (error) return console.error(error);
 
       success(results);
