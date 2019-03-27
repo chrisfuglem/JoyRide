@@ -45,6 +45,7 @@ class Sales extends Component {
         <NavBar.Link to="customers">Customers</NavBar.Link>
         <NavBar.Link to="employees">Employees</NavBar.Link>
         <NavBar.Link to="bicycles">Bicycles</NavBar.Link>
+        <NavBar.Link to="count">Rental Count</NavBar.Link>
       </NavBar>
     )
   }
@@ -972,6 +973,30 @@ class RepairDetails extends Component {
   }
 }
 
+class RentalCountList extends Component {
+  Counts = [];
+
+  render() {
+    return (
+      <Card title="Rental Count for Customers">
+        <List>
+          {this.Counts.map(count => (
+            <List.Item key={count.FirstName}>
+              Name: {count.FirstName} {count.SurName} Rental Count: {count.Orders}
+            </List.Item>
+          ))}
+        </List>
+        <NavLink to="/repair/summary" />
+      </Card>
+    );
+  }
+  mounted() {
+    rentalService.showCount(count => {
+      this.Counts = count;
+    })
+  }
+}
+
 ReactDOM.render(
   <HashRouter>
     <div>
@@ -999,6 +1024,7 @@ ReactDOM.render(
       <Route path="/bicycles/insert" component={BicycleInsert} />
       <Route exact path="/accessories/insert" component={AccessoryTypeInsert} />
       <Route path="/repair/:id/edit" component={RepairDetails} />
+      <Route path="/count" component={RentalCountList} />
     </div>
   </HashRouter>,
   document.getElementById('root')
