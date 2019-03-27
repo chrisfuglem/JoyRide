@@ -105,6 +105,14 @@ class RentalService {
         success();
       };
   }
+
+  showCount(success) {
+    connection.query('select * from Rental_Count', (error,results) => {
+      if(error) return console.error(error);
+
+      success(results);
+    });
+  }
 }
 
 class CustomerService {
