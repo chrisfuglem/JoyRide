@@ -238,6 +238,19 @@ class EmployeeService {
         success();
       };
   }
+
+  //Search function for employees.
+  searchEmployee(category, value, success) {
+    connection.query(
+      'SELECT * FROM Employees WHERE ' + category + ' LIKE ' + "'" + value + "'",
+      [category, value],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
+  }
 }
 
 class BicycleService {
@@ -442,11 +455,8 @@ class TransportService {
 
   //Selects all locations except the one already chosen for transport. (Doesnt work yet)
   getLocationsRemove(LocationID, success) {
-    connection.query(
-      'select distinct LocationName from Locations inner join Bicycles on Bicycles.CurrentLocation = Locations.LocationID where CurrentLocation<>?',
-      [LocationID],
-      (error, results) => {
-        if (error) return console.error(error);
+    connection.query('select * from Locations where LocationID <> ?;', [LocationID], (error, results) => {
+      if (error) return console.error(error);
 
         success(results);
         console.log(results);

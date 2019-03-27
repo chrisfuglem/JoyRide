@@ -39,7 +39,7 @@ class Home extends Component {
 
 class Sales extends Component {
   render() {
-    return(
+    return (
       <NavBar brand="Sales">
         <NavBar.Link to="rentals">Rentals</NavBar.Link>
         <NavBar.Link to="customers">Customers</NavBar.Link>
@@ -47,7 +47,7 @@ class Sales extends Component {
         <NavBar.Link to="bicycles">Bicycles</NavBar.Link>
         <NavBar.Link to="count">Rental Count</NavBar.Link>
       </NavBar>
-    )
+    );
   }
 }
 
@@ -229,12 +229,18 @@ class RentalInsert extends Component {
           <h3>Bicycles</h3>
           <select ref={this.bicycleDropdown}>
             {this.bicycles.map(bicycle => (
-              <option key={bicycle.BicycleID}>
+              <option key={bicycle.BicycleID} value={bicycle.BicycleID}>
                 {bicycle.BicycleType} {bicycle.BicycleID}
               </option>
             ))}
           </select>
           <button onClick={this.addBicycle}>Add Bicycle</button>
+          {this.rentedBicycles.map(bicycle => (
+            <List.Item key={bicycle[0]}>
+              Bicycle id # {bicycle[0]}
+              <button onClick={this.removeBicycle.bind(this, bicycle[0])}>Remove Bicycle</button>
+            </List.Item>
+          ))}
         </div>
         <div>
           <h3>Accessories</h3>
@@ -271,6 +277,15 @@ class RentalInsert extends Component {
 
   addBicycle() {
     this.rentedBicycles.push(this.bicycleDropdown.current.value);
+    console.log(this.rentedBicycles);
+  }
+
+  removeBicycle(id) {
+    for (let x = 0; x < this.rentedBicycles.length; x++) {
+      if (this.rentedBicycles[x] = id) {
+        this.rentedBicycles.splice(x, 1); //Sletter sykkelen som har matchende id
+      }
+    }
     console.log(this.rentedBicycles);
   }
 
@@ -424,6 +439,50 @@ class CustomerInsert extends Component {
 }
 
 class EmployeeList extends Component {
+  // employees = '';
+  // searchCategory = '';
+  // searchValue = '';
+  //
+  // render() {
+  //   return (
+  //     <div>
+  //       <p>Click the employees to edit or delete them</p>
+  //       <h3>Search by category</h3>
+  //       <div id="EmployeeSearch">
+  //         <input id="EmployeeSearchField" type="text" />
+  //         <select id="EmployeeSearchCategory">
+  //           <option>Firstname</option>
+  //           <option>Surname</option>
+  //         </select>
+  //         <button id="EmployeeSearchButton" onClick={this.mounted}>
+  //           Search
+  //         </button>
+  //       </div>
+  //       <List>
+  //         {this.employees.map(employee => (
+  //           <List.Item key={employee.EmployeeID}>
+  //             <NavLink to={'/employees/' + employee.EmployeeID + '/edit'}>
+  //               {employee.Firstname} {employee.Surname}
+  //             </NavLink>
+  //           </List.Item>
+  //         ))}
+  //       </List>
+  //       <br />
+  //       <NavLink to="/employees/insert/">
+  //         <Button.Light>Add New Employee</Button.Light>
+  //       </NavLink>
+  //     </div>
+  //   );
+  // }
+  //
+  // mounted() {
+  //   this.searchCategory = '' + document.getElementById('EmployeeSearchCategory').value;
+  //   this.searchValue = '%' + document.getElementById('EmployeeSearchField').value + '%';
+  //   employeeService.searchEmployee(this.searchCategory, this.searchValue, employees => {
+  //     this.employees = employees;
+  //   });
+  // }
+
   employees = [];
 
   render() {
@@ -824,12 +883,13 @@ class TransportBooking extends Component {
           ))}
         </List>
         <br />
-        <NavLink to={'/transport/' + location.CurrentLocation + '/booking/order'}>
+        <NavLink to={'/transport/' + this.props.match.params.id + '/booking/order'}>
           <Button.Light>Choose Delivery Location</Button.Light>
         </NavLink>
       </Card>
     );
   }
+
   mounted() {
     transportService.getBicycles(this.props.match.params.id, bicycles => {
       this.bicycles = bicycles;
