@@ -201,12 +201,10 @@ class RentalInsert extends Component {
           </button>
         </div>
         <Form.Label>Select Customer:</Form.Label>
-        <br></br>
+        <br />
         <select>
           {this.customers.map(customer => (
-            <option key={customer.CustomerID}>
-                {customer[this.searchCategory]}
-            </option>
+            <option key={customer.CustomerID}>{customer[this.searchCategory]}</option>
           ))}
         </select>
         <br />
@@ -220,7 +218,7 @@ class RentalInsert extends Component {
           <select ref={this.bicycleDropdown}>
             {this.bicycles.map(bicycle => (
               <option key={bicycle.BicycleID}>
-                  {bicycle.BicycleType} {bicycle.BicycleID}
+                {bicycle.BicycleType} {bicycle.BicycleID}
               </option>
             ))}
           </select>
@@ -231,7 +229,7 @@ class RentalInsert extends Component {
           <select>
             {this.accessories.map(accessory => (
               <option key={accessory.AccessoryID}>
-                  {accessory.Type} {accessory.AccessoryID}
+                {accessory.Type} {accessory.AccessoryID}
               </option>
             ))}
           </select>
@@ -749,31 +747,35 @@ class AccessoryTypeInsert extends Component {
         <Form.Label>Accessory Type</Form.Label>
         <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
         <br />
-        <NavLink to="/accessories/insert/price">
-          <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
-        </NavLink>
+        <Form.Label>Daily Price</Form.Label>
+        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <br />
+        <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
       </Card>
     );
   }
 
+  // insert() {
+  //   accessoryService.insertAccessoryType(this.type, () => {
+  //     history.push('/accessories/');
+  //   });
+  //   accessoryService.insertAccessoryPrice(this.dailyprice, () => {
+  //     history.push('/accessories/');
+  //   });
+  // }
+
   insert() {
     accessoryService.insertAccessoryType(this.type, () => {
-      history.push('/accessories/insert/price');
+      history.push('/accessories/insert/' + this.type + '/price/');
     });
   }
 }
 
 class AccessoryPriceInsert extends Component {
-  accessories = [];
-
   render() {
     return (
       <Card title="Setting Accessory Price">
-        <List>
-          {this.accessories.map(accessory => (
-            <List.Item key={accessory.AccessoryType}>{accessory.AccessoryType}</List.Item>
-          ))}
-        </List>
+        {this.props.match.params.type} <br />
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
         <br />
@@ -784,14 +786,8 @@ class AccessoryPriceInsert extends Component {
     );
   }
 
-  mounted() {
-    accessoryService.getAccessoryType(accessories => {
-      this.accessories = accessories;
-    });
-  }
-
   insert() {
-    accessoryService.insertAccessoryPrice(this.type, this.dailyprice, () => {
+    accessoryService.insertAccessoryPrice(this.props.match.params.type, this.dailyprice, () => {
       history.push('/accessories');
     });
   }
@@ -1012,7 +1008,7 @@ ReactDOM.render(
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
       <Route exact path="/accessories/insert" component={AccessoryTypeInsert} />
-      <Route exact path="/accessories/insert/price" component={AccessoryPriceInsert} />
+      <Route exact path="/accessories/insert/:type/price" component={AccessoryPriceInsert} />
       <Route path="/repair/:id/edit" component={RepairDetails} />
     </div>
   </HashRouter>,

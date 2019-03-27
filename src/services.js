@@ -381,12 +381,11 @@ class AccessoryService {
 
   //Adds new accessory type to the databse.
   insertAccessoryType(AccessoryType, success) {
-    connection.query('insert into AccessoryTypes (AccessoryType) values (?)', [AccessoryType]),
-      (error, results) => {
-        if (error) return console.error(error);
+    connection.query('insert into AccessoryTypes (AccessoryType) values (?)', [AccessoryType], (error, results) => {
+      if (error) return console.error(error);
 
-        success();
-      };
+      success();
+    });
   }
 
   //Adds new accessory price to the databse .
