@@ -20,10 +20,8 @@ class Menu extends Component {
   render() {
     return (
       <NavBar brand="Joyride">
-        <NavBar.Link to="/sales">Rentals</NavBar.Link>
+        <NavBar.Link to="/sales">Sales</NavBar.Link>
         <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
-        <NavBar.Link to="/customers">Customers</NavBar.Link>
-        <NavBar.Link to="/employees">Employees</NavBar.Link>
       </NavBar>
     );
   }
@@ -39,13 +37,26 @@ class Home extends Component {
   }
 }
 
+class Sales extends Component {
+  render() {
+    return (
+      <NavBar brand="Sales">
+        <NavBar.Link to="rentals">Rentals</NavBar.Link>
+        <NavBar.Link to="customers">Customers</NavBar.Link>
+        <NavBar.Link to="employees">Employees</NavBar.Link>
+        <NavBar.Link to="bicycles">Bicycles</NavBar.Link>
+      </NavBar>
+    );
+  }
+}
+
 class Warehouse extends Component {
   render() {
     return (
       <NavBar brand="Warehouse">
         <NavBar.Link to="/bicycles">Bicycles</NavBar.Link>
         <NavBar.Link to="/accessories">Accessories</NavBar.Link>
-        <NavBar.Link to="/sales">Rentals</NavBar.Link>
+        <NavBar.Link to="/rentals">Rentals</NavBar.Link>
         <NavBar.Link to="/repair">Order Repair</NavBar.Link>
         <NavBar.Link to="/transport">Order Transport</NavBar.Link>
       </NavBar>
@@ -59,14 +70,14 @@ class RentalList extends Component {
   render() {
     return (
       <Card title="Rental List">
-        <NavLink to="/sales/insert">
+        <NavLink to="/rentals/insert">
           <Button.Light>Add New Rental</Button.Light>
         </NavLink>
         <p>Click the rentals to edit or delete them</p>
         <List>
           {this.rentals.map(rental => (
             <List.Item key={rental.ID}>
-              <NavLink to={'/sales/' + rental.ID + '/edit'}>
+              <NavLink to={'/rentals/' + rental.ID + '/edit'}>
                 Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
               </NavLink>
               <br />
@@ -106,7 +117,7 @@ class RentalEdit extends Component {
             <p>
               {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
             </p>
-            <NavLink to="/sales">
+            <NavLink to="/rentals">
               <button onClick={this.removeBicycle.bind(this, bicycle.BicycleID)}>Remove Bicycle</button>
             </NavLink>
           </List.Item>
@@ -117,17 +128,17 @@ class RentalEdit extends Component {
             <p>
               {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
             </p>
-            <NavLink to="/sales">
+            <NavLink to="/rentals">
               <button onClick={this.removeAccessory.bind(this, accessory.AccessoryID)}>Remove Accessory</button>
             </NavLink>
           </List.Item>
         ))}
-        <NavLink to="/sales">
+        <NavLink to="/rentals">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/sales">
+        <NavLink to="/rentals">
           <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
         </NavLink>
       </Card>
@@ -147,25 +158,25 @@ class RentalEdit extends Component {
 
   removeBicycle(id) {
     rentalService.removeBicycle(id, this.props.match.params.id, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 
   removeAccessory(id) {
     rentalService.removeAccessory(id, this.props.match.params.id, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 
   save() {
     rentalService.updateRental(this.props.match.params.id, this.name, this.email, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 
   delete() {
     rentalService.deleteRental(this.props.match.params.id, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 }
@@ -242,7 +253,7 @@ class RentalInsert extends Component {
           <button>Add Accessory</button>
         </div>
         <br />
-        <NavLink to="/sales">
+        <NavLink to="/rentals">
           <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
         </NavLink>
       </Card>
@@ -279,7 +290,7 @@ class RentalInsert extends Component {
 
   insert() {
     rentalService.insertRental(this.name, this.email, this.RentEnd, this.RentEnd, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 }
@@ -427,6 +438,50 @@ class CustomerInsert extends Component {
 }
 
 class EmployeeList extends Component {
+  // employees = '';
+  // searchCategory = '';
+  // searchValue = '';
+  //
+  // render() {
+  //   return (
+  //     <div>
+  //       <p>Click the employees to edit or delete them</p>
+  //       <h3>Search by category</h3>
+  //       <div id="EmployeeSearch">
+  //         <input id="EmployeeSearchField" type="text" />
+  //         <select id="EmployeeSearchCategory">
+  //           <option>Firstname</option>
+  //           <option>Surname</option>
+  //         </select>
+  //         <button id="EmployeeSearchButton" onClick={this.mounted}>
+  //           Search
+  //         </button>
+  //       </div>
+  //       <List>
+  //         {this.employees.map(employee => (
+  //           <List.Item key={employee.EmployeeID}>
+  //             <NavLink to={'/employees/' + employee.EmployeeID + '/edit'}>
+  //               {employee.Firstname} {employee.Surname}
+  //             </NavLink>
+  //           </List.Item>
+  //         ))}
+  //       </List>
+  //       <br />
+  //       <NavLink to="/employees/insert/">
+  //         <Button.Light>Add New Employee</Button.Light>
+  //       </NavLink>
+  //     </div>
+  //   );
+  // }
+  //
+  // mounted() {
+  //   this.searchCategory = '' + document.getElementById('EmployeeSearchCategory').value;
+  //   this.searchValue = '%' + document.getElementById('EmployeeSearchField').value + '%';
+  //   employeeService.searchEmployee(this.searchCategory, this.searchValue, employees => {
+  //     this.employees = employees;
+  //   });
+  // }
+
   employees = [];
 
   render() {
@@ -718,8 +773,9 @@ class AccessoryEdit extends Component {
   render() {
     return (
       <Card title="Editing Accessory">
-        <Form.Label>Accessory Type</Form.Label>
-        <Form.Input type="text" value={this.Type} onChange={e => (this.Type = e.target.value)} />
+        <List.Item>
+          <p>{this.Type}</p>
+        </List.Item>
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <br />
@@ -743,7 +799,7 @@ class AccessoryEdit extends Component {
   }
 
   save() {
-    accessoryService.updateAccessory(this.props.match.params.id, this.Type, this.DailyPrice, () => {
+    accessoryService.updateAccessory(this.props.match.params.id, this.DailyPrice, () => {
       history.push('/accessories');
     });
   }
@@ -752,7 +808,12 @@ class AccessoryEdit extends Component {
     accessoryService.deleteAccessory(this.props.match.params.id, () => {
       history.push('/accessories');
     });
+    accessoryService.deleteAccessoryType(this.Type, () => {
+      history.push('/accessories');
+    });
   }
+
+  deleteType() {}
 }
 
 class AccessoryTypeInsert extends Component {
@@ -770,39 +831,11 @@ class AccessoryTypeInsert extends Component {
     );
   }
 
-  // insert() {
-  //   accessoryService.insertAccessoryType(this.type, () => {
-  //     history.push('/accessories/');
-  //   });
-  //   accessoryService.insertAccessoryPrice(this.dailyprice, () => {
-  //     history.push('/accessories/');
-  //   });
-  // }
-
   insert() {
     accessoryService.insertAccessoryType(this.type, () => {
-      history.push('/accessories/insert/' + this.type + '/price/');
+      history.push('/accessories/');
     });
-  }
-}
-
-class AccessoryPriceInsert extends Component {
-  render() {
-    return (
-      <Card title="Setting Accessory Price">
-        {this.props.match.params.type} <br />
-        <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
-        <br />
-        <NavLink to="/accessories">
-          <Button.Success onClick={this.insert}>Set Accessory Price</Button.Success>
-        </NavLink>
-      </Card>
-    );
-  }
-
-  insert() {
-    accessoryService.insertAccessoryPrice(this.props.match.params.type, this.dailyprice, () => {
+    accessoryService.insertAccessoryPrice(this.type, this.dailyprice, () => {
       history.push('/accessories');
     });
   }
@@ -1004,7 +1037,7 @@ ReactDOM.render(
     <div>
       <Menu />
       <Route exact path="/" component={Home} />
-      <Route exact path="/sales" component={RentalList} />
+      <Route exact path="/sales" component={Sales} />
       <Route exact path="/warehouse" component={Warehouse} />
       <Route exact path="/customers" component={CustomerList} />
       <Route exact path="/employees" component={EmployeeList} />
@@ -1014,6 +1047,7 @@ ReactDOM.render(
       <Route exact path="/transport" component={TransportList} />
       <Route exact path="/transport/:id/booking" component={TransportBooking} />
       <Route exact path="/transport/:id/booking/order" component={TransportOrder} />
+      <Route exact path="/rentals" component={RentalList} />
       <Route path="/sales/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
@@ -1024,7 +1058,6 @@ ReactDOM.render(
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
       <Route exact path="/accessories/insert" component={AccessoryTypeInsert} />
-      <Route exact path="/accessories/insert/:type/price" component={AccessoryPriceInsert} />
       <Route path="/repair/:id/edit" component={RepairDetails} />
     </div>
   </HashRouter>,
