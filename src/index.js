@@ -45,6 +45,7 @@ class Sales extends Component {
         <NavBar.Link to="customers">Customers</NavBar.Link>
         <NavBar.Link to="employees">Employees</NavBar.Link>
         <NavBar.Link to="bicycles">Bicycles</NavBar.Link>
+        <NavBar.Link to="count">Rental Count</NavBar.Link>
       </NavBar>
     );
   }
@@ -622,6 +623,9 @@ class BicycleList extends Component {
     return (
       <Card title="Bicycle List">
         <p>Click the bicycles to edit or delete them</p>
+        <NavLink to="/bicycles/insert">
+          <Button.Light>Add New Bicycle</Button.Light>
+        </NavLink>
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
@@ -634,9 +638,6 @@ class BicycleList extends Component {
           ))}
         </List>
         <br />
-        <NavLink to="/bicycles/insert">
-          <Button.Light>Add New Bicycle</Button.Light>
-        </NavLink>
       </Card>
     );
   }
@@ -657,26 +658,73 @@ class BicycleEdit extends Component {
   HomeLocation = '';
   DailyPrice = '';
   CurrentLocation = '';
+  BicycleStatuses = [];
 
   render() {
     return (
       <Card title="Editing bicycle">
-        <Form.Label>Bicycle Type</Form.Label>
-        <Form.Input type="text" value={this.BicycleType} onChange={e => (this.BicycleType = e.target.value)} />
-        <Form.Label>Frame Type</Form.Label>
-        <Form.Input type="text" value={this.FrameType} onChange={e => (this.FrameType = e.target.value)} />
-        <Form.Label>Brake Type</Form.Label>
-        <Form.Input type="text" value={this.BrakeType} onChange={e => (this.BrakeType = e.target.value)} />
+        <Form.Label>Bicycle Type</Form.Label> <br />
+        <select id="TypeDropdown" value={this.BicycleType} onChange={e => (this.BicycleType = e.target.value)}>
+          <option>Beach Cruiser</option>
+          <option>BMX</option>
+          <option>Downhill</option>
+          <option>Hybrid</option>
+          <option>Kids</option>
+          <option>Mountain Bike</option>
+          <option>Racer</option>
+          <option>Road Bike</option>
+          <option>Tandem</option>
+        </select>
+        <br />
+        <Form.Label>Frame Type</Form.Label> <br />
+        <select id="FrameDropdown" value={this.FrameType} onChange={e => (this.FrameType = e.target.value)}>
+          <option>City</option>
+          <option>Hardtail</option>
+          <option>Rigid</option>
+          <option>Road</option>
+          <option>Trail</option>
+        </select>
+        <br />
+        <Form.Label>Brake Type</Form.Label> <br />
+        <select id="BrakeDropdown" value={this.BrakeType} onChange={e => (this.BrakeType = e.target.value)}>
+          <option>Caliper</option>
+          <option>Cantilever</option>
+          <option>Disk</option>
+          <option>V</option>
+        </select>
+        <br />
         <Form.Label>Wheelsize</Form.Label>
-        <Form.Input type="text" value={this.Wheelsize} onChange={e => (this.Wheelsize = e.target.value)} />
+        <Form.Input type="number" value={this.Wheelsize} onChange={e => (this.Wheelsize = e.target.value)} />
         <Form.Label>Bicycle Status</Form.Label>
-        <Form.Input type="text" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)} />
-        <Form.Label>Home Location</Form.Label>
-        <Form.Input type="text" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)} />
+        <br />
+        <select id="StatusDropdown" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)}>
+          {this.BicycleStatuses.map(status => (
+            <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
+          ))}
+        </select>{' '}
+        <br />
+        <Form.Label>Home Location</Form.Label> <br />
+        <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+          <option>9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+        </select>
+        <br />
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
-        <Form.Label>Current Location</Form.Label>
-        <Form.Input type="text" value={this.CurrentLocation} onChange={e => (this.CurrentLocation = e.target.value)} />
+        <Form.Label>Current Location</Form.Label> <br />
+        <select
+          id="CurrentLocation"
+          value={this.CurrentLocation}
+          onChange={e => (this.CurrentLocatoin = e.target.value)}
+        >
+          <option>9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+        </select>
+        <br />
         <br />
         <NavLink to="/bicycles">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
@@ -701,19 +749,22 @@ class BicycleEdit extends Component {
       this.DailyPrice = bicycle.DailyPrice;
       this.CurrentLocation = bicycle.CurrentLocation;
     });
+    bicycleService.getBicycleStatuses(statuses => {
+      this.BicycleStatuses = statuses;
+    });
   }
 
   save() {
     bicycleService.updateBicycle(
       this.props.match.params.id,
-      this.BicycleType,
-      this.FrameType,
-      this.BrakeType,
+      (this.BicycleType = '' + document.getElementById('TypeDropdown').value),
+      (this.FrameType = '' + document.getElementById('FrameDropdown').value),
+      (this.BrakeType = '' + document.getElementById('BrakeDropdown').value),
       this.Wheelsize,
-      this.BicycleStatus,
-      this.HomeLocation,
+      (this.BicycleStatus = '' + document.getElementById('StatusDropdown').value),
+      (this.HomeLocation = '' + document.getElementById('HomeLocation').value),
       this.DailyPrice,
-      this.CurrentLocation,
+      (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
       () => {
         history.push('/bicycles');
       }
@@ -731,22 +782,66 @@ class BicycleInsert extends Component {
   render() {
     return (
       <Card title="Adding Bicycle">
-        <Form.Label>Bicycle Type</Form.Label>
-        <Form.Input type="text" value={this.BicycleType} onChange={e => (this.BicycleType = e.target.value)} />
-        <Form.Label>Frame Type</Form.Label>
-        <Form.Input type="text" value={this.FrameType} onChange={e => (this.FrameType = e.target.value)} />
-        <Form.Label>Brake Type</Form.Label>
-        <Form.Input type="text" value={this.BrakeType} onChange={e => (this.BrakeType = e.target.value)} />
+        <Form.Label>Bicycle Type</Form.Label> <br />
+        <select id="TypeDropdown">
+          <option>Beach Cruiser</option>
+          <option>BMX</option>
+          <option>Downhill</option>
+          <option>Hybrid</option>
+          <option>Kids</option>
+          <option>Mountain Bike</option>
+          <option>Racer</option>
+          <option>Road Bike</option>
+          <option>Tandem</option>
+        </select>
+        <br />
+        <Form.Label>Frame Type</Form.Label> <br />
+        <select id="FrameDropdown">
+          <option>City</option>
+          <option>Hardtail</option>
+          <option>Rigid</option>
+          <option>Road</option>
+          <option>Trail</option>
+        </select>
+        <br />
+        <Form.Label>Brake Type</Form.Label> <br />
+        <select id="BrakeDropdown">
+          <option>Caliper</option>
+          <option>Cantilever</option>
+          <option>Disk</option>
+          <option>V</option>
+        </select>
+        <br />
         <Form.Label>Wheelsize</Form.Label>
-        <Form.Input type="text" value={this.Wheelsize} onChange={e => (this.Wheelsize = e.target.value)} />
-        <Form.Label>Bicycle Status</Form.Label>
-        <Form.Input type="text" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)} />
-        <Form.Label>Home Location</Form.Label>
-        <Form.Input type="text" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)} />
+        <Form.Input type="number" value={this.Wheelsize} onChange={e => (this.Wheelsize = e.target.value)} />
+        <Form.Label>Bicycle Status</Form.Label> <br />
+        <select id="StatusDropdown">
+          <option>Available</option>
+          <option>In Repair</option>
+          <option>In Transport</option>
+          <option>Need Repair</option>
+          <option>Need Transport</option>
+          <option>Rented</option>
+        </select>
+        <br />
+        <Form.Label>Home Location</Form.Label> <br />
+        <select id="HomeLocation">
+          <option>9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+        </select>
+        <br />
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
-        <Form.Label>Current Location</Form.Label>
-        <Form.Input type="text" value={this.CurrentLocation} onChange={e => (this.CurrentLocation = e.target.value)} />
+        <Form.Label>Current Location</Form.Label> <br />
+        <select id="CurrentLocation">
+          <option>9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+        </select>
+        <br />
         <br />
         <NavLink to="/bicycles">
           <Button.Success onClick={this.insert}>Add New Bicycle</Button.Success>
@@ -756,15 +851,15 @@ class BicycleInsert extends Component {
   }
 
   insert() {
-    bicycleService.insertRental(
-      this.BicycleType,
-      this.FrameType,
-      this.BrakeType,
+    bicycleService.insertBicycle(
+      (this.BicycleType = '' + document.getElementById('TypeDropdown').value),
+      (this.FrameType = '' + document.getElementById('FrameDropdown').value),
+      (this.BrakeType = '' + document.getElementById('BrakeDropdown').value),
       this.Wheelsize,
-      this.BicycleStatus,
-      this.HomeLocation,
+      (this.BicycleStatus = '' + document.getElementById('StatusDropdown').value),
+      (this.HomeLocation = '' + document.getElementById('HomeLocation').value),
       this.DailyPrice,
-      this.CurrentLocation,
+      (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
       () => {
         history.push('/bicycles');
       }
@@ -997,7 +1092,6 @@ class RepairDetails extends Component {
   BicycleStatus = '';
   HomeLocation = '';
   CurrentLocation = '';
-  BicycleStatuses = [];
 
   render() {
     return (
@@ -1018,14 +1112,7 @@ class RepairDetails extends Component {
             {this.Wheelsize} <input type="checkbox" value={this.Wheelsize} />
           </List.Item>
           Bicycle Status:
-          <List.Item>
-            Current status: {this.BicycleStatus}
-            <select id="statusDropdown">
-              {this.BicycleStatuses.map(status => (
-                <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
-              ))}
-            </select>
-          </List.Item>
+          <List.Item>Current status: {this.BicycleStatus}</List.Item>
         </List>
         <br />
         <input type="textarea" placeholder="Add additional comments" />
@@ -1056,7 +1143,6 @@ class RepairDetails extends Component {
     bicycleService.getBicycleStatuses(statuses => {
       this.BicycleStatuses = statuses;
     });
-    console.log(document.getElementById('statusDropdown').value);
   }
 
   orderRepair() {
@@ -1064,7 +1150,30 @@ class RepairDetails extends Component {
       this.FrameType = bicycle.Frametype;
       this.BrakeType = bicycle.Braketype;
       this.Wheelsize = bicycle.Wheelsize;
-      this.BicycleStatus = bicycle.BicycleStatus;
+    });
+  }
+}
+
+class RentalCountList extends Component {
+  Counts = [];
+
+  render() {
+    return (
+      <Card title="Rental Count for Customers">
+        <List>
+          {this.Counts.map(count => (
+            <List.Item key={count.FirstName}>
+              Name: {count.FirstName} {count.SurName} Rental Count: {count.Orders}
+            </List.Item>
+          ))}
+        </List>
+        <NavLink to="/repair/summary" />
+      </Card>
+    );
+  }
+  mounted() {
+    rentalService.showCount(count => {
+      this.Counts = count;
     });
   }
 }
@@ -1085,18 +1194,18 @@ ReactDOM.render(
       <Route exact path="/transport/:id/booking" component={TransportBooking} />
       <Route exact path="/transport/:id/booking/order" component={TransportOrder} />
       <Route exact path="/rentals" component={RentalList} />
-      <Route exact path="/rentals/insert" component={RentalInsert} />
-      <Route path="/sales/:id/edit" component={RentalEdit} />
+      <Route path="/rentals/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
       <Route path="/bicycles/:id/edit" component={BicycleEdit} />
       <Route path="/accessories/:id/edit" component={AccessoryEdit} />
-      <Route path="/sales/insert" component={RentalInsert} />
+      <Route path="/rentals/insert" component={RentalInsert} />
       <Route path="/customers/insert" component={CustomerInsert} />
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
       <Route exact path="/accessories/insert" component={AccessoryTypeInsert} />
       <Route path="/repair/:id/edit" component={RepairDetails} />
+      <Route path="/count" component={RentalCountList} />
     </div>
   </HashRouter>,
   document.getElementById('root')
