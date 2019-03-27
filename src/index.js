@@ -230,7 +230,7 @@ class RentalInsert extends Component {
           <select ref={this.bicycleDropdown}>
             {this.bicycles.map(bicycle => (
               <option key={bicycle.BicycleID} value={bicycle.BicycleID}>
-                {bicycle.BicycleType} {bicycle.BicycleID}
+                {bicycle.BicycleType}
               </option>
             ))}
           </select>
@@ -267,7 +267,7 @@ class RentalInsert extends Component {
     customerService.searchCustomers(this.searchCategory, this.searchValue, customers => {
       this.customers = customers;
     });
-    bicycleService.getBicycles(bicycles => {
+    rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
     });
     accessoryService.getAccessories(accessories => {

@@ -113,6 +113,14 @@ class RentalService {
       success(results);
     });
   }
+
+  getAvailableBicycles(success) {
+    connection.query('Select BicycleType from Bicycles where BicycleStatus = "Available"', (error, results) => {
+      if(error) return console.error(error);
+
+      success(results);
+    })
+  }
 }
 
 class CustomerService {
