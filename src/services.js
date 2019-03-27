@@ -107,8 +107,8 @@ class RentalService {
   }
 
   showCount(success) {
-    connection.query('select * from Rental_Count', (error,results) => {
-      if(error) return console.error(error);
+    connection.query('select * from Rental_Count', (error, results) => {
+      if (error) return console.error(error);
 
       success(results);
     });
@@ -329,17 +329,7 @@ class BicycleService {
   ) {
     connection.query(
       'insert into Bicycles (BicycleType, FrameType, BrakeType, Wheelsize, BicycleStatus, HomeLocation, DailyPrice, CurrentLocation) values (?, ?, ?, ?, ?, ?, ?, ?)',
-      [
-        BicycleType,
-        FrameType,
-        BrakeType,
-        Wheelsize,
-        BicycleStatus,
-        HomeLocation,
-        DailyPrice,
-        CurrentLocation,
-        BicycleID
-      ]
+      [BicycleType, FrameType, BrakeType, Wheelsize, BicycleStatus, HomeLocation, DailyPrice, CurrentLocation]
     ),
       (error, results) => {
         if (error) return console.error(error);
@@ -458,10 +448,9 @@ class TransportService {
     connection.query('select * from Locations where LocationID <> ?;', [LocationID], (error, results) => {
       if (error) return console.error(error);
 
-        success(results);
-        console.log(results);
-      }
-    );
+      success(results);
+      console.log(results);
+    });
   }
 
   //Selects a specific location.
