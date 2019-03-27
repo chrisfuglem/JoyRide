@@ -184,6 +184,7 @@ class RentalEdit extends Component {
 
 class RentalInsert extends Component {
   customers = [];
+  locations = [];
   bicycles = [];
   accessories = [];
   rentedBicycles = [];
@@ -195,11 +196,20 @@ class RentalInsert extends Component {
     this.customerDropdown = React.createRef();
     this.bicycleDropdown = React.createRef();
     this.accessoryDropdown = React.createRef();
+    this.locationDropdown = React.createRef();
   }
 
   render() {
     return (
       <Card title="Adding Rental">
+      <Form.Label>Select Pickup Location:</Form.Label>
+      <br />
+        <select ref={this.locationDropdown}>
+          {this.locations.map(location => (
+            <option value={location.LocationID} key={location.LocationID}>{location.LocationName}</option>
+          ))}
+        </select>
+        <br />
         <Form.Label>Find Customer By:</Form.Label>
         <div id="CustomerSearch">
           <input id="CustomerSearchField" type="text" />
@@ -279,6 +289,9 @@ class RentalInsert extends Component {
     accessoryService.getAccessories(accessories => {
       this.accessories = accessories;
     });
+    transportService.getLocations(locations => {
+      this.locations = locations;
+    })
   }
 
   addBicycle() {
