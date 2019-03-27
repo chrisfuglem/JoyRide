@@ -827,14 +827,14 @@ class TransportBooking extends Component {
         <p>Choose Bicycles For Transport</p>
         <List>
           {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.BicycleID}>
-              <input type="checkbox" value={this.BicycleID} /> Bicycle Type: {bicycle.BicycleType} | Bicycle ID:{' '}
+            <List.Item key={bicycle.LocationID}>
+              <input type="checkbox" value={this.CurrentLocation} /> Bicycle Type: {bicycle.BicycleType} | Bicycle ID:{' '}
               {bicycle.BicycleID}
             </List.Item>
           ))}
         </List>
         <br />
-        <NavLink to={'/transport/' + location.LocationID + '/booking/order'}>
+        <NavLink to={'/transport/' + location.CurrentLocation + '/booking/order'}>
           <Button.Light>Choose Delivery Location</Button.Light>
         </NavLink>
       </Card>
@@ -897,7 +897,7 @@ class RepairList extends Component {
   }
 
   mounted() {
-    bicycleService.getBicycles(bicycles => {
+    repairService.getBicycles(bicycles => {
       this.bicycles = bicycles;
     });
   }
