@@ -20,10 +20,8 @@ class Menu extends Component {
   render() {
     return (
       <NavBar brand="Joyride">
-        <NavBar.Link to="/sales">Rentals</NavBar.Link>
+        <NavBar.Link to="/sales">Sales</NavBar.Link>
         <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
-        <NavBar.Link to="/customers">Customers</NavBar.Link>
-        <NavBar.Link to="/employees">Employees</NavBar.Link>
       </NavBar>
     );
   }
@@ -39,13 +37,26 @@ class Home extends Component {
   }
 }
 
+class Sales extends Component {
+  render() {
+    return(
+      <NavBar brand="Sales">
+        <NavBar.Link to="rentals">Rentals</NavBar.Link>
+        <NavBar.Link to="customers">Customers</NavBar.Link>
+        <NavBar.Link to="employees">Employees</NavBar.Link>
+        <NavBar.Link to="bicycles">Bicycles</NavBar.Link>
+      </NavBar>
+    )
+  }
+}
+
 class Warehouse extends Component {
   render() {
     return (
       <NavBar brand="Warehouse">
         <NavBar.Link to="/bicycles">Bicycles</NavBar.Link>
         <NavBar.Link to="/accessories">Accessories</NavBar.Link>
-        <NavBar.Link to="/sales">Rentals</NavBar.Link>
+        <NavBar.Link to="/rentals">Rentals</NavBar.Link>
         <NavBar.Link to="/repair">Order Repair</NavBar.Link>
         <NavBar.Link to="/transport">Order Transport</NavBar.Link>
       </NavBar>
@@ -59,14 +70,14 @@ class RentalList extends Component {
   render() {
     return (
       <Card title="Rental List">
-        <NavLink to="/sales/insert">
+        <NavLink to="/rentals/insert">
           <Button.Light>Add New Rental</Button.Light>
         </NavLink>
         <p>Click the rentals to edit or delete them</p>
         <List>
           {this.rentals.map(rental => (
             <List.Item key={rental.ID}>
-              <NavLink to={'/sales/' + rental.ID + '/edit'}>
+              <NavLink to={'/rentals/' + rental.ID + '/edit'}>
                 Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
               </NavLink>
               <br />
@@ -106,7 +117,7 @@ class RentalEdit extends Component {
             <p>
               {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
             </p>
-            <NavLink to="/sales">
+            <NavLink to="/rentals">
               <button onClick={this.removeBicycle.bind(this, bicycle.BicycleID)}>Remove Bicycle</button>
             </NavLink>
           </List.Item>
@@ -117,17 +128,17 @@ class RentalEdit extends Component {
             <p>
               {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
             </p>
-            <NavLink to="/sales">
+            <NavLink to="/rentals">
               <button onClick={this.removeAccessory.bind(this, accessory.AccessoryID)}>Remove Accessory</button>
             </NavLink>
           </List.Item>
         ))}
-        <NavLink to="/sales">
+        <NavLink to="/rentals">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/sales">
+        <NavLink to="/rentals">
           <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
         </NavLink>
       </Card>
@@ -147,25 +158,25 @@ class RentalEdit extends Component {
 
   removeBicycle(id) {
     rentalService.removeBicycle(id, this.props.match.params.id, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 
   removeAccessory(id) {
     rentalService.removeAccessory(id, this.props.match.params.id, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 
   save() {
     rentalService.updateRental(this.props.match.params.id, this.name, this.email, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 
   delete() {
     rentalService.deleteRental(this.props.match.params.id, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 }
@@ -236,7 +247,7 @@ class RentalInsert extends Component {
           <button>Add Accessory</button>
         </div>
         <br />
-        <NavLink to="/sales">
+        <NavLink to="/rentals">
           <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
         </NavLink>
       </Card>
@@ -264,7 +275,7 @@ class RentalInsert extends Component {
 
   insert() {
     rentalService.insertRental(this.name, this.email, this.RentEnd, this.RentEnd, () => {
-      history.push('/sales');
+      history.push('/rentals');
     });
   }
 }
@@ -1010,7 +1021,7 @@ ReactDOM.render(
     <div>
       <Menu />
       <Route exact path="/" component={Home} />
-      <Route exact path="/sales" component={RentalList} />
+      <Route exact path="/sales" component={Sales} />
       <Route exact path="/warehouse" component={Warehouse} />
       <Route exact path="/customers" component={CustomerList} />
       <Route exact path="/employees" component={EmployeeList} />
@@ -1020,6 +1031,7 @@ ReactDOM.render(
       <Route exact path="/transport" component={TransportList} />
       <Route exact path="/transport/:id/booking" component={TransportBooking} />
       <Route exact path="/transport/:id/booking/order" component={TransportOrder} />
+      <Route exact path="/rentals" component={RentalList} />
       <Route path="/sales/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />

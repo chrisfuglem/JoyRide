@@ -426,12 +426,11 @@ class AccessoryService {
 
   //Deletes the AccessoryType from the AccessoryTypes table.
   deleteAccessoryType(AccessoryType) {
-    connection.query('delete from AccessoryTypes where AccessoryTypes.AccessoryType = ?', [AccessoryType]),
+    connection.query('delete from AccessoryTypes where AccessoryType = ?', [AccessoryType]),
       (error, results) => {
         if (error) return console.error(error);
 
         success();
-        console.log(results);
       };
   }
 }
