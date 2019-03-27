@@ -217,12 +217,18 @@ class RentalInsert extends Component {
           <h3>Bicycles</h3>
           <select ref={this.bicycleDropdown}>
             {this.bicycles.map(bicycle => (
-              <option key={bicycle.BicycleID}>
+              <option key={bicycle.BicycleID} value={bicycle.BicycleID}>
                 {bicycle.BicycleType} {bicycle.BicycleID}
               </option>
             ))}
           </select>
           <button onClick={this.addBicycle}>Add Bicycle</button>
+          {this.rentedBicycles.map(bicycle => (
+            <List.Item key={bicycle[0]}>
+              Bicycle id # {bicycle[0]}
+              <button onClick={this.removeBicycle.bind(this, bicycle[0])}>Remove Bicycle</button>
+            </List.Item>
+          ))}
         </div>
         <div>
           <h3>Accessories</h3>
@@ -259,6 +265,15 @@ class RentalInsert extends Component {
 
   addBicycle() {
     this.rentedBicycles.push(this.bicycleDropdown.current.value);
+    console.log(this.rentedBicycles);
+  }
+
+  removeBicycle(id) {
+    for (let x = 0; x < this.rentedBicycles.length; x++) {
+      if (this.rentedBicycles[x] = id) {
+        this.rentedBicycles.splice(x, 1); //Sletter sykkelen som har matchende id
+      }
+    }
     console.log(this.rentedBicycles);
   }
 
@@ -834,12 +849,13 @@ class TransportBooking extends Component {
           ))}
         </List>
         <br />
-        <NavLink to={'/transport/' + location.CurrentLocation + '/booking/order'}>
+        <NavLink to={'/transport/' + this.props.match.params.id + '/booking/order'}>
           <Button.Light>Choose Delivery Location</Button.Light>
         </NavLink>
       </Card>
     );
   }
+
   mounted() {
     transportService.getBicycles(this.props.match.params.id, bicycles => {
       this.bicycles = bicycles;
