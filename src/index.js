@@ -714,8 +714,9 @@ class AccessoryEdit extends Component {
   render() {
     return (
       <Card title="Editing Accessory">
-        <Form.Label>Accessory Type</Form.Label>
-        <Form.Input type="text" value={this.Type} onChange={e => (this.Type = e.target.value)} />
+        <List.Item>
+          <p>{this.Type}</p>
+        </List.Item>
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <br />
@@ -739,7 +740,7 @@ class AccessoryEdit extends Component {
   }
 
   save() {
-    accessoryService.updateAccessory(this.props.match.params.id, this.Type, this.DailyPrice, () => {
+    accessoryService.updateAccessory(this.props.match.params.id, this.DailyPrice, () => {
       history.push('/accessories');
     });
   }
@@ -748,7 +749,7 @@ class AccessoryEdit extends Component {
     accessoryService.deleteAccessory(this.props.match.params.id, () => {
       history.push('/accessories');
     });
-    accessoryService.deleteAccessoryType(this.type, () => {
+    accessoryService.deleteAccessoryType(this.Type, () => {
       history.push('/accessories');
     });
   }

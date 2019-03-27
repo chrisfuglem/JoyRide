@@ -367,10 +367,10 @@ class AccessoryService {
   }
 
   //Updates an accessory with all variables.
-  updateAccessory(AccessoryID, Type, DailyPrice, success) {
+  updateAccessory(AccessoryID, DailyPrice, success) {
     connection.query(
-      'update Accessories inner join AccessoryTypes on Accessories.Type = AccessoryTypes.AccessoryType set AccessoryType=?, DailyPrice=? where Accessories.AccessoryID=?',
-      [Type, Type, DailyPrice, AccessoryID],
+      'update Accessories set DailyPrice=? where AccessoryID=?',
+      [DailyPrice, AccessoryID],
       (error, results) => {
         if (error) return console.error(error);
 
