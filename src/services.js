@@ -410,6 +410,17 @@ class AccessoryService {
         success();
       };
   }
+
+  //Deletes the AccessoryType from the AccessoryTypes table.
+  deleteAccessoryType(AccessoryType) {
+    connection.query('delete from AccessoryTypes where AccessoryTypes.AccessoryType = ?', [AccessoryType]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+        console.log(results);
+      };
+  }
 }
 
 class TransportService {
@@ -424,12 +435,16 @@ class TransportService {
 
   //Selects all locations except the one already chosen for transport. (Doesnt work yet)
   getLocationsRemove(LocationID, success) {
-    connection.query('select distinct LocationName from Locations inner join Bicycles on Bicycles.CurrentLocation = Locations.LocationID where CurrentLocation<>?', [LocationID], (error, results) => {
-      if (error) return console.error(error);
+    connection.query(
+      'select distinct LocationName from Locations inner join Bicycles on Bicycles.CurrentLocation = Locations.LocationID where CurrentLocation<>?',
+      [LocationID],
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success(results);
-      console.log(results);
-    });
+        success(results);
+        console.log(results);
+      }
+    );
   }
 
   //Selects a specific location.
@@ -457,7 +472,7 @@ class TransportService {
 }
 
 class RepairService {
-
+  //Selects all bicycles that need repair from the database.
   getBicycles(success) {
     connection.query('select * from Bicycles where BicycleStatus = "Need Repair"', (error, results) => {
       if (error) return console.error(error);

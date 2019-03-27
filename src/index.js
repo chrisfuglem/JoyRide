@@ -737,7 +737,12 @@ class AccessoryEdit extends Component {
     accessoryService.deleteAccessory(this.props.match.params.id, () => {
       history.push('/accessories');
     });
+    accessoryService.deleteAccessoryType(this.type, () => {
+      history.push('/accessories');
+    });
   }
+
+  deleteType() {}
 }
 
 class AccessoryTypeInsert extends Component {
@@ -755,39 +760,11 @@ class AccessoryTypeInsert extends Component {
     );
   }
 
-  // insert() {
-  //   accessoryService.insertAccessoryType(this.type, () => {
-  //     history.push('/accessories/');
-  //   });
-  //   accessoryService.insertAccessoryPrice(this.dailyprice, () => {
-  //     history.push('/accessories/');
-  //   });
-  // }
-
   insert() {
     accessoryService.insertAccessoryType(this.type, () => {
-      history.push('/accessories/insert/' + this.type + '/price/');
+      history.push('/accessories/');
     });
-  }
-}
-
-class AccessoryPriceInsert extends Component {
-  render() {
-    return (
-      <Card title="Setting Accessory Price">
-        {this.props.match.params.type} <br />
-        <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
-        <br />
-        <NavLink to="/accessories">
-          <Button.Success onClick={this.insert}>Set Accessory Price</Button.Success>
-        </NavLink>
-      </Card>
-    );
-  }
-
-  insert() {
-    accessoryService.insertAccessoryPrice(this.props.match.params.type, this.dailyprice, () => {
+    accessoryService.insertAccessoryPrice(this.type, this.dailyprice, () => {
       history.push('/accessories');
     });
   }
@@ -1008,7 +985,6 @@ ReactDOM.render(
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
       <Route exact path="/accessories/insert" component={AccessoryTypeInsert} />
-      <Route exact path="/accessories/insert/:type/price" component={AccessoryPriceInsert} />
       <Route path="/repair/:id/edit" component={RepairDetails} />
     </div>
   </HashRouter>,
