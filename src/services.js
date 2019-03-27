@@ -230,6 +230,19 @@ class EmployeeService {
         success();
       };
   }
+
+  //Search function for employees.
+  searchEmployee(category, value, success) {
+    connection.query(
+      'SELECT * FROM Employees WHERE ' + category + ' LIKE ' + "'" + value + "'",
+      [category, value],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
+  }
 }
 
 class BicycleService {

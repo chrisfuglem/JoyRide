@@ -412,11 +412,25 @@ class CustomerInsert extends Component {
 }
 
 class EmployeeList extends Component {
-  employees = [];
+  employees = '';
+  searchCategory = '';
+  searchValue = '';
 
   render() {
     return (
-      <Card title="Employee List">
+      <div>
+        <p>Click the employees to edit or delete them</p>
+        <h3>Search by category</h3>
+        <div id="EmployeeSearch">
+          <input id="EmployeeSearchField" type="text" />
+          <select id="EmployeeSearchCategory">
+            <option>Firstname</option>
+            <option>Surname</option>
+          </select>
+          <button id="EmployeeSearchButton" onClick={this.mounted}>
+            Search
+          </button>
+        </div>
         <List>
           {this.employees.map(employee => (
             <List.Item key={employee.EmployeeID}>
@@ -430,15 +444,45 @@ class EmployeeList extends Component {
         <NavLink to="/employees/insert/">
           <Button.Light>Add New Employee</Button.Light>
         </NavLink>
-      </Card>
+      </div>
     );
   }
 
   mounted() {
-    employeeService.getEmployees(employees => {
+    this.searchCategory = '' + document.getElementById('EmployeeSearchCategory').value;
+    this.searchValue = '%' + document.getElementById('EmployeeSearchField').value + '%';
+    employeeService.searchEmployee(this.searchCategory, this.searchValue, employees => {
       this.employees = employees;
     });
   }
+
+  // employees = [];
+  //
+  // render() {
+  //   return (
+  //     <Card title="Employee List">
+  //       <List>
+  //         {this.employees.map(employee => (
+  //           <List.Item key={employee.EmployeeID}>
+  //             <NavLink to={'/employees/' + employee.EmployeeID + '/edit'}>
+  //               {employee.Firstname} {employee.Surname}
+  //             </NavLink>
+  //           </List.Item>
+  //         ))}
+  //       </List>
+  //       <br />
+  //       <NavLink to="/employees/insert/">
+  //         <Button.Light>Add New Employee</Button.Light>
+  //       </NavLink>
+  //     </Card>
+  //   );
+  // }
+  //
+  // mounted() {
+  //   employeeService.getEmployees(employees => {
+  //     this.employees = employees;
+  //   });
+  // }
 }
 
 class EmployeeEdit extends Component {
