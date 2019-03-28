@@ -206,7 +206,11 @@ class RentalInsert extends Component {
         <br />
         <select ref={this.locationDropdown}>
           {this.locations.map(location => (
-            <option value={location.LocationID} key={location.LocationID} onChange={e => (this.LocationID = e.target.value)}>
+            <option
+              value={location.LocationID}
+              key={location.LocationID}
+              onChange={e => (this.LocationID = e.target.value)}
+            >
               {location.LocationName}
             </option>
           ))}
@@ -635,6 +639,7 @@ class EmployeeInsert extends Component {
 
 class BicycleList extends Component {
   bicycles = [];
+  home = [];
 
   render() {
     return (
@@ -644,7 +649,7 @@ class BicycleList extends Component {
           <Button.Light>Add New Bicycle</Button.Light>
         </NavLink>
         <NavLink to="/bicycles/update">
-        <Button.Light>Update Bicycles</Button.Light>
+          <Button.Light>Update Bicycles</Button.Light>
         </NavLink>
         <List>
           {this.bicycles.map(bicycle => (
@@ -665,6 +670,9 @@ class BicycleList extends Component {
   mounted() {
     bicycleService.getBicycles(bicycles => {
       this.bicycles = bicycles;
+    });
+    bicycleService.getBicyclesHome(homes => {
+      this.homes = homes;
     });
   }
 }
@@ -891,9 +899,9 @@ class BicycleInsert extends Component {
 
 class BicycleUpdate extends Component {
   bicycles = [];
-  BicycleStatus = "";
-  CurrentLocation = "";
-  
+  BicycleStatus = [];
+  CurrentLocation = [];
+  BicycleID = [];
 
   render() {
     return (
@@ -901,19 +909,20 @@ class BicycleUpdate extends Component {
         <p>Select the bicycles you want to update</p>
         <List>
           {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.bicycleID}>
-            <input type="checkbox" value={bicycle.BicycleID}></input>
-                Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Status: {bicycle.BicycleStatus} | Current Location: {bicycle.CurrentLocation}
+            <List.Item key={bicycle.BicycleID}>
+              <input type="checkbox" value={bicycle.BicycleID} />
+              Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Status: {bicycle.BicycleStatus} |
+              Current Location: {bicycle.CurrentLocation}
             </List.Item>
           ))}
         </List>
         <br />
-        Select status: 
+        Select status:
         <select id="selectstatus">
           <option>Available</option>
           <option>Need Repair</option>
         </select>{' '}
-        Select Location: 
+        Select Location:
         <select id="selectlocation">
           <option>9</option>
           <option>13</option>
@@ -937,6 +946,7 @@ class BicycleUpdate extends Component {
     bicycleService.updateBicycleStatus(
       (this.BicycleStatus = '' + document.getElementById('selectstatus').value),
       (this.FrameType = '' + document.getElementById('selectlocation').value),
+      (this.BicycleID = this.BicycleID),
       () => {
         history.push('/bicycles');
       }
@@ -1328,7 +1338,7 @@ ReactDOM.render(
       <Route exact path="/transport/:id/booking" component={TransportBooking} />
       <Route exact path="/transport/:id/booking/order" component={TransportOrder} />
       <Route exact path="/rentals" component={RentalList} />
-      <Route exact path="/bicycles/update" component={BicycleUpdate}/>
+      <Route exact path="/bicycles/update" component={BicycleUpdate} />
       <Route path="/rentals/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
