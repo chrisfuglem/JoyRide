@@ -284,12 +284,20 @@ class EmployeeService {
 
 class BicycleService {
   //Selects all the bicycles from the database.
-  getBicycles(success) {
-    connection.query('select * from Bicycles inner join Locations', (error, results) => {
+  getBicyclestoUpdate(success) {
+    connection.query('select * from Bicycles', (error, results) => {
       if (error) return console.error(error);
 
       success(results);
     });
+  }
+
+  getBicycles(success) {
+    connection.query('select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation', (error, results) => {
+      if(error) return console.error(error);
+
+      success(results);
+    })
   }
 
   //Selects a specific bicycle.

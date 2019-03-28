@@ -928,7 +928,7 @@ class BicycleUpdate extends Component {
   }
 
   mounted() {
-    bicycleService.getBicycles(bicycles => {
+    bicycleService.getBicyclestoUpdate(bicycles => {
       this.bicycles = bicycles;
     });
   }
