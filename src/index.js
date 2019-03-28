@@ -184,6 +184,7 @@ class RentalEdit extends Component {
 
 class RentalInsert extends Component {
   customers = [];
+  locations = [];
   bicycles = [];
   accessories = [];
   rentedBicycles = [];
@@ -192,12 +193,23 @@ class RentalInsert extends Component {
 
   constructor(props) {
     super(props);
+    this.customerDropdown = React.createRef();
     this.bicycleDropdown = React.createRef();
+    this.accessoryDropdown = React.createRef();
+    this.locationDropdown = React.createRef();
   }
 
   render() {
     return (
       <Card title="Adding Rental">
+      <Form.Label>Select Pickup Location:</Form.Label>
+      <br />
+        <select ref={this.locationDropdown}>
+          {this.locations.map(location => (
+            <option value={location.LocationID} key={location.LocationID}>{location.LocationName}</option>
+          ))}
+        </select>
+        <br />
         <Form.Label>Find Customer By:</Form.Label>
         <div id="CustomerSearch">
           <input id="CustomerSearchField" type="text" />
@@ -214,9 +226,9 @@ class RentalInsert extends Component {
         </div>
         <Form.Label>Select Customer:</Form.Label>
         <br />
-        <select>
+        <select ref={this.customerDropdown}>
           {this.customers.map(customer => (
-            <option key={customer.CustomerID}>{customer[this.searchCategory]}</option>
+            <option value={customer.CustomerID} key={customer.CustomerID}>{customer[this.searchCategory]}</option>
           ))}
         </select>
         <br />
@@ -226,37 +238,41 @@ class RentalInsert extends Component {
         <Form.Input type="date" value={this.RentEnd} onChange={e => (this.RentEnd = e.target.value)} />
         <br />
         <div>
-          <h3>Bicycles</h3>
+          <h4>Available Bicycles</h4>
           <select ref={this.bicycleDropdown}>
             {this.bicycles.map(bicycle => (
               <option key={bicycle.BicycleID} value={bicycle.BicycleID}>
-                {bicycle.BicycleType} {bicycle.BicycleID}
+                {bicycle.BicycleType}
               </option>
             ))}
           </select>
           <button onClick={this.addBicycle}>Add Bicycle</button>
           {this.rentedBicycles.map(bicycle => (
-            <List.Item key={bicycle[0]}>
-              Bicycle id # {bicycle[0]}
-              <button onClick={this.removeBicycle.bind(this, bicycle[0])}>Remove Bicycle</button>
+            <List.Item key={bicycle}>
+              Bicycle id # {bicycle}
+              <button onClick={this.removeBicycle.bind(this, bicycle)}>Remove Bicycle</button>
             </List.Item>
           ))}
         </div>
         <div>
-          <h3>Accessories</h3>
-          <select>
+          <h4>Available Accessories</h4>
+          <select ref={this.accessoryDropdown}>
             {this.accessories.map(accessory => (
-              <option key={accessory.AccessoryID}>
+              <option key={accessory.AccessoryID} value={accessory.AccessoryID}>
                 {accessory.Type} {accessory.AccessoryID}
               </option>
             ))}
           </select>
-          <button>Add Accessory</button>
+          <button onClick={this.addAccessory}>Add Accessory</button>
+          {this.rentedAccessories.map(accessory => (
+            <List.Item key={accessory}>
+              Accessory id # {accessory}
+              <button onClick={this.removeAccessory.bind(this, accessory)}>Remove Accessory</button>
+            </List.Item>
+          ))}
         </div>
         <br />
-        <NavLink to="/rentals">
-          <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
-        </NavLink>
+        <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
       </Card>
     );
   }
@@ -267,32 +283,66 @@ class RentalInsert extends Component {
     customerService.searchCustomers(this.searchCategory, this.searchValue, customers => {
       this.customers = customers;
     });
-    bicycleService.getBicycles(bicycles => {
+    rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
     });
     accessoryService.getAccessories(accessories => {
       this.accessories = accessories;
     });
+    transportService.getLocations(locations => {
+      this.locations = locations;
+    })
   }
 
   addBicycle() {
     this.rentedBicycles.push(this.bicycleDropdown.current.value);
     console.log(this.rentedBicycles);
+    this.bicycleDropdown.current.remove(this.bicycleDropdown.current.selectedIndex);
   }
 
   removeBicycle(id) {
     for (let x = 0; x < this.rentedBicycles.length; x++) {
-      if ((this.rentedBicycles[x] = id)) {
+      if (this.rentedBicycles[x] == id) {
         this.rentedBicycles.splice(x, 1); //Sletter sykkelen som har matchende id
+        var option = document.createElement("option");
+        option.text = "Sykkel " + x;
+        option.value = x;
+        this.bicycleDropdown.current.add(option);
       }
     }
-    console.log(this.rentedBicycles);
+  }
+
+  addAccessory() {
+    this.rentedAccessories.push(this.accessoryDropdown.current.value);
+    console.log(this.rentedAccessories);
+    this.accessoryDropdown.current.remove(this.accessoryDropdown.current.selectedIndex);
+  }
+
+  removeAccessory(id) {
+    for (let x = 0; x < this.rentedAccessories.length; x++) {
+      if (this.rentedAccessories[x] == id) {
+        this.rentedAccessories.splice(x, 1); //Sletter sykkelen som har matchende id
+      }
+    }
   }
 
   insert() {
-    rentalService.insertRental(this.name, this.email, this.RentEnd, this.RentEnd, () => {
-      history.push('/rentals');
-    });
+    console.log("CustomerID: " + this.customerDropdown.current.value);
+    let dateObj = new Date();
+    let month = dateObj.getUTCMonth() + 1;
+    if (month <= 9) {
+      month = "0" + month;
+    }
+    let day = dateObj.getUTCDate();
+    let year = dateObj.getUTCFullYear();
+    let today = year + "-" + month + "-" + day;
+    console.log("Date: " + today);
+    console.log("RentStart: " + this.RentStart);
+    console.log("RentEnd: " + this.RentEnd);
+    console.log("SUM: ");
+
+    console.log(this.rentedBicycles);
+    console.log(this.rentedAccessories);
   }
 }
 
