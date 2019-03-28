@@ -594,8 +594,8 @@ class BicycleList extends Component {
             <List.Item key={bicycle.BicycleID}>
               <NavLink to={'/bicycles/' + bicycle.BicycleID + '/edit'}>
                 Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
-                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.HomeLocation}{' '}
-                | Daily Price: {bicycle.DailyPrice}kr per day | Current Location: {bicycle.CurrentLocation}
+                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.LocationName}{' '}
+                | Daily Price: {bicycle.DailyPrice}kr per day | Current Location: {bicycle.LocationName}
               </NavLink>
             </List.Item>
           ))}
@@ -672,6 +672,7 @@ class BicycleEdit extends Component {
           <option>10</option>
           <option>11</option>
           <option>12</option>
+          <option>13</option>
         </select>
         <br />
         <Form.Label>Daily Price</Form.Label>
@@ -680,12 +681,13 @@ class BicycleEdit extends Component {
         <select
           id="CurrentLocation"
           value={this.CurrentLocation}
-          onChange={e => (this.CurrentLocatoin = e.target.value)}
+          onChange={e => (this.CurrentLocation = e.target.value)}
         >
           <option>9</option>
           <option>10</option>
           <option>11</option>
           <option>12</option>
+          <option>13</option>
         </select>
         <br />
         <br />
@@ -841,7 +843,8 @@ class AccessoryList extends Component {
           {this.accessories.map(accessory => (
             <List.Item key={accessory.AccessoryID}>
               <NavLink to={'/accessories/' + accessory.AccessoryID + '/edit'}>
-                {accessory.Type} | Price: {accessory.DailyPrice}kr per day
+                {accessory.Type} | Price: {accessory.DailyPrice}kr per day | Home Location: {accessory.LocationName} |{' '}
+                Current Location: {accessory.LocationName}
               </NavLink>
             </List.Item>
           ))}
@@ -864,6 +867,8 @@ class AccessoryList extends Component {
 class AccessoryEdit extends Component {
   Type = '';
   DailyPrice = '';
+  HomeLocation = '';
+  CurrentLocation = '';
 
   render() {
     return (
@@ -873,6 +878,29 @@ class AccessoryEdit extends Component {
         </List.Item>
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+        <br />
+        <Form.Label>Current Location</Form.Label> <br />
+        <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+          <option>9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+          <option>13</option>
+        </select>
+        <br />
+        <Form.Label>Current Location</Form.Label> <br />
+        <select
+          id="CurrentLocation"
+          value={this.CurrentLocation}
+          onChange={e => (this.CurrentLocation = e.target.value)}
+        >
+          <option>9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+          <option>13</option>
+        </select>
+        <br />
         <br />
         <NavLink to="/accessories">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
@@ -890,13 +918,21 @@ class AccessoryEdit extends Component {
     accessoryService.getAccessory(this.props.match.params.id, accessory => {
       this.Type = accessory.Type;
       this.DailyPrice = accessory.DailyPrice;
+      this.HomeLocation = accessory.HomeLocation;
+      this.CurrentLocation = accessory.CurrentLocation;
     });
   }
 
   save() {
-    accessoryService.updateAccessory(this.props.match.params.id, this.DailyPrice, () => {
-      history.push('/accessories');
-    });
+    accessoryService.updateAccessory(
+      this.props.match.params.id,
+      this.DailyPrice,
+      (this.HomeLocation = '' + document.getElementById('HomeLocation').value),
+      (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
+      () => {
+        history.push('/accessories');
+      }
+    );
   }
 
   delete() {
@@ -921,6 +957,29 @@ class AccessoryTypeInsert extends Component {
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
         <br />
+        <Form.Label>Current Location</Form.Label> <br />
+        <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+          <option>9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+          <option>13</option>
+        </select>
+        <br />
+        <Form.Label>Current Location</Form.Label> <br />
+        <select
+          id="CurrentLocation"
+          value={this.CurrentLocation}
+          onChange={e => (this.CurrentLocation = e.target.value)}
+        >
+          <option>9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+          <option>13</option>
+        </select>
+        <br />
+        <br />
         <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
       </Card>
     );
@@ -930,7 +989,7 @@ class AccessoryTypeInsert extends Component {
     accessoryService.insertAccessoryType(this.type, () => {
       history.push('/accessories/');
     });
-    accessoryService.insertAccessoryPrice(this.type, this.dailyprice, () => {
+    accessoryService.insertAccessoryPrice(this.type, this.dailyprice, this.HomeLocation, this.CurrentLocation, () => {
       history.push('/accessories');
     });
   }

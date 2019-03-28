@@ -256,7 +256,7 @@ class EmployeeService {
 class BicycleService {
   //Selects all the bicycles from the database.
   getBicycles(success) {
-    connection.query('select * from Bicycles', (error, results) => {
+    connection.query('select * from Bicycles inner join Locations', (error, results) => {
       if (error) return console.error(error);
 
       success(results);
@@ -352,7 +352,7 @@ class BicycleService {
 class AccessoryService {
   //Selects all the accessories from the database.
   getAccessories(success) {
-    connection.query('select * from Accessories', (error, results) => {
+    connection.query('select * from Accessories  inner join Locations', (error, results) => {
       if (error) return console.error(error);
 
       success(results);
@@ -378,10 +378,10 @@ class AccessoryService {
   }
 
   //Updates an accessory with all variables.
-  updateAccessory(AccessoryID, DailyPrice, success) {
+  updateAccessory(AccessoryID, DailyPrice, HomeLocation, CurrentLocation, success) {
     connection.query(
-      'update Accessories set DailyPrice=? where AccessoryID=?',
-      [DailyPrice, AccessoryID],
+      'update Accessories set DailyPrice=?, HomeLocation=?, CurrentLocation=? where AccessoryID=?',
+      [DailyPrice, HomeLocation, CurrentLocation, AccessoryID],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -400,10 +400,10 @@ class AccessoryService {
   }
 
   //Adds new accessory price to the databse .
-  insertAccessoryPrice(Type, DailyPrice, success) {
+  insertAccessoryPrice(Type, DailyPrice, HomeLocation, CurrentLocation, success) {
     connection.query(
-      'insert into Accessories (Type, DailyPrice) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?)',
-      [Type, DailyPrice]
+      'insert into Accessories (Type, DailyPrice, HomeLocation, CurrentLocation) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?, ?, ?)',
+      [Type, DailyPrice, HomeLocation, CurrentLocation]
     ),
       (error, results) => {
         if (error) return console.error(error);
