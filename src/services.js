@@ -121,6 +121,27 @@ class RentalService {
       success(results);
     })
   }
+
+  getPickupLocation(success) {
+    connection.query('Select * from Locations where LocationID in (9, 13)', (error, results) => {
+      if(error) return console.error(error);
+
+      success(results);
+    })
+  }
+
+  getBicycleHomeLocation(LocationID, success) {
+    connection.query(
+      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
+      [LocationID],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+        console.log(results);
+      }
+    );
+  }
 }
 
 class CustomerService {
@@ -264,7 +285,7 @@ class EmployeeService {
 class BicycleService {
   //Selects all the bicycles from the database.
   getBicycles(success) {
-    connection.query('select * from Bicycles', (error, results) => {
+    connection.query('select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation', (error, results) => {
       if (error) return console.error(error);
 
       success(results);
@@ -278,6 +299,21 @@ class BicycleService {
 
       success(results[0]);
     });
+  }
+
+  updateBicycleStatus(BicycleID, BicycleStatus, CurrentLocation, success) {
+    connection.query('update Bicycles set BicycleStatus=?, CurrentLocation=? where BicycleID=?', 
+    [
+      BicycleID,
+      BicycleStatus,
+      CurrentLocation,
+      success
+    ],
+    (error, results) => {
+      if(error) return console.error(error);
+
+      success();
+    })
   }
 
   //Selects the bicyclestatus from the database.

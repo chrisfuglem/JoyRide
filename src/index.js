@@ -202,11 +202,13 @@ class RentalInsert extends Component {
   render() {
     return (
       <Card title="Adding Rental">
-      <Form.Label>Select Pickup Location:</Form.Label>
-      <br />
+        <Form.Label>Select Pickup Location:</Form.Label>
+        <br />
         <select ref={this.locationDropdown}>
           {this.locations.map(location => (
-            <option value={location.LocationID} key={location.LocationID}>{location.LocationName}</option>
+            <option value={location.LocationID} key={location.LocationID} onChange={e => (this.LocationID = e.target.value)}>
+              {location.LocationName}
+            </option>
           ))}
         </select>
         <br />
@@ -228,7 +230,9 @@ class RentalInsert extends Component {
         <br />
         <select ref={this.customerDropdown}>
           {this.customers.map(customer => (
-            <option value={customer.CustomerID} key={customer.CustomerID}>{customer[this.searchCategory]}</option>
+            <option value={customer.CustomerID} key={customer.CustomerID}>
+              {customer[this.searchCategory]}
+            </option>
           ))}
         </select>
         <br />
@@ -289,9 +293,9 @@ class RentalInsert extends Component {
     accessoryService.getAccessories(accessories => {
       this.accessories = accessories;
     });
-    transportService.getLocations(locations => {
+    rentalService.getPickupLocation(locations => {
       this.locations = locations;
-    })
+    });
   }
 
   addBicycle() {
@@ -304,8 +308,8 @@ class RentalInsert extends Component {
     for (let x = 0; x < this.rentedBicycles.length; x++) {
       if (this.rentedBicycles[x] == id) {
         this.rentedBicycles.splice(x, 1); //Sletter sykkelen som har matchende id
-        var option = document.createElement("option");
-        option.text = "Sykkel " + x;
+        var option = document.createElement('option');
+        option.text = 'Sykkel ' + x;
         option.value = x;
         this.bicycleDropdown.current.add(option);
       }
@@ -327,19 +331,19 @@ class RentalInsert extends Component {
   }
 
   insert() {
-    console.log("CustomerID: " + this.customerDropdown.current.value);
+    console.log('CustomerID: ' + this.customerDropdown.current.value);
     let dateObj = new Date();
     let month = dateObj.getUTCMonth() + 1;
     if (month <= 9) {
-      month = "0" + month;
+      month = '0' + month;
     }
     let day = dateObj.getUTCDate();
     let year = dateObj.getUTCFullYear();
-    let today = year + "-" + month + "-" + day;
-    console.log("Date: " + today);
-    console.log("RentStart: " + this.RentStart);
-    console.log("RentEnd: " + this.RentEnd);
-    console.log("SUM: ");
+    let today = year + '-' + month + '-' + day;
+    console.log('Date: ' + today);
+    console.log('RentStart: ' + this.RentStart);
+    console.log('RentEnd: ' + this.RentEnd);
+    console.log('SUM: ');
 
     console.log(this.rentedBicycles);
     console.log(this.rentedAccessories);
@@ -639,6 +643,9 @@ class BicycleList extends Component {
         <NavLink to="/bicycles/insert">
           <Button.Light>Add New Bicycle</Button.Light>
         </NavLink>
+        <NavLink to="/bicycles/update">
+        <Button.Light>Update Bicycles</Button.Light>
+        </NavLink>
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
@@ -719,9 +726,7 @@ class BicycleEdit extends Component {
         <Form.Label>Home Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
           <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
+          <option>13</option>
         </select>
         <br />
         <Form.Label>Daily Price</Form.Label>
@@ -736,6 +741,7 @@ class BicycleEdit extends Component {
           <option>10</option>
           <option>11</option>
           <option>12</option>
+          <option>13</option>
         </select>
         <br />
         <br />
@@ -873,6 +879,61 @@ class BicycleInsert extends Component {
       (this.HomeLocation = '' + document.getElementById('HomeLocation').value),
       this.DailyPrice,
       (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
+      () => {
+        history.push('/bicycles');
+      }
+    );
+  }
+}
+
+class BicycleUpdate extends Component {
+  bicycles = [];
+  BicycleStatus = "";
+  CurrentLocation = "";
+  
+
+  render() {
+    return (
+      <Card title="Bicycle List">
+        <p>Select the bicycles you want to update</p>
+        <List>
+          {this.bicycles.map(bicycle => (
+            <List.Item key={bicycle.bicycleID}>
+            <input type="checkbox" value={bicycle.BicycleID}></input>
+                Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Status: {bicycle.BicycleStatus} | Current Location: {bicycle.CurrentLocation}
+            </List.Item>
+          ))}
+        </List>
+        <br />
+        Select status: 
+        <select id="selectstatus">
+          <option>Available</option>
+          <option>Need Repair</option>
+        </select>{' '}
+        Select Location: 
+        <select id="selectlocation">
+          <option>9</option>
+          <option>13</option>
+        </select>
+        <br />
+        <br />
+        <NavLink to="/bicycles/update" onClick={this.updateBicycleStatus}>
+          <Button.Success>Update Bicycle</Button.Success>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    bicycleService.getBicycles(bicycles => {
+      this.bicycles = bicycles;
+    });
+  }
+
+  updateBicycleStatus() {
+    bicycleService.updateBicycleStatus(
+      (this.BicycleStatus = '' + document.getElementById('selectstatus').value),
+      (this.FrameType = '' + document.getElementById('selectlocation').value),
       () => {
         history.push('/bicycles');
       }
@@ -1207,6 +1268,7 @@ ReactDOM.render(
       <Route exact path="/transport/:id/booking" component={TransportBooking} />
       <Route exact path="/transport/:id/booking/order" component={TransportOrder} />
       <Route exact path="/rentals" component={RentalList} />
+      <Route exact path="/bicycles/update" component={BicycleUpdate}/>
       <Route path="/rentals/:id/edit" component={RentalEdit} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
