@@ -656,8 +656,8 @@ class BicycleList extends Component {
             <List.Item key={bicycle.BicycleID}>
               <NavLink to={'/bicycles/' + bicycle.BicycleID + '/edit'}>
                 Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
-                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.LocationName}{' '}
-                | Daily Price: {bicycle.DailyPrice}kr per day | Current Location: {bicycle.LocationName}
+                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.HomeLocationName}{' '}
+                | Daily Price: {bicycle.DailyPrice}kr per day | Current Location: {bicycle.CurrentLocationName}
               </NavLink>
             </List.Item>
           ))}

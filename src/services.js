@@ -294,7 +294,7 @@ class BicycleService {
 
   getBicycles(success) {
     connection.query(
-      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation',
+      'select * from Bicycles inner join HomeLocation on HomeLocation.BicycleID = Bicycles.BicycleID inner join CurrentLocation on CurrentLocation.BicycleID = Bicycles.BicycleID',
       (error, results) => {
         if (error) return console.error(error);
 
