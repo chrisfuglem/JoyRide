@@ -12,6 +12,7 @@ import {
   repairService
 } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form, TextInput } from './widgets';
+import jsPDF from 'jspdf';
 
 import createHashHistory from 'history/createHashHistory';
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
@@ -1244,28 +1245,20 @@ class RepairDetails extends Component {
           Bicycle Type:
           <List.Item>{this.BicycleType}</List.Item>
           Frame Type:
-          <List.Item>
-            {this.FrameType} <input type="checkbox" value={this.FrameType} />
-          </List.Item>
+          <List.Item>{this.FrameType}</List.Item>
           Brake Type:
-          <List.Item>
-            {this.BrakeType} <input type="checkbox" value={this.BrakeType} />
-          </List.Item>
+          <List.Item>{this.BrakeType}</List.Item>
           Wheelsize:
-          <List.Item>
-            {this.Wheelsize} <input type="checkbox" value={this.Wheelsize} />
-          </List.Item>
+          <List.Item>{this.Wheelsize}</List.Item>
           Bicycle Status:
           <List.Item>Current status: {this.BicycleStatus}</List.Item>
         </List>
         <br />
-        <input type="textarea" placeholder="Add additional comments" />
+        <input type="textarea" placeholder="Add additional comments" id="comment" />
         <br />
         <br />
         <NavLink to="/bicycles">
-          <Button.Success onClick={this.save} onClick={this.orderRepair}>
-            Order Repair
-          </Button.Success>
+          <Button.Success onClick={this.orderRepair}>Order Repair</Button.Success>
         </NavLink>
         <br />
         <br />
@@ -1295,7 +1288,51 @@ class RepairDetails extends Component {
       this.BrakeType = bicycle.Braketype;
       this.Wheelsize = bicycle.Wheelsize;
     });
+    var pdf = new jsPDF();
+
+    var comment = '' + document.getElementById('comment').value;
+    var type = this.BicycleType;
+    var frame = this.FrameType;
+    var brake = this.BrakeType;
+    var wheel = this.Wheelsize;
+    var text =
+      'Repair confirmation: \n \n' +
+      'Bicycle Type: ' +
+      type +
+      '\nFrametype: ' +
+      frame +
+      '\nBrake type: ' +
+      brake +
+      '\nWheel size:' +
+      wheel +
+      '\n\nExtra comments: ' +
+      comment;
+
+    pdf.text(text, 10, 10);
+    pdf.save('Repair_order.pdf');
   }
+
+  // repairPDF() {
+  //   var pdf = new jsPDF();
+  //
+  //   var comment = '' + document.getElementById('comment').value;
+  //   var frame = '' + document.getElementById('frame').value;
+  //   var brake = '' + document.getElementById('brake').value;
+  //   var wheel = '' + document.getElementById('wheel').value;;
+  //   var text =
+  //     'Repair confirmation: \n \n' +
+  //     'Frametype: ' +
+  //     frame +
+  //     '\nBrake type: ' +
+  //     brake +
+  //     '\nWheel size:' +
+  //     wheel +
+  //     '\n\nExtra comments: ' +
+  //     comment;
+  //
+  //   pdf.text(text, 10, 10);
+  //   pdf.save('Repair_order.pdf');
+  // }
 }
 
 class RentalCountList extends Component {
