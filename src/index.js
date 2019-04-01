@@ -12,6 +12,7 @@ import {
   repairService
 } from './services';
 import { Card, List, Row, Column, NavBar, Button, Form, TextInput } from './widgets';
+import jsPDF from 'jspdf';
 
 import createHashHistory from 'history/createHashHistory';
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
@@ -186,7 +187,11 @@ class RentalInsert extends Component {
   customers = [];
   locations = [];
   bicycles = [];
+  availableBicyclesCount = [];
+  bicycleDropdownOptions = [];
   accessories = [];
+  availableAccessoriesCount = [];
+  accessoryDropdownOptions = [];
   rentedBicycles = [];
   rentedAccessories = [];
   searchCategory = '';
@@ -248,34 +253,32 @@ class RentalInsert extends Component {
         <div>
           <h4>Available Bicycles</h4>
           <select ref={this.bicycleDropdown}>
-            {this.bicycles.map(bicycle => (
-              <option key={bicycle.BicycleID} value={bicycle.BicycleID}>
-                {bicycle.BicycleType}
+            {this.bicycleDropdownOptions.map(bicycle => (
+              <option value={bicycle.Type}>
+                {bicycle.Type} - {bicycle.TypeCount} Available
               </option>
             ))}
           </select>
           <button onClick={this.addBicycle}>Add Bicycle</button>
           {this.rentedBicycles.map(bicycle => (
-            <List.Item key={bicycle}>
-              Bicycle id # {bicycle}
-              <button onClick={this.removeBicycle.bind(this, bicycle)}>Remove Bicycle</button>
+            <List.Item>
+              {bicycle.Type} <button onClick={this.removeBicycle.bind(this, bicycle.Type)}>Remove Bicycle</button>
             </List.Item>
           ))}
         </div>
         <div>
           <h4>Available Accessories</h4>
           <select ref={this.accessoryDropdown}>
-            {this.accessories.map(accessory => (
-              <option key={accessory.AccessoryID} value={accessory.AccessoryID}>
-                {accessory.Type} {accessory.AccessoryID}
+            {this.accessoryDropdownOptions.map(accessory => (
+              <option key={accessory.AccessoryID} value={accessory.accessoryType}>
+                {accessory.accessoryType} - {accessory.TypeCount} Available
               </option>
             ))}
           </select>
           <button onClick={this.addAccessory}>Add Accessory</button>
           {this.rentedAccessories.map(accessory => (
-            <List.Item key={accessory}>
-              Accessory id # {accessory}
-              <button onClick={this.removeAccessory.bind(this, accessory)}>Remove Accessory</button>
+            <List.Item>
+              {accessory.accessoryType} <button onClick={this.removeAccessory.bind(this, accessory.accessoryType)}>Remove Accessory</button>
             </List.Item>
           ))}
         </div>
@@ -294,48 +297,90 @@ class RentalInsert extends Component {
     rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
     });
-    accessoryService.getAccessories(accessories => {
+    rentalService.getAvailableBicyclesByType(bicycles => {
+      this.availableBicyclesCount = bicycles;
+      for (let x = 0; x < this.availableBicyclesCount.length; x++) {
+        if (this.availableBicyclesCount[x].TypeCount > 0) {
+          this.bicycleDropdownOptions.push(this.availableBicyclesCount[x]);
+        }
+      }
+    });
+    rentalService.getAvailableAccessories(accessories => {
       this.accessories = accessories;
     });
-    rentalService.getPickupLocation(locations => {
+    rentalService.getAvailableAccessoriesByType(accessories => {
+      this.availableAccessoriesCount = accessories;
+      for (let x = 0; x < this.availableAccessoriesCount.length; x++) {
+        if (this.availableAccessoriesCount[x].TypeCount > 0) {
+          this.accessoryDropdownOptions.push(this.availableAccessoriesCount[x]);
+        }
+      }
+      console.log(this.accessoryDropdownOptions);
+    });
+    transportService.getLocations(locations => {
       this.locations = locations;
     });
   }
 
   addBicycle() {
-    this.rentedBicycles.push(this.bicycleDropdown.current.value);
+    for (let x = 0; x < this.bicycleDropdownOptions.length; x++) {
+      if (this.bicycleDropdownOptions[x].Type == this.bicycleDropdown.current.value) {
+        if (this.bicycleDropdownOptions[x].TypeCount > 0) {
+          this.rentedBicycles.push(this.bicycleDropdownOptions[x]);
+          this.bicycleDropdownOptions[x].TypeCount--;
+          break;
+        }
+      }
+    }
     console.log(this.rentedBicycles);
-    this.bicycleDropdown.current.remove(this.bicycleDropdown.current.selectedIndex);
   }
 
-  removeBicycle(id) {
+  removeBicycle(type) {
     for (let x = 0; x < this.rentedBicycles.length; x++) {
-      if (this.rentedBicycles[x] == id) {
-        this.rentedBicycles.splice(x, 1); //Sletter sykkelen som har matchende id
-        var option = document.createElement('option');
-        option.text = 'Sykkel ' + x;
-        option.value = x;
-        this.bicycleDropdown.current.add(option);
+      if (this.rentedBicycles[x].Type == type) {
+        for (let xx = 0; xx < this.bicycleDropdownOptions.length; xx++) {
+          if (this.bicycleDropdownOptions[xx].Type == this.rentedBicycles[x].Type) {
+              this.bicycleDropdownOptions[xx].TypeCount++;
+          }
+        }
+        this.rentedBicycles.splice(x, 1); //Deletes the first bike with a matching Type
+        console.log(this.rentedBicycles);
+        break;
       }
     }
   }
 
   addAccessory() {
-    this.rentedAccessories.push(this.accessoryDropdown.current.value);
+    for (let x = 0; x < this.accessoryDropdownOptions.length; x++) {
+      if (this.accessoryDropdownOptions[x].accessoryType == this.accessoryDropdown.current.value) {
+        if (this.accessoryDropdownOptions[x].TypeCount > 0) {
+          this.rentedAccessories.push(this.accessoryDropdownOptions[x]);
+          this.accessoryDropdownOptions[x].TypeCount--;
+          break;
+        }
+      }
+    }
     console.log(this.rentedAccessories);
-    this.accessoryDropdown.current.remove(this.accessoryDropdown.current.selectedIndex);
   }
 
-  removeAccessory(id) {
+  removeAccessory(type) {
     for (let x = 0; x < this.rentedAccessories.length; x++) {
-      if (this.rentedAccessories[x] == id) {
-        this.rentedAccessories.splice(x, 1); //Sletter sykkelen som har matchende id
+      if (this.rentedAccessories[x].accessoryType == type) {
+        for (let xx = 0; xx < this.accessoryDropdownOptions.length; xx++) {
+          if (this.accessoryDropdownOptions[xx].accessoryType == this.rentedAccessories[x].accessoryType) {
+              this.accessoryDropdownOptions[xx].TypeCount++;
+          }
+        }
+        this.rentedAccessories.splice(x, 1); //Deletes the first bike with a matching Type
+        console.log(this.rentedAccessories);
+        break;
       }
     }
   }
 
   insert() {
-    console.log('CustomerID: ' + this.customerDropdown.current.value);
+    console.log("Location: " + this.locationDropdown.current.value);
+    console.log("CustomerID: " + this.customerDropdown.current.value);
     let dateObj = new Date();
     let month = dateObj.getUTCMonth() + 1;
     if (month <= 9) {
@@ -351,6 +396,19 @@ class RentalInsert extends Component {
 
     console.log(this.rentedBicycles);
     console.log(this.rentedAccessories);
+    // name, date, rentstart, rentend, sum, pickuplocation, discountsum
+    rentalService.insertRental(
+      this.customerDropdown.current.value,
+      today,
+      this.RentStart,
+      this.RentEnd,
+      1000,
+      this.locationDropdown.current.value,
+      800,
+      () => {
+        history.push('/rentals');
+      }
+    );
   }
 }
 
@@ -1279,28 +1337,20 @@ class RepairDetails extends Component {
           Bicycle Type:
           <List.Item>{this.BicycleType}</List.Item>
           Frame Type:
-          <List.Item>
-            {this.FrameType} <input type="checkbox" value={this.FrameType} />
-          </List.Item>
+          <List.Item>{this.FrameType}</List.Item>
           Brake Type:
-          <List.Item>
-            {this.BrakeType} <input type="checkbox" value={this.BrakeType} />
-          </List.Item>
+          <List.Item>{this.BrakeType}</List.Item>
           Wheelsize:
-          <List.Item>
-            {this.Wheelsize} <input type="checkbox" value={this.Wheelsize} />
-          </List.Item>
+          <List.Item>{this.Wheelsize}</List.Item>
           Bicycle Status:
           <List.Item>Current status: {this.BicycleStatus}</List.Item>
         </List>
         <br />
-        <input type="textarea" placeholder="Add additional comments" />
+        <input type="textarea" placeholder="Add additional comments" id="comment" />
         <br />
         <br />
         <NavLink to="/bicycles">
-          <Button.Success onClick={this.save} onClick={this.orderRepair}>
-            Order Repair
-          </Button.Success>
+          <Button.Success onClick={this.orderRepair}>Order Repair</Button.Success>
         </NavLink>
         <br />
         <br />
@@ -1330,7 +1380,51 @@ class RepairDetails extends Component {
       this.BrakeType = bicycle.Braketype;
       this.Wheelsize = bicycle.Wheelsize;
     });
+    var pdf = new jsPDF();
+
+    var comment = '' + document.getElementById('comment').value;
+    var type = this.BicycleType;
+    var frame = this.FrameType;
+    var brake = this.BrakeType;
+    var wheel = this.Wheelsize;
+    var text =
+      'Repair confirmation: \n \n' +
+      'Bicycle Type: ' +
+      type +
+      '\nFrametype: ' +
+      frame +
+      '\nBrake type: ' +
+      brake +
+      '\nWheel size:' +
+      wheel +
+      '\n\nExtra comments: ' +
+      comment;
+
+    pdf.text(text, 10, 10);
+    pdf.save('Repair_order.pdf');
   }
+
+  // repairPDF() {
+  //   var pdf = new jsPDF();
+  //
+  //   var comment = '' + document.getElementById('comment').value;
+  //   var frame = '' + document.getElementById('frame').value;
+  //   var brake = '' + document.getElementById('brake').value;
+  //   var wheel = '' + document.getElementById('wheel').value;;
+  //   var text =
+  //     'Repair confirmation: \n \n' +
+  //     'Frametype: ' +
+  //     frame +
+  //     '\nBrake type: ' +
+  //     brake +
+  //     '\nWheel size:' +
+  //     wheel +
+  //     '\n\nExtra comments: ' +
+  //     comment;
+  //
+  //   pdf.text(text, 10, 10);
+  //   pdf.save('Repair_order.pdf');
+  // }
 }
 
 class RentalCountList extends Component {
