@@ -1198,10 +1198,12 @@ class TransportList extends Component {
       <Card title="Order Transport From:">
         <p>Select the location you want transport from</p>
         <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
-        <option selected="true" disabled="disabled">Select Location</option>
-          {this.locations.map(location => (
-            <option value={location.LocationID}>{location.LocationName}</option>
-          ))}
+        <option selected={true} disabled="disabled">Select Location</option>
+        <option value="9">Finse</option>
+        <option value="10">Flaam</option>
+        <option value="11">Voss</option>
+        <option value="12">Myrdal</option>
+        <option value="13">Haugastøl</option>
         </select>
         <br />
         <p>Select the Bicycles you want to transport</p>
@@ -1211,10 +1213,10 @@ class TransportList extends Component {
           ))}
         </List>
         <br />
-        <select id="TransportDropdown">
-            <option value="9">Finse</option>
-            <option value="13">Haugastøl</option>
-          ))}
+        <select id="TransportDropdown" value={this.LocationID}>
+        {this.locations.map(location => (
+          <option value={location.LocationID}>{location.LocationName}</option>
+        ))}
         </select>
         <br />
         <br />
@@ -1233,14 +1235,25 @@ class TransportList extends Component {
     transportService.getBicycles(document.getElementById("LocationDropdown").value, bicycles => {
       this.bicycles = bicycles;
     });
-  }
+    transportService.getTransportToLocation(document.getElementById("LocationDropdown").value, locations => {
+      this.locations = locations;
+    });
+      }
 
   save() {
     transportService.saveStatus(this.props.match.params.id, bicycles, locations => {
       this.locations = locations;
       this.bicycles = bicycles;
     })
+    var pdf = new jsPDF();
+    var pickup = '' + document.getElementById('LocationDropdown').value;
+    var drop = '' + document.getElementById('TransportDropdown').value
 
+    var text =
+      'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop;
+
+    pdf.text(text, 10, 10);
+    pdf.save('Transport_order.pdf');
   }
 }
 

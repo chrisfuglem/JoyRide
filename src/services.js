@@ -367,7 +367,7 @@ class BicycleService {
       }
     );
   }
-  
+
 
   //Selects the bicyclestatus from the database.
   getBicycleStatuses(success) {
@@ -553,6 +553,15 @@ class TransportService {
     });
   }
 
+  getTransportToLocation(LocationID, success) {
+    connection.query('SELECT * from Locations WHERE LocationID <> ? and  LocationID <> 10 and LocationID <> 11 and LocationID <> 12;', [LocationID], (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+      console.log(results);
+    });
+  }
+
   //Selects a specific location.
   getLocation(LocationID, success) {
     connection.query('select * from Locations where LocationID=?', [LocationID], (error, results) => {
@@ -586,7 +595,7 @@ class TransportService {
 }
 
 class RepairService {
-  
+
   //Selects all bicycles that need repair from the database.
   getBicycles(success) {
     connection.query('select * from Bicycles where BicycleStatus = "Need Repair"', (error, results) => {
