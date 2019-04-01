@@ -82,12 +82,15 @@ class RentalService {
   }
 
   //Adds an order with name, email, rent start and rent end.
-  insertRental(name, email, success) {
-    connection.query('insert into Rentals (name, email, RentStart, RentEnd) values (?, ?)', [
-      name,
-      email,
+  insertRental(customer, date, rentstart, rentend, sum, pickuplocation, discountsum, success) {
+    connection.query('insert into Rentals (CustomerID, Date, RentStart, RentEnd, SUM, PickupLocation, SUMwithDiscount) values (?, ?, ?, ?, ?, ?, ?)', [
+      customer,
+      date,
       rentstart,
-      rentend
+      rentend,
+      sum,
+      pickuplocation,
+      discountsum
     ]),
       (error, results) => {
         if (error) return console.error(error);
@@ -116,6 +119,30 @@ class RentalService {
 
   getAvailableBicycles(success) {
     connection.query('Select BicycleType from Bicycles where BicycleStatus = "Available"', (error, results) => {
+      if(error) return console.error(error);
+
+      success(results);
+    })
+  }
+
+  getAvailableAccessoriesByType(success) {
+    connection.query('select Accessories.Type as accessoryType, (SELECT COUNT(Accessories.AccessoryID) FROM Accessories WHERE Accessories.Status = "Available" AND Accessories.Type = accessoryType) as TypeCount FROM Accessories GROUP BY Accessories.Type;', (error, results) => {
+      if(error) return console.error(error);
+
+      success(results);
+    })
+  }
+
+  getAvailableAccessories(success) {
+    connection.query('Select Type from Accessories where Status = "Available"', (error, results) => {
+      if(error) return console.error(error);
+
+      success(results);
+    })
+  }
+
+  getAvailableBicyclesByType(success) {
+    connection.query('select Bicycles.BicycleType as Type, (SELECT COUNT(Bicycles.BicycleID) FROM Bicycles WHERE Bicycles.BicycleStatus = "Available" AND Bicycles.BicycleType = Type) as TypeCount FROM Bicycles GROUP BY Bicycles.BicycleType;', (error, results) => {
       if(error) return console.error(error);
 
       success(results);

@@ -186,7 +186,11 @@ class RentalInsert extends Component {
   customers = [];
   locations = [];
   bicycles = [];
+  availableBicyclesCount = [];
+  bicycleDropdownOptions = [];
   accessories = [];
+  availableAccessoriesCount = [];
+  accessoryDropdownOptions = [];
   rentedBicycles = [];
   rentedAccessories = [];
   searchCategory = '';
@@ -240,34 +244,32 @@ class RentalInsert extends Component {
         <div>
           <h4>Available Bicycles</h4>
           <select ref={this.bicycleDropdown}>
-            {this.bicycles.map(bicycle => (
-              <option key={bicycle.BicycleID} value={bicycle.BicycleID}>
-                {bicycle.BicycleType}
+            {this.bicycleDropdownOptions.map(bicycle => (
+              <option value={bicycle.Type}>
+                {bicycle.Type} - {bicycle.TypeCount} Available
               </option>
             ))}
           </select>
           <button onClick={this.addBicycle}>Add Bicycle</button>
           {this.rentedBicycles.map(bicycle => (
-            <List.Item key={bicycle}>
-              Bicycle id # {bicycle}
-              <button onClick={this.removeBicycle.bind(this, bicycle)}>Remove Bicycle</button>
+            <List.Item>
+              {bicycle.Type} <button onClick={this.removeBicycle.bind(this, bicycle.Type)}>Remove Bicycle</button>
             </List.Item>
           ))}
         </div>
         <div>
           <h4>Available Accessories</h4>
           <select ref={this.accessoryDropdown}>
-            {this.accessories.map(accessory => (
-              <option key={accessory.AccessoryID} value={accessory.AccessoryID}>
-                {accessory.Type} {accessory.AccessoryID}
+            {this.accessoryDropdownOptions.map(accessory => (
+              <option key={accessory.AccessoryID} value={accessory.accessoryType}>
+                {accessory.accessoryType} - {accessory.TypeCount} Available
               </option>
             ))}
           </select>
           <button onClick={this.addAccessory}>Add Accessory</button>
           {this.rentedAccessories.map(accessory => (
-            <List.Item key={accessory}>
-              Accessory id # {accessory}
-              <button onClick={this.removeAccessory.bind(this, accessory)}>Remove Accessory</button>
+            <List.Item>
+              {accessory.accessoryType} <button onClick={this.removeAccessory.bind(this, accessory.accessoryType)}>Remove Accessory</button>
             </List.Item>
           ))}
         </div>
@@ -286,47 +288,89 @@ class RentalInsert extends Component {
     rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
     });
-    accessoryService.getAccessories(accessories => {
+    rentalService.getAvailableBicyclesByType(bicycles => {
+      this.availableBicyclesCount = bicycles;
+      for (let x = 0; x < this.availableBicyclesCount.length; x++) {
+        if (this.availableBicyclesCount[x].TypeCount > 0) {
+          this.bicycleDropdownOptions.push(this.availableBicyclesCount[x]);
+        }
+      }
+    });
+    rentalService.getAvailableAccessories(accessories => {
       this.accessories = accessories;
+    });
+    rentalService.getAvailableAccessoriesByType(accessories => {
+      this.availableAccessoriesCount = accessories;
+      for (let x = 0; x < this.availableAccessoriesCount.length; x++) {
+        if (this.availableAccessoriesCount[x].TypeCount > 0) {
+          this.accessoryDropdownOptions.push(this.availableAccessoriesCount[x]);
+        }
+      }
+      console.log(this.accessoryDropdownOptions);
     });
     transportService.getLocations(locations => {
       this.locations = locations;
-    })
+    });
   }
 
   addBicycle() {
-    this.rentedBicycles.push(this.bicycleDropdown.current.value);
+    for (let x = 0; x < this.bicycleDropdownOptions.length; x++) {
+      if (this.bicycleDropdownOptions[x].Type == this.bicycleDropdown.current.value) {
+        if (this.bicycleDropdownOptions[x].TypeCount > 0) {
+          this.rentedBicycles.push(this.bicycleDropdownOptions[x]);
+          this.bicycleDropdownOptions[x].TypeCount--;
+          break;
+        }
+      }
+    }
     console.log(this.rentedBicycles);
-    this.bicycleDropdown.current.remove(this.bicycleDropdown.current.selectedIndex);
   }
 
-  removeBicycle(id) {
+  removeBicycle(type) {
     for (let x = 0; x < this.rentedBicycles.length; x++) {
-      if (this.rentedBicycles[x] == id) {
-        this.rentedBicycles.splice(x, 1); //Sletter sykkelen som har matchende id
-        var option = document.createElement("option");
-        option.text = "Sykkel " + x;
-        option.value = x;
-        this.bicycleDropdown.current.add(option);
+      if (this.rentedBicycles[x].Type == type) {
+        for (let xx = 0; xx < this.bicycleDropdownOptions.length; xx++) {
+          if (this.bicycleDropdownOptions[xx].Type == this.rentedBicycles[x].Type) {
+              this.bicycleDropdownOptions[xx].TypeCount++;
+          }
+        }
+        this.rentedBicycles.splice(x, 1); //Deletes the first bike with a matching Type
+        console.log(this.rentedBicycles);
+        break;
       }
     }
   }
 
   addAccessory() {
-    this.rentedAccessories.push(this.accessoryDropdown.current.value);
+    for (let x = 0; x < this.accessoryDropdownOptions.length; x++) {
+      if (this.accessoryDropdownOptions[x].accessoryType == this.accessoryDropdown.current.value) {
+        if (this.accessoryDropdownOptions[x].TypeCount > 0) {
+          this.rentedAccessories.push(this.accessoryDropdownOptions[x]);
+          this.accessoryDropdownOptions[x].TypeCount--;
+          break;
+        }
+      }
+    }
     console.log(this.rentedAccessories);
-    this.accessoryDropdown.current.remove(this.accessoryDropdown.current.selectedIndex);
   }
 
-  removeAccessory(id) {
+  removeAccessory(type) {
     for (let x = 0; x < this.rentedAccessories.length; x++) {
-      if (this.rentedAccessories[x] == id) {
-        this.rentedAccessories.splice(x, 1); //Sletter sykkelen som har matchende id
+      if (this.rentedAccessories[x].accessoryType == type) {
+        for (let xx = 0; xx < this.accessoryDropdownOptions.length; xx++) {
+          if (this.accessoryDropdownOptions[xx].accessoryType == this.rentedAccessories[x].accessoryType) {
+              this.accessoryDropdownOptions[xx].TypeCount++;
+          }
+        }
+        this.rentedAccessories.splice(x, 1); //Deletes the first bike with a matching Type
+        console.log(this.rentedAccessories);
+        break;
       }
     }
   }
 
   insert() {
+    console.log("Location: " + this.locationDropdown.current.value);
     console.log("CustomerID: " + this.customerDropdown.current.value);
     let dateObj = new Date();
     let month = dateObj.getUTCMonth() + 1;
@@ -343,6 +387,19 @@ class RentalInsert extends Component {
 
     console.log(this.rentedBicycles);
     console.log(this.rentedAccessories);
+    // name, date, rentstart, rentend, sum, pickuplocation, discountsum
+    rentalService.insertRental(
+      this.customerDropdown.current.value,
+      today,
+      this.RentStart,
+      this.RentEnd,
+      1000,
+      this.locationDropdown.current.value,
+      800,
+      () => {
+        history.push('/rentals');
+      }
+    );
   }
 }
 
