@@ -106,6 +106,7 @@ class RentalService {
       };
   }
 
+  //Shows the number of orders each customer have made.
   showCount(success) {
     connection.query('select * from Rental_Count', (error, results) => {
       if (error) return console.error(error);
@@ -114,6 +115,7 @@ class RentalService {
     });
   }
 
+  //Gets all bicycles with status 'Available'.
   getAvailableBicycles(success) {
     connection.query('Select BicycleType from Bicycles where BicycleStatus = "Available"', (error, results) => {
       if (error) return console.error(error);
@@ -122,6 +124,7 @@ class RentalService {
     });
   }
 
+  //Gets the Locations where you can pick up a bicycle.
   getPickupLocation(success) {
     connection.query('Select * from Locations where LocationID in (9, 13)', (error, results) => {
       if (error) return console.error(error);
@@ -130,6 +133,7 @@ class RentalService {
     });
   }
 
+  //Gets all details of bicycles.
   getBicycleHomeLocation(LocationID, success) {
     connection.query(
       'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
@@ -283,15 +287,16 @@ class EmployeeService {
 }
 
 class BicycleService {
+
   //Selects all the bicycles from the database.
   getBicyclestoUpdate(success) {
-    connection.query('select * from Bicycles', (error, results) => {
+    connection.query('select * from Bicycles inner join HomeLocation on HomeLocation.BicycleID = Bicycles.BicycleID inner join CurrentLocation on CurrentLocation.BicycleID = Bicycles.BicycleID', (error, results) => {
       if (error) return console.error(error);
 
       success(results);
     });
   }
-
+  //gets details of all bicycles.
   getBicycles(success) {
     connection.query(
       'select * from Bicycles inner join HomeLocation on HomeLocation.BicycleID = Bicycles.BicycleID inner join CurrentLocation on CurrentLocation.BicycleID = Bicycles.BicycleID',
@@ -302,7 +307,7 @@ class BicycleService {
       }
     );
   }
-
+  //Gets the Location of All Bicycles.
   getBicyclesHome(success) {
     connection.query(
       'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.HomeLocation',
@@ -323,16 +328,26 @@ class BicycleService {
     });
   }
 
-  updateBicycleStatus(BicycleID, BicycleStatus, CurrentLocation, success) {
+  //Updates the Status of the Bicycle selected (ikke ferdig)
+  updateBicycleStatus(BicycleID, BicycleStatus, success) {
     connection.query(
-      'update Bicycles set BicycleStatus=?, CurrentLocation=? where BicycleID=?',
-      [BicycleStatus, CurrentLocation],
+      'update Bicycles set BicycleStatus=? where BicycleID=?',
+      [BicycleID, BicycleStatus],
       (error, results) => {
         if (error) return console.error(error);
 
         success();
       }
     );
+  }
+
+  //Updates the Location of a Bicycle selected (ikke ferdig)
+  updateBicycleLocation(BicycleID, CurrentLocation, success) {
+    connection.query('update Bicycles set CurrentLocation=? where BicycleID=?', [BicycleID, CurrentLocation], (error, results => {
+      if (error) return console.error(error);
+
+      success();
+    }))
   }
 
   //Selects the bicyclestatus from the database.
@@ -509,7 +524,7 @@ class TransportService {
     });
   }
 
-  //Selects all locations except the one already chosen for transport. (Doesnt work yet)
+  //Selects all locations except the one already chosen for transport.
   getLocationsRemove(LocationID, success) {
     connection.query('select * from Locations where LocationID <> ?;', [LocationID], (error, results) => {
       if (error) return console.error(error);
@@ -536,14 +551,23 @@ class TransportService {
       (error, results) => {
         if (error) return console.error(error);
 
-        success(results);
         console.log(results);
+        success(results);
       }
     );
+  }
+
+  saveStatus(BicycleID, success) {
+    connection.query('update Bicycles set BicycleStatus = "In Transport" where BicycleID=?', [BicycleID], (error,results) => {
+      if(error) return console.error(error);
+
+      success(results);
+    })
   }
 }
 
 class RepairService {
+  
   //Selects all bicycles that need repair from the database.
   getBicycles(success) {
     connection.query('select * from Bicycles where BicycleStatus = "Need Repair"', (error, results) => {

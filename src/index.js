@@ -912,7 +912,7 @@ class BicycleUpdate extends Component {
             <List.Item key={bicycle.BicycleID}>
               <input type="checkbox" value={bicycle.BicycleID} />
               Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Status: {bicycle.BicycleStatus} |
-              Current Location: {bicycle.CurrentLocation}
+              Current Location: {bicycle.CurrentLocationName}
             </List.Item>
           ))}
         </List>
@@ -924,8 +924,8 @@ class BicycleUpdate extends Component {
         </select>{' '}
         Select Location:
         <select id="selectlocation">
-          <option>9</option>
-          <option>13</option>
+          <option>Finse</option>
+          <option>Haugastøl</option>
         </select>
         <br />
         <br />
@@ -951,6 +951,10 @@ class BicycleUpdate extends Component {
         history.push('/bicycles');
       }
     );
+  }
+
+  updateBicycleLocation() {
+    bicycleService.updateBicycleLocation()
   }
 }
 
@@ -1118,19 +1122,36 @@ class AccessoryTypeInsert extends Component {
 }
 
 class TransportList extends Component {
+  HomeLocation = "";
   locations = [];
+  bicycles = [];
 
   render() {
     return (
       <Card title="Order Transport From:">
-        <p>Click the location you want transport from</p>
-        <List>
+        <p>Select the location you want transport from</p>
+        <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
+        <option selected="true" disabled="disabled">Select Location</option>
           {this.locations.map(location => (
-            <List.Item key={location.LocationID}>
-              <NavLink to={'/transport/' + location.LocationID + '/booking/'}>{location.LocationName}</NavLink>
-            </List.Item>
+            <option value={location.LocationID}>{location.LocationName}</option>
+          ))}
+        </select>
+        <br />
+        <p>Select the Bicycles you want to transport</p>
+        <List>
+          {this.bicycles.map(bicycle => (
+            <List.Item key={bicycle.BicycleID}>ID: {bicycle.BicycleID} Type: {bicycle.BicycleType} Status: {bicycle.BicycleStatus} <input type="checkbox" value={this.BicycleID}></input></List.Item>
           ))}
         </List>
+        <br />
+        <select id="TransportDropdown">
+            <option value="9">Finse</option>
+            <option value="13">Haugastøl</option>
+          ))}
+        </select>
+        <br />
+        <br />
+        <Button.Success onClick={this.save}>Submit</Button.Success>
       </Card>
     );
   }
@@ -1139,6 +1160,20 @@ class TransportList extends Component {
     transportService.getLocations(locations => {
       this.locations = locations;
     });
+  }
+
+  getBicycles() {
+    transportService.getBicycles(document.getElementById("LocationDropdown").value, bicycles => {
+      this.bicycles = bicycles;
+    });
+  }
+
+  save() {
+    transportService.saveStatus(this.props.match.params.id, bicycles, locations => {
+      this.locations = locations;
+      this.bicycles = bicycles;
+    })
+
   }
 }
 
@@ -1172,32 +1207,32 @@ class TransportBooking extends Component {
   }
 }
 
-class TransportOrder extends Component {
-  locations = [];
+// class TransportOrder extends Component {
+//   locations = [];
 
-  render() {
-    return (
-      <Card title="Order Transport To:">
-        <p>Click the location you want transport to</p>
-        <List>
-          {this.locations.map(location => (
-            <List.Item key={location.LocationID}>
-              <NavLink to={'/transport/' + location.LocationID + '/booking/order/confirm'}>
-                {location.LocationName}
-              </NavLink>
-            </List.Item>
-          ))}
-        </List>
-      </Card>
-    );
-  }
+//   render() {
+//     return (
+//       <Card title="Order Transport To:">
+//         <p>Click the location you want transport to</p>
+//         <List>
+//           {this.locations.map(location => (
+//             <List.Item key={location.LocationID}>
+//               <NavLink to={'/transport/' + location.LocationID + '/booking/order/confirm'}>
+//                 {location.LocationName}
+//               </NavLink>
+//             </List.Item>
+//           ))}
+//         </List>
+//       </Card>
+//     );
+//   }
 
-  mounted() {
-    transportService.getLocationsRemove(this.props.match.params.id, locations => {
-      this.locations = locations;
-    });
-  }
-}
+//   mounted() {
+//     transportService.getLocationsRemove(this.props.match.params.id, locations => {
+//       this.locations = locations;
+//     });
+//   }
+// }
 
 class RepairList extends Component {
   bicycles = [];
@@ -1336,7 +1371,6 @@ ReactDOM.render(
       <Route exact path="/repair" component={RepairList} />
       <Route exact path="/transport" component={TransportList} />
       <Route exact path="/transport/:id/booking" component={TransportBooking} />
-      <Route exact path="/transport/:id/booking/order" component={TransportOrder} />
       <Route exact path="/rentals" component={RentalList} />
       <Route exact path="/bicycles/update" component={BicycleUpdate} />
       <Route path="/rentals/:id/edit" component={RentalEdit} />
