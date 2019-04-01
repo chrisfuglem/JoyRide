@@ -558,7 +558,6 @@ class TransportService {
       if (error) return console.error(error);
 
       success(results);
-      console.log(results);
     });
   }
 

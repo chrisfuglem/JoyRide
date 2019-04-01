@@ -1196,7 +1196,7 @@ class TransportList extends Component {
   render() {
     return (
       <Card title="Order Transport From:">
-        <p>Select the location you want transport from</p>
+        <p>Select the location you want transport from:</p>
         <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
         <option selected={true} disabled="disabled">Select Location</option>
         <option value="9">Finse</option>
@@ -1206,14 +1206,16 @@ class TransportList extends Component {
         <option value="13">Haugastøl</option>
         </select>
         <br />
-        <p>Select the Bicycles you want to transport</p>
+        <p>Select the Bicycles you want to transport:</p>
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>ID: {bicycle.BicycleID} Type: {bicycle.BicycleType} Status: {bicycle.BicycleStatus} <input type="checkbox" value={this.BicycleID}></input></List.Item>
           ))}
         </List>
         <br />
+        <p>Select the location you want transport to:</p>
         <select id="TransportDropdown" value={this.LocationID}>
+        <option selected={true} disabled="disabled">Select Location</option>
         {this.locations.map(location => (
           <option value={location.LocationID}>{location.LocationName}</option>
         ))}
@@ -1245,15 +1247,15 @@ class TransportList extends Component {
       this.locations = locations;
       this.bicycles = bicycles;
     })
-    var pdf = new jsPDF();
-    var pickup = '' + document.getElementById('LocationDropdown').value;
-    var drop = '' + document.getElementById('TransportDropdown').value
-
-    var text =
-      'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop;
-
-    pdf.text(text, 10, 10);
-    pdf.save('Transport_order.pdf');
+    // var pdf = new jsPDF();
+    // var pickup = '' + document.getElementById('LocationDropdown').value;
+    // var drop = '' + document.getElementById('TransportDropdown').value
+    //
+    // var text =
+    //   'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop;
+    //
+    // pdf.text(text, 10, 10);
+    // pdf.save('Transport_order.pdf');
   }
 }
 
