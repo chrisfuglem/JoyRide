@@ -957,9 +957,11 @@ class BicycleInsert extends Component {
 
 class BicycleUpdate extends Component {
   bicycles = [];
-  BicycleStatus = [];
-  CurrentLocation = [];
+  BicycleStatus = "";
+  CurrentLocation = "";
   BicycleID = [];
+  statuses = [];
+  locations = [];
 
   render() {
     return (
@@ -968,7 +970,7 @@ class BicycleUpdate extends Component {
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
-              <input type="checkbox" value={bicycle.BicycleID} />
+              <input type="checkbox" checked={bicycle.checked} onChange = {e => bicycle.checked = e.target.checked}/>
               Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Status: {bicycle.BicycleStatus} |
               Current Location: {bicycle.CurrentLocationName}
             </List.Item>
@@ -977,17 +979,19 @@ class BicycleUpdate extends Component {
         <br />
         Select status:
         <select id="selectstatus">
-          <option>Available</option>
-          <option>Need Repair</option>
+          {this.statuses.map(status => (
+            <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
+          ))}
         </select>{' '}
         Select Location:
         <select id="selectlocation">
-          <option>Finse</option>
-          <option>Haugastøl</option>
+          {this.locations.map(location => (
+            <option value={location.LocationID}>{location.LocationName}</option>
+          ))}
         </select>
         <br />
         <br />
-        <NavLink to="/bicycles/update" onClick={this.updateBicycleStatus}>
+        <NavLink to="/bicycles/update" onClick={this.save}>
           <Button.Success>Update Bicycle</Button.Success>
         </NavLink>
       </Card>
@@ -997,22 +1001,27 @@ class BicycleUpdate extends Component {
   mounted() {
     bicycleService.getBicyclestoUpdate(bicycles => {
       this.bicycles = bicycles;
+      for (let bicycle of bicycles) bicycle.checked = false;
     });
+    bicycleService.getBicycleStatuses(statuses => {
+      this.statuses = statuses;
+    })
+    rentalService.getPickupLocation(locations => {
+      this.locations = locations;
+    })
   }
 
-  updateBicycleStatus() {
-    bicycleService.updateBicycleStatus(
-      (this.BicycleStatus = '' + document.getElementById('selectstatus').value),
-      (this.FrameType = '' + document.getElementById('selectlocation').value),
+  save() {
+    console.log(this.bicycles);
+
+    bicycleService.updateBicycles(
+      (this.BicycleStatus = document.getElementById('selectstatus').value),
+      (this.CurrentLocation = document.getElementById('selectlocation').value),
       (this.BicycleID = this.BicycleID),
       () => {
         history.push('/bicycles');
       }
     );
-  }
-
-  updateBicycleLocation() {
-    bicycleService.updateBicycleLocation()
   }
 }
 

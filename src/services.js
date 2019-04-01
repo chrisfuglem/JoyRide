@@ -356,10 +356,10 @@ class BicycleService {
   }
 
   //Updates the Status of the Bicycle selected (ikke ferdig)
-  updateBicycleStatus(BicycleID, BicycleStatus, success) {
+  updateBicycle(BicycleID, BicycleStatus, CurrentLocation, success) {
     connection.query(
-      'update Bicycles set BicycleStatus=? where BicycleID=?',
-      [BicycleID, BicycleStatus],
+      'update Bicycles set BicycleStatus=?, CurrentLocation=? where BicycleID=?',
+      [BicycleID, BicycleStatus, CurrentLocation],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -367,15 +367,7 @@ class BicycleService {
       }
     );
   }
-
-  //Updates the Location of a Bicycle selected (ikke ferdig)
-  updateBicycleLocation(BicycleID, CurrentLocation, success) {
-    connection.query('update Bicycles set CurrentLocation=? where BicycleID=?', [BicycleID, CurrentLocation], (error, results => {
-      if (error) return console.error(error);
-
-      success();
-    }))
-  }
+  
 
   //Selects the bicyclestatus from the database.
   getBicycleStatuses(success) {
