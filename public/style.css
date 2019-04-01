@@ -1,0 +1,11 @@
+#CustomerSearch {
+  height: 50px;
+}
+
+#CustomerSearchCategory, #CustomerSearchField, #CustomerSearchButton, option {
+
+}
+
+#CustomerSearchCategory, #CustomerSearchField, #CustomerSearchButton, option:focus {
+
+}
