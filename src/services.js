@@ -119,10 +119,31 @@ class RentalService {
 
   getAvailableBicycles(success) {
     connection.query('Select BicycleType from Bicycles where BicycleStatus = "Available"', (error, results) => {
-      if(error) return console.error(error);
+      if (error) return console.error(error);
 
       success(results);
-    })
+    });
+  }
+
+  getPickupLocation(success) {
+    connection.query('Select * from Locations where LocationID in (9, 13)', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+
+  getBicycleHomeLocation(LocationID, success) {
+    connection.query(
+      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
+      [LocationID],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+        console.log(results);
+      }
+    );
   }
 
   getAvailableAccessoriesByType(success) {
@@ -290,12 +311,34 @@ class EmployeeService {
 
 class BicycleService {
   //Selects all the bicycles from the database.
-  getBicycles(success) {
+  getBicyclestoUpdate(success) {
     connection.query('select * from Bicycles', (error, results) => {
       if (error) return console.error(error);
 
       success(results);
     });
+  }
+
+  getBicycles(success) {
+    connection.query(
+      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation',
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
+  }
+
+  getBicyclesHome(success) {
+    connection.query(
+      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.HomeLocation',
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
   }
 
   //Selects a specific bicycle.
@@ -305,6 +348,18 @@ class BicycleService {
 
       success(results[0]);
     });
+  }
+
+  updateBicycleStatus(BicycleID, BicycleStatus, CurrentLocation, success) {
+    connection.query(
+      'update Bicycles set BicycleStatus=?, CurrentLocation=? where BicycleID=?',
+      [BicycleStatus, CurrentLocation],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      }
+    );
   }
 
   //Selects the bicyclestatus from the database.
@@ -387,11 +442,14 @@ class BicycleService {
 class AccessoryService {
   //Selects all the accessories from the database.
   getAccessories(success) {
-    connection.query('select * from Accessories', (error, results) => {
-      if (error) return console.error(error);
+    connection.query(
+      'select * from Accessories inner join Locations on Locations.LocationID = Accessories.CurrentLocation',
+      (error, results) => {
+        if (error) return console.error(error);
 
-      success(results);
-    });
+        success(results);
+      }
+    );
   }
 
   //Selects a specific accessory from the database.
@@ -413,10 +471,10 @@ class AccessoryService {
   }
 
   //Updates an accessory with all variables.
-  updateAccessory(AccessoryID, DailyPrice, success) {
+  updateAccessory(AccessoryID, DailyPrice, HomeLocation, CurrentLocation, success) {
     connection.query(
-      'update Accessories set DailyPrice=? where AccessoryID=?',
-      [DailyPrice, AccessoryID],
+      'update Accessories set DailyPrice=?, HomeLocation=?, CurrentLocation=? where AccessoryID=?',
+      [DailyPrice, HomeLocation, CurrentLocation, AccessoryID],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -435,10 +493,10 @@ class AccessoryService {
   }
 
   //Adds new accessory price to the databse .
-  insertAccessoryPrice(Type, DailyPrice, success) {
+  insertAccessoryPrice(Type, DailyPrice, HomeLocation, CurrentLocation, success) {
     connection.query(
-      'insert into Accessories (Type, DailyPrice) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?)',
-      [Type, DailyPrice]
+      'insert into Accessories (Type, DailyPrice, HomeLocation, CurrentLocation) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?, ?, ?)',
+      [Type, DailyPrice, HomeLocation, CurrentLocation]
     ),
       (error, results) => {
         if (error) return console.error(error);
