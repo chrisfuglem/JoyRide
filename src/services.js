@@ -99,6 +99,28 @@ class RentalService {
       };
   }
 
+  addBicycleToRental(bicycleID, success) {
+    connection.query('insert into RentedBicycles (RentalID, BicycleID) values ((SELECT MAX(RentalID) from Rentals), (SELECT MIN(BicycleID) from Bicycles where BicycleType = ?))', [
+      bicycleID
+    ]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+
+  addAccessoryToRental(accessoryID, success) {
+    connection.query('insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT MAX(RentalID) from Rentals), (SELECT MIN(AccessoryID) from Accessories where Type = ?))', [
+      accessoryID
+    ]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+
   //Deletes an order.
   deleteRental(id) {
     connection.query('delete from Rentals where id=?', [id]),

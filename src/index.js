@@ -113,15 +113,13 @@ class RentalEdit extends Component {
     return (
       <Card>
         <h3>Rental id {this.props.match.params.id}</h3>
+        <button><NavLink to="RemoveFromRental">View bicycles and Accessories</NavLink></button>
         <h4>Bicycles</h4>
         {this.rentedBicycles.map(bicycle => (
           <List.Item key={bicycle.BicycleID}>
             <p>
               {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
             </p>
-            <NavLink to="/rentals">
-              <button onClick={this.removeBicycle.bind(this, bicycle.BicycleID)}>Remove Bicycle</button>
-            </NavLink>
           </List.Item>
         ))}
         <h4>Accessories</h4>
@@ -130,9 +128,6 @@ class RentalEdit extends Component {
             <p>
               {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
             </p>
-            <NavLink to="/rentals">
-              <button onClick={this.removeAccessory.bind(this, accessory.AccessoryID)}>Remove Accessory</button>
-            </NavLink>
           </List.Item>
         ))}
         <NavLink to="/rentals">
@@ -178,6 +173,143 @@ class RentalEdit extends Component {
 
   delete() {
     rentalService.deleteRental(this.props.match.params.id, () => {
+      history.push('/rentals');
+    });
+  }
+}
+
+class RemoveFromRental extends Component {
+  rentedBicycles = [];
+  rentedAccessories = [];
+  bicycles = [];
+  availableBicyclesCount = [];
+  bicycleDropdownOptions = [];
+  accessories = [];
+  availableAccessoriesCount = [];
+  accessoryDropdownOptions = [];
+  rentedBicycles = [];
+  rentedAccessories = [];
+
+  constructor(props) {
+    super(props);
+    this.customerDropdown = React.createRef();
+    this.bicycleDropdown = React.createRef();
+    this.accessoryDropdown = React.createRef();
+    this.locationDropdown = React.createRef();
+  }
+
+  render() {
+    return (
+      <Card>
+        <h3>Rental id {this.props.match.params.id}</h3>
+        <div>
+          <h4>Available Bicycles</h4>
+          <select ref={this.bicycleDropdown}>
+            {this.bicycleDropdownOptions.map(bicycle => (
+              <option value={bicycle.Type}>
+                {bicycle.Type} - {bicycle.TypeCount} Available
+              </option>
+            ))}
+          </select>
+          <button onClick={this.addBicycle}>Add Bicycle</button>
+        </div>
+        <div>
+          <h4>Available Accessories</h4>
+          <select ref={this.accessoryDropdown}>
+            {this.accessoryDropdownOptions.map(accessory => (
+              <option key={accessory.AccessoryID} value={accessory.accessoryType}>
+                {accessory.accessoryType} - {accessory.TypeCount} Available
+              </option>
+            ))}
+          </select>
+          <button onClick={this.addAccessory}>Add Accessory</button>
+        </div>
+        <h4>Bicycles</h4>
+        {this.rentedBicycles.map(bicycle => (
+          <List.Item key={bicycle.BicycleID}>
+            <p>
+              {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
+            </p>
+            <NavLink to="/rentals">
+              <button onClick={this.removeBicycle.bind(this, bicycle.BicycleID)}>Remove Bicycle</button>
+            </NavLink>
+          </List.Item>
+        ))}
+        <h4>Accessories</h4>
+        {this.rentedAccessories.map(accessory => (
+          <List.Item key={accessory.AccessoryID}>
+            <p>
+              {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
+            </p>
+            <NavLink to="/rentals">
+              <button onClick={this.removeAccessory.bind(this, accessory.AccessoryID)}>Remove Accessory</button>
+            </NavLink>
+          </List.Item>
+        ))}
+        <NavLink to="/rentals">
+          <Button.Success onClick={this.save}>Save Changes</Button.Success>
+        </NavLink>
+        <br />
+        <br />
+        <NavLink to="/rentals">
+          <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
+      this.rentedBicycles = bicycles;
+      console.log(this.rentedBicycles);
+    });
+    rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
+      this.rentedAccessories = accessories;
+      console.log(this.rentedAccessories);
+    });
+    rentalService.getAvailableBicycles(bicycles => {
+      this.bicycles = bicycles;
+    });
+    rentalService.getAvailableBicyclesByType(bicycles => {
+      this.availableBicyclesCount = bicycles;
+      for (let x = 0; x < this.availableBicyclesCount.length; x++) {
+        if (this.availableBicyclesCount[x].TypeCount > 0) {
+          this.bicycleDropdownOptions.push(this.availableBicyclesCount[x]);
+        }
+      }
+    });
+    rentalService.getAvailableAccessories(accessories => {
+      this.accessories = accessories;
+    });
+    rentalService.getAvailableAccessoriesByType(accessories => {
+      this.availableAccessoriesCount = accessories;
+      for (let x = 0; x < this.availableAccessoriesCount.length; x++) {
+        if (this.availableAccessoriesCount[x].TypeCount > 0) {
+          this.accessoryDropdownOptions.push(this.availableAccessoriesCount[x]);
+        }
+      }
+      console.log(this.accessoryDropdownOptions);
+    });
+  }
+
+  addBicycle() {
+    //Ikke ferdig
+    rentalService.addBicycleToRental(this.bicycleDropdown.current.value);
+  }
+
+  removeBicycle(id) {
+    rentalService.removeBicycle(id, this.props.match.params.id, () => {
+      history.push('/rentals');
+    });
+  }
+
+  addAccessory() {
+    //Ikke ferdig
+    rentalService.addAccessoryToRental();
+  }
+
+  removeAccessory(id) {
+    rentalService.removeAccessory(id, this.props.match.params.id, () => {
       history.push('/rentals');
     });
   }
@@ -283,7 +415,7 @@ class RentalInsert extends Component {
           ))}
         </div>
         <br />
-        <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
+        <NavLink to="/Rentals"><Button.Success onClick={this.insert}>Add New Rental</Button.Success></NavLink>
       </Card>
     );
   }
@@ -409,6 +541,8 @@ class RentalInsert extends Component {
         history.push('/rentals');
       }
     );
+    this.rentedBicycles.map(bicycle => rentalService.addBicycleToRental(bicycle.Type));
+    this.rentedAccessories.map(accessory => rentalService.addAccessoryToRental(accessory.accessoryType));
   }
 }
 
@@ -1479,6 +1613,7 @@ ReactDOM.render(
       <Route exact path="/rentals" component={RentalList} />
       <Route exact path="/bicycles/update" component={BicycleUpdate} />
       <Route path="/rentals/:id/edit" component={RentalEdit} />
+      <Route path="/rentals/:id/RemoveFromRental" component={RemoveFromRental} />
       <Route path="/customers/:id/edit" component={CustomerEdit} />
       <Route path="/employees/:id/edit" component={EmployeeEdit} />
       <Route path="/bicycles/:id/edit" component={BicycleEdit} />
