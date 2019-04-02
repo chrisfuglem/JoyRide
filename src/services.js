@@ -359,7 +359,7 @@ class BicycleService {
   updateBicycles(BicycleID, BicycleStatus, CurrentLocation, success) {
     connection.query(
       'update Bicycles set BicycleStatus=?, CurrentLocation=? where BicycleID=?',
-      [BicycleStatus, CurrentLocation, BicycleID],
+      [BicycleID, BicycleStatus, CurrentLocation],
       (error, results) => {
         if (error) return console.error(error);
 

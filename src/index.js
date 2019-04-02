@@ -983,17 +983,32 @@ class BicycleUpdate extends Component {
     })
   }
 
+  // save() {
+  //   console.log(this.bicycles);
+  //
+  //   bicycleService.updateBicycles(
+  //     (this.BicycleStatus = document.getElementById('selectstatus').value),
+  //     (this.CurrentLocation = document.getElementById('selectlocation').value),
+  //     (this.BicycleID = this.BicycleID),
+  //     () => {
+  //       history.push('/bicycles');
+  //     }
+  //   );
+  // }
+
   save() {
     console.log(this.bicycles);
 
-    bicycleService.updateBicycles(
-      (this.BicycleStatus = document.getElementById('selectstatus').value),
-      (this.CurrentLocation = document.getElementById('selectlocation').value),
-      (this.BicycleID = this.BicycleID),
-      () => {
-        history.push('/bicycles');
-      }
-    );
+    if (this.checked = true) {
+      bicycleService.updateBicycles(
+        (this.BicycleStatus = document.getElementById('selectstatus').value),
+        (this.CurrentLocation = document.getElementById('selectlocation').value),
+        (this.BicycleID = this.BicycleID),
+        () => {
+          history.push('/bicycles');
+        }
+      );
+    }
   }
 }
 
