@@ -356,10 +356,10 @@ class BicycleService {
   }
 
   //Updates the Status of the Bicycle selected (ikke ferdig)
-  updateBicycle(BicycleID, BicycleStatus, CurrentLocation, success) {
+  updateBicycles(BicycleID, BicycleStatus, CurrentLocation, success) {
     connection.query(
       'update Bicycles set BicycleStatus=?, CurrentLocation=? where BicycleID=?',
-      [BicycleID, BicycleStatus, CurrentLocation],
+      [BicycleStatus, CurrentLocation, BicycleID],
       (error, results) => {
         if (error) return console.error(error);
 
