@@ -17,6 +17,7 @@ import jsPDF from 'jspdf';
 import createHashHistory from 'history/createHashHistory';
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
+//Main Meny
 class Menu extends Component {
   render() {
     return (
@@ -28,6 +29,7 @@ class Menu extends Component {
   }
 }
 
+//Home Screen
 class Home extends Component {
   render() {
     return (
@@ -38,6 +40,7 @@ class Home extends Component {
   }
 }
 
+//Sales Menu
 class Sales extends Component {
   render() {
     return (
@@ -52,6 +55,7 @@ class Sales extends Component {
   }
 }
 
+//Warehouse Menu
 class Warehouse extends Component {
   render() {
     return (
@@ -66,6 +70,7 @@ class Warehouse extends Component {
   }
 }
 
+//List all rentals, from here you can add and edit rentals.
 class RentalList extends Component {
   rentals = [];
 
@@ -105,6 +110,7 @@ class RentalList extends Component {
   }
 }
 
+//Rental edit section. Shows information from the chosen rental.
 class RentalEdit extends Component {
   rentedBicycles = [];
   rentedAccessories = [];
@@ -180,6 +186,7 @@ class RentalEdit extends Component {
   }
 }
 
+//Section for selecting/deselecting bicycles and accessories.
 class RemoveFromRental extends Component {
   rentedBicycles = [];
   rentedAccessories = [];
@@ -317,6 +324,8 @@ class RemoveFromRental extends Component {
   }
 }
 
+//Section for adding rentals. Here you can choose pickuplocation,
+//customer, start date, end date and add bicycles and accessories to the booking.
 class RentalInsert extends Component {
   customers = [];
   locations = [];
@@ -551,6 +560,7 @@ class RentalInsert extends Component {
   }
 }
 
+//Section to list all the customers. From here you can search and add/edit customers.
 class CustomerList extends Component {
   customers = [];
   searchCategory = '';
@@ -600,6 +610,7 @@ class CustomerList extends Component {
   }
 }
 
+//Section where you can edit or delete the chosen customer.
 class CustomerEdit extends Component {
   FirstName = '';
   SurName = '';
@@ -664,6 +675,7 @@ class CustomerEdit extends Component {
   }
 }
 
+//Section where you can add new customers.
 class CustomerInsert extends Component {
   render() {
     return (
@@ -693,6 +705,7 @@ class CustomerInsert extends Component {
   }
 }
 
+//Section where it lists all the employees. From here you can search for employees based on firstname or surname.
 class EmployeeList extends Component {
   employees = [];
   searchCategory = '';
@@ -739,6 +752,7 @@ class EmployeeList extends Component {
   }
 }
 
+//Section where you can edit or delete the chosen customer.
 class EmployeeEdit extends Component {
   Firstname = '';
   Surname = '';
@@ -783,6 +797,7 @@ class EmployeeEdit extends Component {
   }
 }
 
+//Section where you can add new employees.
 class EmployeeInsert extends Component {
   render() {
     return (
@@ -806,6 +821,7 @@ class EmployeeInsert extends Component {
   }
 }
 
+//Section where it lists all the bicycles with information. From here you can add/update bicycles.
 class BicycleList extends Component {
   bicycles = [];
 
@@ -843,6 +859,7 @@ class BicycleList extends Component {
   }
 }
 
+//Section where you can edit ot delete the chosen bicycle.
 class BicycleEdit extends Component {
   BicycleType = '';
   FrameType = '';
@@ -971,6 +988,7 @@ class BicycleEdit extends Component {
   }
 }
 
+//Section where you can add new bicycles.
 class BicycleInsert extends Component {
   render() {
     return (
@@ -1059,6 +1077,7 @@ class BicycleInsert extends Component {
   }
 }
 
+//Section where you can update several bicyclelocations at once.
 class BicycleUpdate extends Component {
   bicycles = [];
   BicycleStatus = '';
@@ -1144,6 +1163,7 @@ class BicycleUpdate extends Component {
   }
 }
 
+//Section where it lists all the accessories. From here you can add/edit accessories.
 class AccessoryList extends Component {
   accessories = [];
 
@@ -1176,6 +1196,7 @@ class AccessoryList extends Component {
   }
 }
 
+//Section where you edit/delete the chosen accessory.
 class AccessoryEdit extends Component {
   Type = '';
   DailyPrice = '';
@@ -1252,10 +1273,9 @@ class AccessoryEdit extends Component {
       history.push('/accessories');
     });
   }
-
-  deleteType() {}
 }
 
+//Section where you can add accessories.
 class AccessoryTypeInsert extends Component {
   render() {
     return (
@@ -1301,6 +1321,8 @@ class AccessoryTypeInsert extends Component {
   }
 }
 
+//Section where it lists all bicycles that need transport.
+//You can choose location to select bicycles from and location to transport to.
 class TransportList extends Component {
   HomeLocation = '';
   locations = [];
@@ -1379,35 +1401,36 @@ class TransportList extends Component {
   }
 }
 
-class TransportBooking extends Component {
-  bicycles = [];
-
-  render() {
-    return (
-      <Card title="Bicycle List">
-        <p>Choose Bicycles For Transport</p>
-        <List>
-          {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.LocationID}>
-              <input type="checkbox" value={this.CurrentLocation} /> Bicycle Type: {bicycle.BicycleType} | Bicycle ID:{' '}
-              {bicycle.BicycleID}
-            </List.Item>
-          ))}
-        </List>
-        <br />
-        <NavLink to={'/transport/' + this.props.match.params.id + '/booking/order'}>
-          <Button.Light>Choose Delivery Location</Button.Light>
-        </NavLink>
-      </Card>
-    );
-  }
-
-  mounted() {
-    transportService.getBicycles(this.props.match.params.id, bicycles => {
-      this.bicycles = bicycles;
-    });
-  }
-}
+//
+// class TransportBooking extends Component {
+//   bicycles = [];
+//
+//   render() {
+//     return (
+//       <Card title="Bicycle List">
+//         <p>Choose Bicycles For Transport</p>
+//         <List>
+//           {this.bicycles.map(bicycle => (
+//             <List.Item key={bicycle.LocationID}>
+//               <input type="checkbox" value={this.CurrentLocation} /> Bicycle Type: {bicycle.BicycleType} | Bicycle ID:{' '}
+//               {bicycle.BicycleID}
+//             </List.Item>
+//           ))}
+//         </List>
+//         <br />
+//         <NavLink to={'/transport/' + this.props.match.params.id + '/booking/order'}>
+//           <Button.Light>Choose Delivery Location</Button.Light>
+//         </NavLink>
+//       </Card>
+//     );
+//   }
+//
+//   mounted() {
+//     transportService.getBicycles(this.props.match.params.id, bicycles => {
+//       this.bicycles = bicycles;
+//     });
+//   }
+// }
 
 // class TransportOrder extends Component {
 //   locations = [];
@@ -1436,6 +1459,7 @@ class TransportBooking extends Component {
 //   }
 // }
 
+//Section where it lists all bicycles that need repair.
 class RepairList extends Component {
   bicycles = [];
 
@@ -1465,6 +1489,8 @@ class RepairList extends Component {
   }
 }
 
+//Section where you get the detail for the bicycle you want to order repair for.
+//Gives you an textarea for additional comments.
 class RepairDetails extends Component {
   BicycleType = '';
   FrameType = '';
@@ -1549,6 +1575,7 @@ class RepairDetails extends Component {
   }
 }
 
+//Section where you can see how many rentals the different customers have.
 class RentalCountList extends Component {
   Counts = [];
 
@@ -1586,7 +1613,6 @@ ReactDOM.render(
       <Route exact path="/accessories" component={AccessoryList} />
       <Route exact path="/repair" component={RepairList} />
       <Route exact path="/transport" component={TransportList} />
-      <Route exact path="/transport/:id/booking" component={TransportBooking} />
       <Route exact path="/rentals" component={RentalList} />
       <Route exact path="/bicycles/update" component={BicycleUpdate} />
       <Route path="/rentals/:id/edit" component={RentalEdit} />
