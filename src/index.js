@@ -945,7 +945,7 @@ class BicycleEdit extends Component {
         </select>
         <br />
         <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+        <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <Form.Label>Current Location</Form.Label> <br />
         <select
           id="CurrentLocation"
@@ -1068,7 +1068,7 @@ class BicycleInsert extends Component {
         </select>
         <br />
         <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+        <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <Form.Label>Current Location</Form.Label> <br />
         <select id="CurrentLocation">
           <option value="9">Finse</option>
@@ -1238,7 +1238,7 @@ class AccessoryEdit extends Component {
           <p>{this.Type}</p>
         </List.Item>
         <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+        <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <br />
         <Form.Label>Home Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
@@ -1314,7 +1314,7 @@ class AccessoryTypeInsert extends Component {
         <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
         <br />
         <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="text" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+        <Form.Input type="number" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
         <br />
         <Form.Label>Current Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
