@@ -113,7 +113,7 @@ class RentalEdit extends Component {
     return (
       <Card>
         <h3>Rental id {this.props.match.params.id}</h3>
-        <button><NavLink to="RemoveFromRental">View bicycles and Accessories</NavLink></button>
+        <NavLink to="RemoveFromRental">Edit Bicycles and Accessories</NavLink>
         <h4>Bicycles</h4>
         {this.rentedBicycles.map(bicycle => (
           <List.Item key={bicycle.BicycleID}>
@@ -230,9 +230,7 @@ class RemoveFromRental extends Component {
             <p>
               {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
             </p>
-            <NavLink to="/rentals">
               <button onClick={this.removeBicycle.bind(this, bicycle.BicycleID)}>Remove Bicycle</button>
-            </NavLink>
           </List.Item>
         ))}
         <h4>Accessories</h4>
@@ -241,11 +239,14 @@ class RemoveFromRental extends Component {
             <p>
               {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
             </p>
-            <NavLink to="/rentals">
               <button onClick={this.removeAccessory.bind(this, accessory.AccessoryID)}>Remove Accessory</button>
-            </NavLink>
           </List.Item>
         ))}
+        <NavLink to={'/rentals/' + this.props.match.params.id + '/edit'}>
+          <Button.Light>Back</Button.Light>
+        </NavLink>
+        <br />
+        <br />
         <NavLink to="/rentals">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
@@ -261,11 +262,9 @@ class RemoveFromRental extends Component {
   mounted() {
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
-      console.log(this.rentedBicycles);
     });
     rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
       this.rentedAccessories = accessories;
-      console.log(this.rentedAccessories);
     });
     rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
@@ -288,30 +287,39 @@ class RemoveFromRental extends Component {
           this.accessoryDropdownOptions.push(this.availableAccessoriesCount[x]);
         }
       }
-      console.log(this.accessoryDropdownOptions);
+    });
+  }
+
+  // Deletes the entire Rental
+  delete() {
+    rentalService.deleteRental(this.props.match.params.id, () => {
+      history.push('/rentals');
     });
   }
 
   addBicycle() {
-    //Ikke ferdig
-    rentalService.addBicycleToRental(this.bicycleDropdown.current.value);
+    rentalService.addBicycleToRental(this.props.match.params.id, this.bicycleDropdown.current.value);
+    this.mounted();
   }
 
   removeBicycle(id) {
     rentalService.removeBicycle(id, this.props.match.params.id, () => {
       history.push('/rentals');
     });
+    this.mounted();
   }
 
   addAccessory() {
-    //Ikke ferdig
-    rentalService.addAccessoryToRental();
+    rentalService.addAccessoryToRental(this.props.match.params.id, this.accessoryDropdown.current.value);
+    this.mounted();
   }
+
 
   removeAccessory(id) {
     rentalService.removeAccessory(id, this.props.match.params.id, () => {
       history.push('/rentals');
     });
+    this.mounted();
   }
 }
 
@@ -327,6 +335,7 @@ class RentalInsert extends Component {
   rentedBicycles = [];
   rentedAccessories = [];
   searchCategory = '';
+  lastInsertedRental = 0;
 
   constructor(props) {
     super(props);
@@ -452,6 +461,9 @@ class RentalInsert extends Component {
     transportService.getLocations(locations => {
       this.locations = locations;
     });
+    rentalService.getLastInsertRental(rental => {
+      this.lastInsertedRental = rental.RentalID;
+    });
   }
 
   addBicycle() {
@@ -492,7 +504,6 @@ class RentalInsert extends Component {
         }
       }
     }
-    console.log(this.rentedAccessories);
   }
 
   removeAccessory(type) {
@@ -504,15 +515,14 @@ class RentalInsert extends Component {
           }
         }
         this.rentedAccessories.splice(x, 1); //Deletes the first bike with a matching Type
-        console.log(this.rentedAccessories);
         break;
       }
     }
   }
 
   insert() {
-    console.log("Location: " + this.locationDropdown.current.value);
-    console.log("CustomerID: " + this.customerDropdown.current.value);
+
+    //Get todays date
     let dateObj = new Date();
     let month = dateObj.getUTCMonth() + 1;
     if (month <= 9) {
@@ -521,13 +531,7 @@ class RentalInsert extends Component {
     let day = dateObj.getUTCDate();
     let year = dateObj.getUTCFullYear();
     let today = year + '-' + month + '-' + day;
-    console.log('Date: ' + today);
-    console.log('RentStart: ' + this.RentStart);
-    console.log('RentEnd: ' + this.RentEnd);
-    console.log('SUM: ');
 
-    console.log(this.rentedBicycles);
-    console.log(this.rentedAccessories);
     // name, date, rentstart, rentend, sum, pickuplocation, discountsum
     rentalService.insertRental(
       this.customerDropdown.current.value,
@@ -541,8 +545,11 @@ class RentalInsert extends Component {
         history.push('/rentals');
       }
     );
-    this.rentedBicycles.map(bicycle => rentalService.addBicycleToRental(bicycle.Type));
-    this.rentedAccessories.map(accessory => rentalService.addAccessoryToRental(accessory.accessoryType));
+
+    this.mounted(); // Needed to run getLastInsertRental()
+
+    this.rentedBicycles.map(bicycle => rentalService.addBicycleToRental(this.lastInsertedRental, bicycle.Type));
+    this.rentedAccessories.map(accessory => rentalService.addAccessoryToRental(this.lastInsertedRental, accessory.accessoryType));
   }
 }
 

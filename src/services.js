@@ -4,7 +4,7 @@ class RentalService {
   //Selects ID,sum date, start and end from rentals in the database, and counts the number of bikes and accessories in the booking.
   getRentals(success) {
     connection.query(
-      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID;',
+      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID order by RentalID DESC;',
       (error, results) => {
         if (error) return console.error(error);
 
@@ -99,9 +99,18 @@ class RentalService {
       };
   }
 
-  addBicycleToRental(bicycleID, success) {
-    connection.query('insert into RentedBicycles (RentalID, BicycleID) values ((SELECT MAX(RentalID) from Rentals), (SELECT MIN(BicycleID) from Bicycles where BicycleType = ?))', [
-      bicycleID
+  getLastInsertRental(success) {
+    connection.query('SELECT MAX(RentalID) as RentalID from Rentals', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results[0]);
+    });
+  }
+
+  addBicycleToRental(rentalID, bicycleType, success) {
+    connection.query('insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(BicycleID) from Bicycles where BicycleType = ? and BicycleStatus = "Available"))', [
+      rentalID,
+      bicycleType
     ]),
       (error, results) => {
         if (error) return console.error(error);
@@ -110,9 +119,10 @@ class RentalService {
       };
   }
 
-  addAccessoryToRental(accessoryID, success) {
-    connection.query('insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT MAX(RentalID) from Rentals), (SELECT MIN(AccessoryID) from Accessories where Type = ?))', [
-      accessoryID
+  addAccessoryToRental(rentalID, accessoryType, success) {
+    connection.query('insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(AccessoryID) from Accessories where Type = ?))', [
+      rentalID,
+      accessoryType
     ]),
       (error, results) => {
         if (error) return console.error(error);
@@ -123,7 +133,7 @@ class RentalService {
 
   //Deletes an order.
   deleteRental(id) {
-    connection.query('delete from Rentals where id=?', [id]),
+    connection.query('delete from Rentals where RentalID=?', [id]),
       (error, results) => {
         if (error) return console.error(error);
 
