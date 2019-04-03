@@ -94,6 +94,7 @@ class RentalService {
       };
   }
 
+  //Adds bicycles to the RentedBicycles table by the bicycleID.
   addBicycleToRental(bicycleID, success) {
     connection.query(
       'insert into RentedBicycles (RentalID, BicycleID) values ((SELECT MAX(RentalID) from Rentals), (SELECT MIN(BicycleID) from Bicycles where BicycleType = ?))',
@@ -106,6 +107,7 @@ class RentalService {
       };
   }
 
+  //Adds accessory to the RentedAccessories table by the accessoryID.
   addAccessoryToRental(accessoryID, success) {
     connection.query(
       'insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT MAX(RentalID) from Rentals), (SELECT MIN(AccessoryID) from Accessories where Type = ?))',
@@ -169,6 +171,7 @@ class RentalService {
     );
   }
 
+  //Selects available accessories by the accessoryType, counts the number available.
   getAvailableAccessoriesByType(success) {
     connection.query(
       'select Accessories.Type as accessoryType, (SELECT COUNT(Accessories.AccessoryID) FROM Accessories WHERE Accessories.Status = "Available" AND Accessories.Type = accessoryType) as TypeCount FROM Accessories GROUP BY Accessories.Type;',
@@ -180,6 +183,7 @@ class RentalService {
     );
   }
 
+  //Selects available accessories by the accessoryType.
   getAvailableAccessories(success) {
     connection.query('Select Type from Accessories where Status = "Available"', (error, results) => {
       if (error) return console.error(error);
@@ -188,6 +192,7 @@ class RentalService {
     });
   }
 
+  //Selects available bicycles by the bicycleType, counts the number available.
   getAvailableBicyclesByType(success) {
     connection.query(
       'select Bicycles.BicycleType as Type, (SELECT COUNT(Bicycles.BicycleID) FROM Bicycles WHERE Bicycles.BicycleStatus = "Available" AND Bicycles.BicycleType = Type) as TypeCount FROM Bicycles GROUP BY Bicycles.BicycleType;',
@@ -579,6 +584,7 @@ class TransportService {
     });
   }
 
+  //Selects transport locations, but removes the locations that is chosen, or not available for transport.
   getTransportToLocation(LocationID, success) {
     connection.query(
       'SELECT * from Locations WHERE LocationID <> ? and  LocationID <> 10 and LocationID <> 11 and LocationID <> 12;',
@@ -614,6 +620,7 @@ class TransportService {
     );
   }
 
+  //Sets the chosen bicycles status to "In Transport".
   saveStatus(BicycleID, success) {
     connection.query(
       'update Bicycles set BicycleStatus = "In Transport" where BicycleID=?',
