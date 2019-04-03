@@ -1124,9 +1124,6 @@ class BicycleInsert extends Component {
 //Section where you can update several bicyclelocations at once.
 class BicycleUpdate extends Component {
   bicycles = [];
-  BicycleStatus = '';
-  CurrentLocation = '';
-  BicycleID = [];
   statuses = [];
   locations = [];
 
@@ -1177,19 +1174,16 @@ class BicycleUpdate extends Component {
       this.locations = locations;
     });
   }
-
+ 
+  //ikke ferdig....
   save() {
-    console.log(this.bicycles);
-
-    if ((this.checked = true)) {
-      bicycleService.updateBicycles(
-        (this.BicycleStatus = document.getElementById('selectstatus').value),
-        (this.CurrentLocation = document.getElementById('selectlocation').value),
-        (this.BicycleID = this.BicycleID),
-        () => {
+    for (let x = 0; x < this.bicycles.length; x++) {
+      if(this.bicycles[x].checked == true) {
+        console.log("checked " + this.bicycles[x].BicycleID);
+        bicycleService.updateBicycles(this.bicycles[x].BicycleID, this.bicycles[x].BicycleStatus, this.bicycles[x].CurrentLocation, () => {
           history.push('/bicycles');
-        }
-      );
+        })
+      }
     }
   }
 }
