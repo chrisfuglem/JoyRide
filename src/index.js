@@ -419,12 +419,15 @@ class RentalInsert extends Component {
           <button onClick={this.addAccessory}>Add Accessory</button>
           {this.rentedAccessories.map(accessory => (
             <List.Item>
-              {accessory.accessoryType} <button onClick={this.removeAccessory.bind(this, accessory.accessoryType)}>Remove Accessory</button>
+              {accessory.accessoryType}{' '}
+              <button onClick={this.removeAccessory.bind(this, accessory.accessoryType)}>Remove Accessory</button>
             </List.Item>
           ))}
         </div>
         <br />
-        <NavLink to="/Rentals"><Button.Success onClick={this.insert}>Add New Rental</Button.Success></NavLink>
+        <NavLink to="/Rentals">
+          <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
+        </NavLink>
       </Card>
     );
   }
@@ -484,7 +487,7 @@ class RentalInsert extends Component {
       if (this.rentedBicycles[x].Type == type) {
         for (let xx = 0; xx < this.bicycleDropdownOptions.length; xx++) {
           if (this.bicycleDropdownOptions[xx].Type == this.rentedBicycles[x].Type) {
-              this.bicycleDropdownOptions[xx].TypeCount++;
+            this.bicycleDropdownOptions[xx].TypeCount++;
           }
         }
         this.rentedBicycles.splice(x, 1); //Deletes the first bike with a matching Type
@@ -511,7 +514,7 @@ class RentalInsert extends Component {
       if (this.rentedAccessories[x].accessoryType == type) {
         for (let xx = 0; xx < this.accessoryDropdownOptions.length; xx++) {
           if (this.accessoryDropdownOptions[xx].accessoryType == this.rentedAccessories[x].accessoryType) {
-              this.accessoryDropdownOptions[xx].TypeCount++;
+            this.accessoryDropdownOptions[xx].TypeCount++;
           }
         }
         this.rentedAccessories.splice(x, 1); //Deletes the first bike with a matching Type
@@ -810,7 +813,6 @@ class EmployeeInsert extends Component {
 
 class BicycleList extends Component {
   bicycles = [];
-  home = [];
 
   render() {
     return (
@@ -827,8 +829,9 @@ class BicycleList extends Component {
             <List.Item key={bicycle.BicycleID}>
               <NavLink to={'/bicycles/' + bicycle.BicycleID + '/edit'}>
                 Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
-                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location: {bicycle.HomeLocationName}{' '}
-                | Daily Price: {bicycle.DailyPrice}kr per day | Current Location: {bicycle.CurrentLocationName}
+                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location:{' '}
+                {bicycle.HomeLocationName} | Daily Price: {bicycle.DailyPrice}kr per day | Current Location:{' '}
+                {bicycle.CurrentLocationName}
               </NavLink>
             </List.Item>
           ))}
@@ -841,9 +844,6 @@ class BicycleList extends Component {
   mounted() {
     bicycleService.getBicycles(bicycles => {
       this.bicycles = bicycles;
-    });
-    bicycleService.getBicyclesHome(homes => {
-      this.homes = homes;
     });
   }
 }
@@ -904,11 +904,8 @@ class BicycleEdit extends Component {
         <br />
         <Form.Label>Home Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
-          <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
-          <option>13</option>
+          <option value="9">Finse</option>
+          <option value="13">Haugastoel</option>
         </select>
         <br />
         <Form.Label>Daily Price</Form.Label>
@@ -919,11 +916,11 @@ class BicycleEdit extends Component {
           value={this.CurrentLocation}
           onChange={e => (this.CurrentLocation = e.target.value)}
         >
-          <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
-          <option>13</option>
+          <option value="9">Finse</option>
+          <option value="10">Flaam</option>
+          <option value="11">Voss</option>
+          <option value="12">Myrdal</option>
+          <option value="13">Haugastoel</option>
         </select>
         <br />
         <br />
@@ -1027,20 +1024,19 @@ class BicycleInsert extends Component {
         <br />
         <Form.Label>Home Location</Form.Label> <br />
         <select id="HomeLocation">
-          <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
+          <option value="9">Finse</option>
+          <option value="13">Haugastoel</option>
         </select>
         <br />
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <Form.Label>Current Location</Form.Label> <br />
         <select id="CurrentLocation">
-          <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
+          <option value="9">Finse</option>
+          <option value="10">Flaam</option>
+          <option value="11">Voss</option>
+          <option value="12">Myrdal</option>
+          <option value="13">Haugastoel</option>
         </select>
         <br />
         <br />
@@ -1070,8 +1066,8 @@ class BicycleInsert extends Component {
 
 class BicycleUpdate extends Component {
   bicycles = [];
-  BicycleStatus = "";
-  CurrentLocation = "";
+  BicycleStatus = '';
+  CurrentLocation = '';
   BicycleID = [];
   statuses = [];
   locations = [];
@@ -1083,7 +1079,7 @@ class BicycleUpdate extends Component {
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
-              <input type="checkbox" checked={bicycle.checked} onChange = {e => bicycle.checked = e.target.checked}/>
+              <input type="checkbox" checked={bicycle.checked} onChange={e => (bicycle.checked = e.target.checked)} />
               Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Status: {bicycle.BicycleStatus} |
               Current Location: {bicycle.CurrentLocationName}
             </List.Item>
@@ -1118,10 +1114,10 @@ class BicycleUpdate extends Component {
     });
     bicycleService.getBicycleStatuses(statuses => {
       this.statuses = statuses;
-    })
+    });
     rentalService.getPickupLocation(locations => {
       this.locations = locations;
-    })
+    });
   }
 
   // save() {
@@ -1140,7 +1136,7 @@ class BicycleUpdate extends Component {
   save() {
     console.log(this.bicycles);
 
-    if (this.checked = true) {
+    if ((this.checked = true)) {
       bicycleService.updateBicycles(
         (this.BicycleStatus = document.getElementById('selectstatus').value),
         (this.CurrentLocation = document.getElementById('selectlocation').value),
@@ -1164,8 +1160,8 @@ class AccessoryList extends Component {
           {this.accessories.map(accessory => (
             <List.Item key={accessory.AccessoryID}>
               <NavLink to={'/accessories/' + accessory.AccessoryID + '/edit'}>
-                {accessory.Type} | Price: {accessory.DailyPrice}kr per day | Home Location: {accessory.LocationName} |{' '}
-                Current Location: {accessory.LocationName}
+                {accessory.Type} | Price: {accessory.DailyPrice}kr per day | Home Location: {accessory.HomeLocationName}{' '}
+                | Current Location: {accessory.CurrentLocationName}
               </NavLink>
             </List.Item>
           ))}
@@ -1200,13 +1196,10 @@ class AccessoryEdit extends Component {
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="text" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
         <br />
-        <Form.Label>Current Location</Form.Label> <br />
+        <Form.Label>Home Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
-          <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
-          <option>13</option>
+          <option value="9">Finse</option>
+          <option value="13">Haugastoel</option>
         </select>
         <br />
         <Form.Label>Current Location</Form.Label> <br />
@@ -1215,11 +1208,11 @@ class AccessoryEdit extends Component {
           value={this.CurrentLocation}
           onChange={e => (this.CurrentLocation = e.target.value)}
         >
-          <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
-          <option>13</option>
+          <option value="9">Finse</option>
+          <option value="10">Flaam</option>
+          <option value="11">Voss</option>
+          <option value="12">Myrdal</option>
+          <option value="13">Haugastoel</option>
         </select>
         <br />
         <br />
@@ -1280,11 +1273,8 @@ class AccessoryTypeInsert extends Component {
         <br />
         <Form.Label>Current Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
-          <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
-          <option>13</option>
+          <option value="9">Finse</option>
+          <option value="13">Haugastoel</option>
         </select>
         <br />
         <Form.Label>Current Location</Form.Label> <br />
@@ -1293,11 +1283,11 @@ class AccessoryTypeInsert extends Component {
           value={this.CurrentLocation}
           onChange={e => (this.CurrentLocation = e.target.value)}
         >
-          <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
-          <option>13</option>
+          <option value="9">Finse</option>
+          <option value="10">Flaam</option>
+          <option value="11">Voss</option>
+          <option value="12">Myrdal</option>
+          <option value="13">Haugastoel</option>
         </select>
         <br />
         <br />
@@ -1317,7 +1307,7 @@ class AccessoryTypeInsert extends Component {
 }
 
 class TransportList extends Component {
-  HomeLocation = "";
+  HomeLocation = '';
   locations = [];
   bicycles = [];
 
@@ -1326,27 +1316,34 @@ class TransportList extends Component {
       <Card title="Order Transport From:">
         <p>Select the location you want transport from:</p>
         <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
-        <option selected={true} disabled="disabled">Select Location</option>
-        <option value="9">Finse</option>
-        <option value="10">Flaam</option>
-        <option value="11">Voss</option>
-        <option value="12">Myrdal</option>
-        <option value="13">Haugastøl</option>
+          <option selected={true} disabled="disabled">
+            Select Location
+          </option>
+          <option value="9">Finse</option>
+          <option value="10">Flaam</option>
+          <option value="11">Voss</option>
+          <option value="12">Myrdal</option>
+          <option value="13">Haugastøl</option>
         </select>
         <br />
         <p>Select the Bicycles you want to transport:</p>
         <List>
           {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.BicycleID}>ID: {bicycle.BicycleID} Type: {bicycle.BicycleType} Status: {bicycle.BicycleStatus} <input type="checkbox" value={this.BicycleID}></input></List.Item>
+            <List.Item key={bicycle.BicycleID}>
+              ID: {bicycle.BicycleID} Type: {bicycle.BicycleType} Status: {bicycle.BicycleStatus}{' '}
+              <input type="checkbox" value={this.BicycleID} />
+            </List.Item>
           ))}
         </List>
         <br />
         <p>Select the location you want transport to:</p>
         <select id="TransportDropdown" value={this.LocationID}>
-        <option selected={true} disabled="disabled">Select Location</option>
-        {this.locations.map(location => (
-          <option value={location.LocationID}>{location.LocationName}</option>
-        ))}
+          <option selected={true} disabled="disabled">
+            Select Location
+          </option>
+          {this.locations.map(location => (
+            <option value={location.LocationID}>{location.LocationName}</option>
+          ))}
         </select>
         <br />
         <br />
@@ -1362,19 +1359,19 @@ class TransportList extends Component {
   }
 
   getBicycles() {
-    transportService.getBicycles(document.getElementById("LocationDropdown").value, bicycles => {
+    transportService.getBicycles(document.getElementById('LocationDropdown').value, bicycles => {
       this.bicycles = bicycles;
     });
-    transportService.getTransportToLocation(document.getElementById("LocationDropdown").value, locations => {
+    transportService.getTransportToLocation(document.getElementById('LocationDropdown').value, locations => {
       this.locations = locations;
     });
-      }
+  }
 
   save() {
     transportService.saveStatus(this.props.match.params.id, bicycles, locations => {
       this.locations = locations;
       this.bicycles = bicycles;
-    })
+    });
     // var pdf = new jsPDF();
     // var pickup = '' + document.getElementById('LocationDropdown').value;
     // var drop = '' + document.getElementById('TransportDropdown').value
@@ -1456,7 +1453,7 @@ class RepairList extends Component {
               <NavLink to={'/repair/' + bicycle.BicycleID + '/edit'}>
                 Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
                 Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Current Location:{' '}
-                {bicycle.CurrentLocation}
+                {bicycle.CurrentLocationName}
               </NavLink>
             </List.Item>
           ))}
@@ -1555,28 +1552,6 @@ class RepairDetails extends Component {
     pdf.text(text, 10, 10);
     pdf.save('Repair_order.pdf');
   }
-
-  // repairPDF() {
-  //   var pdf = new jsPDF();
-  //
-  //   var comment = '' + document.getElementById('comment').value;
-  //   var frame = '' + document.getElementById('frame').value;
-  //   var brake = '' + document.getElementById('brake').value;
-  //   var wheel = '' + document.getElementById('wheel').value;;
-  //   var text =
-  //     'Repair confirmation: \n \n' +
-  //     'Frametype: ' +
-  //     frame +
-  //     '\nBrake type: ' +
-  //     brake +
-  //     '\nWheel size:' +
-  //     wheel +
-  //     '\n\nExtra comments: ' +
-  //     comment;
-  //
-  //   pdf.text(text, 10, 10);
-  //   pdf.save('Repair_order.pdf');
-  // }
 }
 
 class RentalCountList extends Component {
