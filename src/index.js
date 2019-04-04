@@ -1126,6 +1126,8 @@ class BicycleUpdate extends Component {
   bicycles = [];
   statuses = [];
   locations = [];
+  CurrentLocation = "";
+  BicycleStatus = "";
 
   render() {
     return (
@@ -1141,16 +1143,15 @@ class BicycleUpdate extends Component {
           ))}
         </List>
         <br />
-        Select status:
-        <select id="selectstatus">
+        Select Location:
+        <select id="CurrentLocation">
+            <option value="9">Finse</option>
+            <option value="13">Haugastøl</option>
+        </select>{' '}
+        Select Status:
+        <select id="StatusDropdown" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)}>
           {this.statuses.map(status => (
             <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
-          ))}
-        </select>{' '}
-        Select Location:
-        <select id="selectlocation">
-          {this.locations.map(location => (
-            <option value={location.LocationID}>{location.LocationName}</option>
           ))}
         </select>
         <br />
@@ -1180,7 +1181,9 @@ class BicycleUpdate extends Component {
     for (let x = 0; x < this.bicycles.length; x++) {
       if(this.bicycles[x].checked == true) {
         console.log("checked " + this.bicycles[x].BicycleID);
-        bicycleService.updateBicycles(this.bicycles[x].BicycleID, this.bicycles[x].BicycleStatus, this.bicycles[x].CurrentLocation, () => {
+        bicycleService.updateBicycles((this.bicycles[x].BicycleStatus = '' + document.getElementById('StatusDropdown').value),
+          (this.bicycles[x].CurrentLocation = '' + document.getElementById('CurrentLocation').value),
+          (this.bicycles[x].BicycleID), () => {
           history.push('/bicycles');
         })
       }
