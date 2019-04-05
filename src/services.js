@@ -1,4 +1,5 @@
 import { connection } from './mysql_connection';
+import { connect } from 'net';
 
 class RentalService {
   //Selects ID,sum date, start and end from rentals in the database, and counts the number of bikes and accessories in the booking.
@@ -103,10 +104,15 @@ class RentalService {
 
   //Adds an order with name, email, rent start and rent end.
   insertRental(customer, date, rentstart, rentend, sum, pickuplocation, discountsum, success) {
-    connection.query(
-      'insert into Rentals (CustomerID, Date, RentStart, RentEnd, SUM, PickupLocation, SUMwithDiscount) values (?, ?, ?, ?, ?, ?, ?)',
-      [customer, date, rentstart, rentend, sum, pickuplocation, discountsum]
-    ),
+    connection.query('insert into Rentals (CustomerID, Date, RentStart, RentEnd, SUM, PickupLocation, SUMwithDiscount, RentalStatus) values (?, ?, ?, ?, ?, ?, ?, "Unactive")', [
+      customer,
+      date,
+      rentstart,
+      rentend,
+      sum,
+      pickuplocation,
+      discountsum
+    ]),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -228,6 +234,27 @@ class RentalService {
         success(results);
       }
     );
+  }
+
+  //Sets the status of the Rental to 'Ended' in the database
+  endRental(id) {
+    connection.query('update Rentals set RentalStatus = "Ended" where RentalID=?', [id], (error) => {
+      if(error) return console.error(error);
+    })
+  }
+  
+  //Sets the status of the Rental to 'Active' in the database
+  activateRental(id) {
+    connection.query('update Rentals set RentalStatus = "Active" where RentalID=?', [id], (error) => {
+      if(error) return console.error(error);
+    })
+  }
+
+  //Sets the status of the Bicycle to 'Rented' in the database
+  setStatusRented(id) {
+    connection.query('update Bicycles set BicycleStatus = "Rented" where BicycleID=?', [id], (error) => {
+      if(error) return console.error(error);
+    })
   }
 }
 
@@ -413,7 +440,7 @@ class BicycleService {
     });
   }
 
-  //Updates the Status of the Bicycle selected (ikke ferdig)
+  //Updates the Status and Current Location of the Bicycle selected (ikke ferdig)
   updateBicycles(BicycleID, BicycleStatus, CurrentLocation, success) {
     connection.query(
       'update Bicycles set BicycleStatus=?, CurrentLocation=? where BicycleID=?',
@@ -421,7 +448,8 @@ class BicycleService {
       (error, results) => {
         if (error) return console.error(error);
 
-        success();
+        success(results);
+        console.log(results);
       }
     );
   }
@@ -646,17 +674,11 @@ class TransportService {
     );
   }
 
-  //Sets the chosen bicycles status to "In Transport".
-  saveStatus(BicycleID, success) {
-    connection.query(
-      'update Bicycles set BicycleStatus = "In Transport" where BicycleID=?',
-      [BicycleID],
-      (error, results) => {
-        if (error) return console.error(error);
+  saveStatus(BicycleID) {
+    connection.query('update Bicycles set BicycleStatus = "In Transport" where BicycleID=?', [BicycleID], (error,results) => {
+      if(error) return console.error(error);
 
-        success(results);
-      }
-    );
+    })
   }
 }
 
