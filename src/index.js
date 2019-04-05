@@ -145,23 +145,9 @@ class RentalEdit extends Component {
   mounted() {
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
-      console.log(this.rentedBicycles);
     });
     rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
       this.rentedAccessories = accessories;
-      console.log(this.rentedAccessories);
-    });
-  }
-
-  removeBicycle(id) {
-    rentalService.removeBicycle(id, this.props.match.params.id, () => {
-      history.push('/rentals');
-    });
-  }
-
-  removeAccessory(id) {
-    rentalService.removeAccessory(id, this.props.match.params.id, () => {
-      history.push('/rentals');
     });
   }
 
@@ -172,6 +158,12 @@ class RentalEdit extends Component {
   }
 
   delete() {
+    rentalService.removeAllBicycles(this.props.match.params.id, () => {
+      history.push('/rentals');
+    });
+    rentalService.removeAllAccessories(this.props.match.params.id, () => {
+      history.push('/rentals');
+    });
     rentalService.deleteRental(this.props.match.params.id, () => {
       history.push('/rentals');
     });
@@ -203,6 +195,7 @@ class RemoveFromRental extends Component {
       <Card>
         <h3>Rental id {this.props.match.params.id}</h3>
         <div>
+          <p>To do: Check if bicycles are available during rental period</p>
           <h4>Available Bicycles</h4>
           <select ref={this.bicycleDropdown}>
             {this.bicycleDropdownOptions.map(bicycle => (
@@ -248,11 +241,6 @@ class RemoveFromRental extends Component {
         <br />
         <br />
         <NavLink to="/rentals">
-          <Button.Success onClick={this.save}>Save Changes</Button.Success>
-        </NavLink>
-        <br />
-        <br />
-        <NavLink to="/rentals">
           <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
         </NavLink>
       </Card>
@@ -260,6 +248,9 @@ class RemoveFromRental extends Component {
   }
 
   mounted() {
+    // Resets the options to prevent duplicates from being added when mounted is called a second time
+    this.bicycleDropdownOptions = [];
+    this.accessoryDropdownOptions = [];
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
     });
@@ -292,6 +283,12 @@ class RemoveFromRental extends Component {
 
   // Deletes the entire Rental
   delete() {
+    rentalService.removeAllBicycles(this.props.match.params.id, () => {
+      history.push('/rentals');
+    });
+    rentalService.removeAllAccessories(this.props.match.params.id, () => {
+      history.push('/rentals');
+    });
     rentalService.deleteRental(this.props.match.params.id, () => {
       history.push('/rentals');
     });
@@ -299,27 +296,26 @@ class RemoveFromRental extends Component {
 
   addBicycle() {
     rentalService.addBicycleToRental(this.props.match.params.id, this.bicycleDropdown.current.value);
-    this.mounted();
+    this.mounted(); // Refresh page with new data
   }
 
   removeBicycle(id) {
     rentalService.removeBicycle(id, this.props.match.params.id, () => {
       history.push('/rentals');
     });
-    this.mounted();
+    this.mounted(); // Refresh page with new data
   }
 
   addAccessory() {
     rentalService.addAccessoryToRental(this.props.match.params.id, this.accessoryDropdown.current.value);
-    this.mounted();
+    this.mounted(); // Refresh page with new data
   }
-
 
   removeAccessory(id) {
     rentalService.removeAccessory(id, this.props.match.params.id, () => {
       history.push('/rentals');
     });
-    this.mounted();
+    this.mounted(); // Refresh page with new data
   }
 }
 
@@ -459,7 +455,6 @@ class RentalInsert extends Component {
           this.accessoryDropdownOptions.push(this.availableAccessoriesCount[x]);
         }
       }
-      console.log(this.accessoryDropdownOptions);
     });
     transportService.getLocations(locations => {
       this.locations = locations;

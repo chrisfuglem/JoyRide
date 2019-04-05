@@ -62,9 +62,29 @@ class RentalService {
       };
   }
 
+  //Remove all bicycles from an order
+  removeAllBicycles(rentalID) {
+    connection.query('delete from RentedBicycles where RentalID = ?', [rentalID]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+
   //Removes an accessory from an order.
   removeAccessory(accessoryID, rentalID) {
     connection.query('delete from RentedAccessories where AccessoryID = ? and RentalID = ?', [accessoryID, rentalID]),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+
+  //Removes all accessories from an order
+  removeAllAccessories(rentalID) {
+    connection.query('delete from RentedAccessories where RentalID = ?', [rentalID]),
       (error, results) => {
         if (error) return console.error(error);
 
