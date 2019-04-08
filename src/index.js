@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
-import { NavLink, HashRouter, Route } from 'react-router-dom';
+import { NavLink, HashRouter, Route, withRouter } from 'react-router-dom';
 import {
   rentalService,
   customerService,
@@ -417,6 +417,10 @@ class RentalInsert extends Component {
         <Form.Label>End date:</Form.Label>
         <Form.Input type="date" value={this.RentEnd} onChange={e => (this.RentEnd = e.target.value)} />
         <br />
+        <NavLink to={'/rentals/' + this.lastInsertedRental + '/edit'}>
+          <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
+        </NavLink>
+        <br />
         <div>
           <h4>Available Bicycles</h4>
           <select ref={this.bicycleDropdown}>
@@ -433,6 +437,7 @@ class RentalInsert extends Component {
             </List.Item>
           ))}
         </div>
+        <br />
         <div>
           <h4>Available Accessories</h4>
           <select ref={this.accessoryDropdown}>
@@ -450,10 +455,6 @@ class RentalInsert extends Component {
             </List.Item>
           ))}
         </div>
-        <br />
-        <NavLink to="/Rentals">
-          <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
-        </NavLink>
       </Card>
     );
   }
@@ -564,6 +565,8 @@ class RentalInsert extends Component {
     let year = dateObj.getUTCFullYear();
     let today = year + '-' + month + '-' + day;
 
+    this.mounted(); // Needed to run getLastInsertRental() to get the last inserted rental
+
     // name, date, rentstart, rentend, sum, pickuplocation, discountsum
     rentalService.insertRental(
       this.customerDropdown.current.value,
@@ -574,16 +577,17 @@ class RentalInsert extends Component {
       this.locationDropdown.current.value,
       800,
       () => {
-        history.push('/rentals');
+        history.push('/rentals/' + this.lastInsertedRental + '/edit');
       }
     );
 
-    this.mounted(); // Needed to run getLastInsertRental()
-
-    this.rentedBicycles.map(bicycle => rentalService.addBicycleToRental(this.lastInsertedRental, bicycle.Type));
+    /*
+    this.rentedBicycles.map(bicycle =>
+      rentalService.addBicycleToRental(this.lastInsertedRental, bicycle.Type));
     this.rentedAccessories.map(accessory =>
       rentalService.addAccessoryToRental(this.lastInsertedRental, accessory.accessoryType)
     );
+    */
   }
 }
 
