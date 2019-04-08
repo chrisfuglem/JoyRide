@@ -17,12 +17,12 @@ class RentalService {
   //Selects a specific rental booking and extracts rental and customer information from the database.
   getRental(id, success) {
     connection.query(
-      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
+      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.RentStart, Rentals.RentEnd, COUNT(RentedBicycles.BicycleID) as bicycleCount, Rentals.SUM FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
       [id],
       (error, results) => {
         if (error) return console.error(error);
 
-        success(results[0]);
+        success(results);
       }
     );
   }
@@ -242,7 +242,7 @@ class RentalService {
       if(error) return console.error(error);
     })
   }
-  
+
   //Sets the status of the Rental to 'Active' in the database
   activateRental(id) {
     connection.query('update Rentals set RentalStatus = "Active" where RentalID=?', [id], (error) => {
