@@ -1162,7 +1162,6 @@ class BicycleUpdate extends Component {
     });
   }
 
-  //ikke ferdig....
   save() {
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
@@ -1352,7 +1351,7 @@ class TransportList extends Component {
       <Card title="Order Transport From:">
         <p>Select the location you want transport from:</p>
         <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
-          <option selected={true} disabled="disabled">
+          <option selected="true" disabled="true">
             Select Location
           </option>
           <option value="9">Finse</option>
@@ -1386,6 +1385,10 @@ class TransportList extends Component {
         </select>
         <br />
         <br />
+        <div className="form-group">
+        <label>Additional Comments</label>
+        <textarea className="form-control" rows="5" id="comment"></textarea>
+        </div>
         <Button.Success onClick={this.save}>Submit</Button.Success>
       </Card>
     );
@@ -1487,7 +1490,10 @@ class RepairDetails extends Component {
           <List.Item>Current status: {this.BicycleStatus}</List.Item>
         </List>
         <br />
-        <input type="textarea" placeholder="Add additional comments" id="comment" />
+        <div className="form-group">
+        <label>Additional Comments</label>
+        <textarea className="form-control" rows="5" id="comment"></textarea>
+        </div>
         <br />
         <br />
         <NavLink to="/bicycles">
