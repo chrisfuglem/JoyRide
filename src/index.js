@@ -138,14 +138,13 @@ class RentalEdit extends Component {
         ))}
         <NavLink to="/rentals">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
-        </NavLink> {' '}
+        </NavLink>{' '}
         <Button.Success onClick={this.setActive}>Activate Rental</Button.Success>
         <br />
         <br />
         <NavLink to="/rentals">
           <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
-        </NavLink>
-        {' '}
+        </NavLink>{' '}
         <Button.Danger oncClick={this.setEnd}>End Rental</Button.Danger>
       </Card>
     );
@@ -178,15 +177,13 @@ class RentalEdit extends Component {
     });
   }
   setActive() {
-    rentalService.setStatusRented(this.props.match.params.id, () => {
-    });
+    rentalService.setStatusRented(this.props.match.params.id, () => {});
     rentalService.activateRental(this.props.match.params.id, () => {
       history.push('/rentals');
     });
   }
   setEnd() {
-    rentalService.setStatusRented(this.props.match.params.id, () => {
-    });
+    rentalService.setStatusRented(this.props.match.params.id, () => {});
     rentalService.endRental(this.props.match.params.id, () => {
       history.push('/rentals');
     });
@@ -597,6 +594,9 @@ class CustomerList extends Component {
     return (
       <div>
         <p>Click the customers to edit or delete them</p>
+        <NavLink to="/customers/insert">
+          <Button.Light>Add New Customer</Button.Light>
+        </NavLink>
         <h3>Search by category</h3>
         <div id="CustomerSearch">
           <input id="CustomerSearchField" type="text" />
@@ -620,10 +620,6 @@ class CustomerList extends Component {
             </List.Item>
           ))}
         </List>
-        <br />
-        <NavLink to="/customers/insert">
-          <Button.Light>Add New Customer</Button.Light>
-        </NavLink>
       </div>
     );
   }
@@ -745,6 +741,9 @@ class EmployeeList extends Component {
     return (
       <div>
         <p>Click the employees to edit or delete them</p>
+        <NavLink to="/employees/insert/">
+          <Button.Light>Add New Employee</Button.Light>
+        </NavLink>
         <h3>Search by category</h3>
         <div id="EmployeeSearch">
           <input id="EmployeeSearchField" type="text" />
@@ -765,10 +764,6 @@ class EmployeeList extends Component {
             </List.Item>
           ))}
         </List>
-        <br />
-        <NavLink to="/employees/insert/">
-          <Button.Light>Add New Employee</Button.Light>
-        </NavLink>
       </div>
     );
   }
@@ -1170,11 +1165,16 @@ class BicycleUpdate extends Component {
   //ikke ferdig....
   save() {
     for (let x = 0; x < this.bicycles.length; x++) {
-      if(this.bicycles[x].checked == true) {
-        console.log("checked " + this.bicycles[x].BicycleID);
-        bicycleService.updateBicycles(this.bicycles[x].BicycleID, this.bicycles[x].BicycleStatus, this.bicycles[x].CurrentLocation, () => {
-          history.push('/bicycles');
-        })
+      if (this.bicycles[x].checked == true) {
+        console.log('checked ' + this.bicycles[x].BicycleID);
+        bicycleService.updateBicycles(
+          this.bicycles[x].BicycleID,
+          this.bicycles[x].BicycleStatus,
+          this.bicycles[x].CurrentLocation,
+          () => {
+            history.push('/bicycles');
+          }
+        );
       }
     }
   }
@@ -1187,6 +1187,9 @@ class AccessoryList extends Component {
   render() {
     return (
       <Card title="Accessory List">
+        <NavLink to="/accessories/insert">
+          <Button.Light>Add New accessory</Button.Light>
+        </NavLink>
         <p>Click the accessories to edit or delete them</p>
         <List>
           {this.accessories.map(accessory => (
@@ -1198,10 +1201,6 @@ class AccessoryList extends Component {
             </List.Item>
           ))}
         </List>
-        <br />
-        <NavLink to="/accessories/insert">
-          <Button.Light>Add New accessory</Button.Light>
-        </NavLink>
       </Card>
     );
   }
@@ -1346,7 +1345,7 @@ class AccessoryTypeInsert extends Component {
 class TransportList extends Component {
   locations = [];
   bicycles = [];
-  BicycleStatus = "";
+  BicycleStatus = '';
 
   render() {
     return (
@@ -1366,16 +1365,24 @@ class TransportList extends Component {
         <p>Select the Bicycles you want to transport:</p>
         <List>
           {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.BicycleID}>ID: {bicycle.BicycleID} Type: {bicycle.BicycleType} Status: {bicycle.BicycleStatus} Home Location: {bicycle.HomeLocation} <input type="checkbox" checked={bicycle.checked} onChange = {e => bicycle.checked = e.target.checked}></input></List.Item>
+            <List.Item key={bicycle.BicycleID}>
+              ID: {bicycle.BicycleID} Type: {bicycle.BicycleType} Status: {bicycle.BicycleStatus} Home Location:{' '}
+              {bicycle.HomeLocation}{' '}
+              <input type="checkbox" checked={bicycle.checked} onChange={e => (bicycle.checked = e.target.checked)} />
+            </List.Item>
           ))}
         </List>
         <br />
         <p>Select the location you want transport to:</p>
         <select id="TransportDropdown" value={this.LocationID}>
-        <option selected={true} disabled="disabled">Select Location</option>
-        {this.locations.map(location => (
-          <option value={location.LocationID}>{location.LocationName} ID: {location.LocationID}</option>
-        ))}
+          <option selected={true} disabled="disabled">
+            Select Location
+          </option>
+          {this.locations.map(location => (
+            <option value={location.LocationID}>
+              {location.LocationName} ID: {location.LocationID}
+            </option>
+          ))}
         </select>
         <br />
         <br />
@@ -1404,19 +1411,18 @@ class TransportList extends Component {
   //Updates the status on the bicycles set for transport.
   save() {
     for (let x = 0; x < this.bicycles.length; x++) {
-      if(this.bicycles[x].checked == true) {
-        console.log("checked " + this.bicycles[x].BicycleID);
+      if (this.bicycles[x].checked == true) {
+        console.log('checked ' + this.bicycles[x].BicycleID);
         transportService.saveStatus(this.bicycles[x].BicycleID, () => {
           history.push('/bicycles');
-        })
+        });
       }
     }
     var pdf = new jsPDF();
     var pickup = '' + document.getElementById('LocationDropdown').value;
-    var drop = '' + document.getElementById('TransportDropdown').value
+    var drop = '' + document.getElementById('TransportDropdown').value;
 
-    var text =
-      'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop;
+    var text = 'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop;
 
     pdf.text(text, 10, 10);
     pdf.save('Transport_order.pdf');
