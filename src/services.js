@@ -420,7 +420,7 @@ class BicycleService {
     });
   }
 
-  //Updates the Status and Current Location of the Bicycle selected (ikke ferdig)
+  //Updates the Status and Current Location of the Bicycle selected
   updateBicycles(BicycleStatus, CurrentLocation, BicycleID, success) {
     connection.query(
       'update Bicycles set BicycleStatus=?, CurrentLocation=? where BicycleID=?',
