@@ -441,17 +441,16 @@ class BicycleService {
   }
 
   //Updates the Status and Current Location of the Bicycle selected
-  updateBicycles(BicycleStatus, CurrentLocation, BicycleID, success) {
+  updateBicycles(BicycleID, BicycleStatus, CurrentLocation, success) {
     connection.query(
       'update Bicycles set BicycleStatus=?, CurrentLocation=? where BicycleID=?',
       [BicycleStatus, CurrentLocation, BicycleID],
       (error, results) => {
         if (error) return console.error(error);
 
-        success(results);
         console.log(results);
-      }
-    );
+        success();
+      });
   }
 
   //Selects the bicyclestatus from the database.

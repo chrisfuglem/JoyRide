@@ -1132,8 +1132,11 @@ class BicycleUpdate extends Component {
         <br />
         Select Location:
         <select id="CurrentLocation">
-            <option value="9">Finse</option>
-            <option value="13">Haugastøl</option>
+          <option value="9">Finse</option>
+          <option value="10">Flaam</option>
+          <option value="11">Voss</option>
+          <option value="12">Myrdal</option>
+          <option value="13">Haugastoel</option>
         </select>{' '}
         Select Status:
         <select id="StatusDropdown" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)}>
@@ -1169,13 +1172,13 @@ class BicycleUpdate extends Component {
       if (this.bicycles[x].checked == true) {
         console.log('checked ' + this.bicycles[x].BicycleID);
         bicycleService.updateBicycles(
-          this.bicycles[x].BicycleID,
-          this.bicycles[x].BicycleStatus,
-          this.bicycles[x].CurrentLocation,
+          (this.bicycles[x].BicycleID),
+          (this.bicycles[x].BicycleStatus = '' + document.getElementById('StatusDropdown').value),
+          (this.bicycles[x].CurrentLocation = '' + document.getElementById('CurrentLocation').value), 
           () => {
             history.push('/bicycles');
           }
-        );
+        )
       }
     }
   }
