@@ -271,6 +271,9 @@ class RemoveFromRental extends Component {
         <NavLink to={'/rentals/' + this.props.match.params.id + '/edit'}>
           <Button.Success>Finish</Button.Success>
         </NavLink>
+        <NavLink to={'/rentals/insert'}>
+          <Button.Light>Back</Button.Light>
+        </NavLink>
       </Card>
     );
   }
@@ -1429,7 +1432,7 @@ class TransportList extends Component {
       <Card title="Order Transport From:">
         <p>Select the location you want transport from:</p>
         <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
-          <option selected="true" disabled="true">
+          <option selected={true} disabled={true}>
             Select Location
           </option>
           <option value="9">Finse</option>
@@ -1452,7 +1455,7 @@ class TransportList extends Component {
         <br />
         <p>Select the location you want transport to:</p>
         <select id="TransportDropdown" value={this.LocationID}>
-          <option selected={true} disabled="disabled">
+          <option selected={true} disabled={true}>
             Select Location
           </option>
           {this.locations.map(location => (
