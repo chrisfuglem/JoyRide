@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
 import ReactDOM from 'react-dom';
-import { NavLink, HashRouter, Route } from 'react-router-dom';
+import { NavLink, HashRouter, Route, withRouter } from 'react-router-dom';
 import {
   rentalService,
   customerService,
@@ -114,11 +114,16 @@ class RentalList extends Component {
 class RentalEdit extends Component {
   rentedBicycles = [];
   rentedAccessories = [];
+  rental = [];
 
   render() {
     return (
       <Card>
         <h3>Rental id {this.props.match.params.id}</h3>
+        <p>{this.rental.FirstName}</p>
+        <p>{this.rental.RentStart}</p>
+        <p>{this.rental.RentEnd}</p>
+        <p>{this.rental.SUM}</p>
         <NavLink to="RemoveFromRental">Edit Bicycles and Accessories</NavLink>
         <h4>Bicycles</h4>
         {this.rentedBicycles.map(bicycle => (
@@ -151,6 +156,10 @@ class RentalEdit extends Component {
   }
 
   mounted() {
+    rentalService.getRental(this.props.match.params.id, rental => {
+      this.rental = rental;
+      console.log(this.rental);
+    });
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
     });
@@ -214,7 +223,8 @@ class RemoveFromRental extends Component {
   render() {
     return (
       <Card>
-        <h3>Rental id {this.props.match.params.id}</h3>
+        <h3>Bicycle and accessory selection</h3>
+        <p>Rental id: {this.props.match.params.id}</p>
         <div>
           <p>To do: Check if bicycles are available during rental period</p>
           <h4>Available Bicycles</h4>
@@ -257,12 +267,7 @@ class RemoveFromRental extends Component {
           </List.Item>
         ))}
         <NavLink to={'/rentals/' + this.props.match.params.id + '/edit'}>
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-        <br />
-        <br />
-        <NavLink to="/rentals">
-          <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
+          <Button.Success>Finish</Button.Success>
         </NavLink>
       </Card>
     );
@@ -299,19 +304,6 @@ class RemoveFromRental extends Component {
           this.accessoryDropdownOptions.push(this.availableAccessoriesCount[x]);
         }
       }
-    });
-  }
-
-  // Deletes the entire Rental.
-  delete() {
-    rentalService.removeAllBicycles(this.props.match.params.id, () => {
-      history.push('/rentals');
-    });
-    rentalService.removeAllAccessories(this.props.match.params.id, () => {
-      history.push('/rentals');
-    });
-    rentalService.deleteRental(this.props.match.params.id, () => {
-      history.push('/rentals');
     });
   }
 
@@ -414,6 +406,10 @@ class RentalInsert extends Component {
         <Form.Label>End date:</Form.Label>
         <Form.Input type="date" value={this.RentEnd} onChange={e => (this.RentEnd = e.target.value)} />
         <br />
+        <NavLink to={'/rentals/' + this.lastInsertedRental + '/RemoveFromRental'}>
+          <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
+        </NavLink>
+        <br />
         <div>
           <h4>Available Bicycles</h4>
           <select id="Bikedrop" ref={this.bicycleDropdown}>
@@ -430,6 +426,7 @@ class RentalInsert extends Component {
             </List.Item>
           ))}
         </div>
+        <br />
         <div>
           <h4>Available Accessories</h4>
           <select id="Accdrop" ref={this.accessoryDropdown}>
@@ -447,10 +444,6 @@ class RentalInsert extends Component {
             </List.Item>
           ))}
         </div>
-        <br />
-        <NavLink to="/Rentals">
-          <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
-        </NavLink>
       </Card>
     );
   }
@@ -487,7 +480,7 @@ class RentalInsert extends Component {
       this.locations = locations;
     });
     rentalService.getLastInsertRental(rental => {
-      this.lastInsertedRental = rental.RentalID;
+      this.lastInsertedRental = rental.RentalID + 1;
     });
   }
 
@@ -561,6 +554,8 @@ class RentalInsert extends Component {
     let year = dateObj.getUTCFullYear();
     let today = year + '-' + month + '-' + day;
 
+    //this.mounted(); // Needed to run getLastInsertRental() to get the last inserted rental
+
     // name, date, rentstart, rentend, sum, pickuplocation, discountsum
     rentalService.insertRental(
       this.customerDropdown.current.value,
@@ -571,16 +566,17 @@ class RentalInsert extends Component {
       this.locationDropdown.current.value,
       800,
       () => {
-        history.push('/rentals');
+        history.push('/rentals/' + this.lastInsertedRental + '/RemoveFromRental');
       }
     );
 
-    this.mounted(); // Needed to run getLastInsertRental()
-
-    this.rentedBicycles.map(bicycle => rentalService.addBicycleToRental(this.lastInsertedRental, bicycle.Type));
+    /*
+    this.rentedBicycles.map(bicycle =>
+      rentalService.addBicycleToRental(this.lastInsertedRental, bicycle.Type));
     this.rentedAccessories.map(accessory =>
       rentalService.addAccessoryToRental(this.lastInsertedRental, accessory.accessoryType)
     );
+    */
   }
 }
 
@@ -1117,6 +1113,8 @@ class BicycleUpdate extends Component {
   bicycles = [];
   statuses = [];
   locations = [];
+  CurrentLocation = "";
+  BicycleStatus = "";
 
   render() {
     return (
@@ -1132,16 +1130,18 @@ class BicycleUpdate extends Component {
           ))}
         </List>
         <br />
-        Select status:
-        <select id="selectstatus">
+        Select Location:
+        <select id="CurrentLocation">
+          <option value="9">Finse</option>
+          <option value="10">Flaam</option>
+          <option value="11">Voss</option>
+          <option value="12">Myrdal</option>
+          <option value="13">Haugastoel</option>
+        </select>{' '}
+        Select Status:
+        <select id="StatusDropdown" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)}>
           {this.statuses.map(status => (
             <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
-          ))}
-        </select>{' '}
-        Select Location:
-        <select id="selectlocation">
-          {this.locations.map(location => (
-            <option value={location.LocationID}>{location.LocationName}</option>
           ))}
         </select>
         <br />
@@ -1166,19 +1166,18 @@ class BicycleUpdate extends Component {
     });
   }
 
-  //ikke ferdig....
   save() {
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
         console.log('checked ' + this.bicycles[x].BicycleID);
         bicycleService.updateBicycles(
-          this.bicycles[x].BicycleID,
-          this.bicycles[x].BicycleStatus,
-          this.bicycles[x].CurrentLocation,
+          (this.bicycles[x].BicycleID),
+          (this.bicycles[x].BicycleStatus = '' + document.getElementById('StatusDropdown').value),
+          (this.bicycles[x].CurrentLocation = '' + document.getElementById('CurrentLocation').value),
           () => {
             history.push('/bicycles');
           }
-        );
+        )
       }
     }
   }
@@ -1356,7 +1355,7 @@ class TransportList extends Component {
       <Card title="Order Transport From:">
         <p>Select the location you want transport from:</p>
         <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
-          <option selected={true} disabled="disabled">
+          <option selected="true" disabled="true">
             Select Location
           </option>
           <option value="9">Finse</option>
@@ -1390,6 +1389,10 @@ class TransportList extends Component {
         </select>
         <br />
         <br />
+        <div className="form-group">
+        <label>Additional Comments</label>
+        <textarea className="form-control" rows="5" id="comment"></textarea>
+        </div>
         <Button.Success onClick={this.save}>Submit</Button.Success>
       </Card>
     );
@@ -1414,19 +1417,21 @@ class TransportList extends Component {
 
   //Updates the status on the bicycles set for transport.
   save() {
+    var pdf = new jsPDF();
+    var pickup = '' + document.getElementById('LocationDropdown').value;
+    var drop = '' + document.getElementById('TransportDropdown').value;
+
+    var text = 'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
         console.log('checked ' + this.bicycles[x].BicycleID);
+        console.log(text);
+        text += '\n- ' + this.bicycles[x].BicycleType + ' ' +this.bicycles[x].BicycleID;
         transportService.saveStatus(this.bicycles[x].BicycleID, () => {
           history.push('/bicycles');
         });
       }
     }
-    var pdf = new jsPDF();
-    var pickup = '' + document.getElementById('LocationDropdown').value;
-    var drop = '' + document.getElementById('TransportDropdown').value;
-
-    var text = 'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop;
 
     pdf.text(text, 10, 10);
     pdf.save('Transport_order.pdf');
@@ -1489,7 +1494,10 @@ class RepairDetails extends Component {
           <List.Item>Current status: {this.BicycleStatus}</List.Item>
         </List>
         <br />
-        <input type="textarea" placeholder="Add additional comments" id="comment" />
+        <div className="form-group">
+        <label>Additional Comments</label>
+        <textarea className="form-control" rows="5" id="comment"></textarea>
+        </div>
         <br />
         <br />
         <NavLink to="/bicycles">
