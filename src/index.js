@@ -450,7 +450,6 @@ class RentalInsert extends Component {
             </List.Item>
           ))}
         </div>
-<<<<<<< HEAD
         <br />
         <NavLink to="/rentals">
           <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
@@ -458,8 +457,6 @@ class RentalInsert extends Component {
         <NavLink to="/rentals">
           <Button.Light>Back</Button.Light>
         </NavLink>
-=======
->>>>>>> d0c3d44a626d1656c3aee4930a97e6e6ff414f85
       </Card>
     );
   }
