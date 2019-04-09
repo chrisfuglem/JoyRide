@@ -387,7 +387,7 @@ class RentalInsert extends Component {
         <br />
         <Form.Label>Find Customer By:</Form.Label>
         <div id="CustomerSearch">
-          <input id="CustomerSearchField" type="text" />
+          <input id="CustomerSearchField" type="text" width='200px' />
           <select id="CustomerSearchCategory">
             <option>FirstName</option>
             <option>SurName</option>
@@ -416,14 +416,14 @@ class RentalInsert extends Component {
         <br />
         <div>
           <h4>Available Bicycles</h4>
-          <select ref={this.bicycleDropdown}>
+          <select id="Bikedrop" ref={this.bicycleDropdown}>
             {this.bicycleDropdownOptions.map(bicycle => (
               <option value={bicycle.Type}>
                 {bicycle.Type} - {bicycle.TypeCount} Available
               </option>
             ))}
           </select>
-          <button onClick={this.addBicycle}>Add Bicycle</button>
+          <button id="Bikedropbtn" onClick={this.addBicycle}>Add Bicycle</button>
           {this.rentedBicycles.map(bicycle => (
             <List.Item>
               {bicycle.Type} <button onClick={this.removeBicycle.bind(this, bicycle.Type)}>Remove Bicycle</button>
@@ -432,14 +432,14 @@ class RentalInsert extends Component {
         </div>
         <div>
           <h4>Available Accessories</h4>
-          <select ref={this.accessoryDropdown}>
+          <select id="Accdrop" ref={this.accessoryDropdown}>
             {this.accessoryDropdownOptions.map(accessory => (
               <option key={accessory.AccessoryID} value={accessory.accessoryType}>
                 {accessory.accessoryType} - {accessory.TypeCount} Available
               </option>
             ))}
           </select>
-          <button onClick={this.addAccessory}>Add Accessory</button>
+          <button id="Accdropbtn" onClick={this.addAccessory}>Add Accessory</button>
           {this.rentedAccessories.map(accessory => (
             <List.Item>
               {accessory.accessoryType}{' '}
@@ -592,6 +592,7 @@ class CustomerList extends Component {
 
   render() {
     return (
+      <Card>
       <div>
         <p>Click the customers to edit or delete them</p>
         <NavLink to="/customers/insert">
@@ -621,6 +622,7 @@ class CustomerList extends Component {
           ))}
         </List>
       </div>
+    </Card>
     );
   }
 
@@ -739,6 +741,7 @@ class EmployeeList extends Component {
 
   render() {
     return (
+      <Card>
       <div>
         <p>Click the employees to edit or delete them</p>
         <NavLink to="/employees/insert/">
@@ -765,6 +768,7 @@ class EmployeeList extends Component {
           ))}
         </List>
       </div>
+    </Card>
     );
   }
 
