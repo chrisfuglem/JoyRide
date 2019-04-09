@@ -22,7 +22,7 @@ class RentalService {
       (error, results) => {
         if (error) return console.error(error);
 
-        success(results[0]);
+        success(results);
       }
     );
   }
@@ -441,18 +441,17 @@ class BicycleService {
     });
   }
 
-  //Updates the Status and Current Location of the Bicycle selected (ikke ferdig)
+  //Updates the Status and Current Location of the Bicycle selected
   updateBicycles(BicycleID, BicycleStatus, CurrentLocation, success) {
     connection.query(
       'update Bicycles set BicycleStatus=?, CurrentLocation=? where BicycleID=?',
-      [BicycleID, BicycleStatus, CurrentLocation],
+      [BicycleStatus, CurrentLocation, BicycleID],
       (error, results) => {
         if (error) return console.error(error);
 
-        success(results);
         console.log(results);
-      }
-    );
+        success();
+      });
   }
 
   //Selects the bicyclestatus from the database.
@@ -530,6 +529,8 @@ class BicycleService {
         success();
       };
   }
+
+
 }
 
 class AccessoryService {
@@ -675,6 +676,7 @@ class TransportService {
     );
   }
 
+  //Saves the status of the bicycle(s) selected for Transport to 'In Transport'
   saveStatus(BicycleID) {
     connection.query('update Bicycles set BicycleStatus = "In Transport" where BicycleID=?', [BicycleID], (error,results) => {
       if(error) return console.error(error);
@@ -691,6 +693,7 @@ class RepairService {
       (error, results) => {
         if (error) return console.error(error);
 
+        console.log(results);
         success(results);
       }
     );
