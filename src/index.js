@@ -195,6 +195,7 @@ class RentalEdit extends Component {
 
 //Section for selecting/deselecting bicycles and accessories.
 class RemoveFromRental extends Component {
+  rental = [];
   rentedBicycles = [];
   rentedAccessories = [];
   bicycles = [];
@@ -275,6 +276,9 @@ class RemoveFromRental extends Component {
     // Resets the options to prevent duplicates from being added when mounted is called a second time
     this.bicycleDropdownOptions = [];
     this.accessoryDropdownOptions = [];
+    rentalService.getRental(this.props.match.params.id, rental => {
+      this.rental = rental;
+    });
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
     });
@@ -284,7 +288,7 @@ class RemoveFromRental extends Component {
     rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
     });
-    rentalService.getAvailableBicyclesByType(bicycles => {
+    rentalService.getAvailableBicyclesByType(this.rental.RentStart, this.rental.RentEnd, bicycles => {
       this.availableBicyclesCount = bicycles;
       for (let x = 0; x < this.availableBicyclesCount.length; x++) {
         if (this.availableBicyclesCount[x].TypeCount > 0) {
@@ -467,8 +471,9 @@ class RentalInsert extends Component {
     rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
     });
-    rentalService.getAvailableBicyclesByType(bicycles => {
+    rentalService.getAvailableBicyclesByType(this.RentStart, this.RentEnd, bicycles => {
       this.availableBicyclesCount = bicycles;
+      console.log(this.RentStart, this.RentEnd);
       for (let x = 0; x < this.availableBicyclesCount.length; x++) {
         if (this.availableBicyclesCount[x].TypeCount > 0) {
           this.bicycleDropdownOptions.push(this.availableBicyclesCount[x]);

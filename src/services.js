@@ -17,7 +17,7 @@ class RentalService {
   //Selects a specific rental booking and extracts rental and customer information from the database.
   getRental(id, success) {
     connection.query(
-      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
+      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.SUM, Rentals.RentStart, Rentals.RentEnd, Rentals.Date, COUNT(RentedBicycles.BicycleID) FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
       [id],
       (error, results) => {
         if (error) return console.error(error);
@@ -225,9 +225,10 @@ class RentalService {
   }
 
   //Selects available bicycles by the bicycleType, counts the number available.
-  getAvailableBicyclesByType(success) {
+  getAvailableBicyclesByType(rentstart, rentend, success) {
     connection.query(
-      'select Bicycles.BicycleType as Type, (SELECT COUNT(Bicycles.BicycleID) FROM Bicycles WHERE Bicycles.BicycleStatus = "Available" AND Bicycles.BicycleType = Type) as TypeCount FROM Bicycles GROUP BY Bicycles.BicycleType;',
+      'select Bicycles.BicycleType as Type, (SELECT COUNT(Bicycles.BicycleID) FROM Bicycles WHERE Bicycles.BicycleStatus = "Available" AND Bicycles.BicycleType = Type) as TypeCount FROM Bicycles where Bicycles.BicycleID not in (select BicycleID from RentedBicycles inner join Rentals on Rentals.RentalID = RentedBicycles.RentalID where Rentals.RentStart > "?" and Rentals.RentEnd < "?") GROUP BY Bicycles.BicycleType;',
+      [rentstart, rentend],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -242,7 +243,7 @@ class RentalService {
       if(error) return console.error(error);
     })
   }
-  
+
   //Sets the status of the Rental to 'Active' in the database
   activateRental(id) {
     connection.query('update Rentals set RentalStatus = "Active" where RentalID=?', [id], (error) => {
