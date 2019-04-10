@@ -156,6 +156,8 @@ class RentalEdit extends Component {
         </NavLink>{' '}
         <Button.Danger onClick={this.setEnded}>End Rental</Button.Danger>
         <NavLink to="/sales/rentals">
+          <br />
+          <br />
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
