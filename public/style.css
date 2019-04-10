@@ -62,7 +62,7 @@
 
 .btn.btn-success, .btn.btn-danger {
   padding-right: 10px;
-  width: 150px;
+  width: auto;
   text-align: center;
 }
 
