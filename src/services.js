@@ -556,7 +556,7 @@ class AccessoryService {
   }
 
   //Selects a specific accessory from the database.
-  getAccessoryType(success) {
+  getAccessoryTypes(success) {
     connection.query('select * from AccessoryTypes', (error, results) => {
       if (error) return console.error(error);
 
@@ -565,10 +565,10 @@ class AccessoryService {
   }
 
   //Updates an accessory with all variables.
-  updateAccessory(AccessoryID, DailyPrice, HomeLocation, CurrentLocation, success) {
+  updateAccessory(AccessoryID, DailyPrice, Status, HomeLocation, CurrentLocation, success) {
     connection.query(
-      'update Accessories set DailyPrice=?, HomeLocation=?, CurrentLocation=? where AccessoryID=?',
-      [DailyPrice, HomeLocation, CurrentLocation, AccessoryID],
+      'update Accessories set DailyPrice=?, Status=((SELECT AccessoryStatus FROM AccessoryStatus WHERE AccessoryStatus.AccessoryStatus = ?)),  HomeLocation=?, CurrentLocation=? where AccessoryID=?',
+      [DailyPrice, Status, HomeLocation, CurrentLocation, AccessoryID],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -587,10 +587,23 @@ class AccessoryService {
   }
 
   //Adds new accessory price to the databse .
-  insertAccessoryPrice(Type, DailyPrice, HomeLocation, CurrentLocation, success) {
+  insertAccessoryPrice(Type, DailyPrice, HomeLocation, CurrentLocation, Status, success) {
     connection.query(
-      'insert into Accessories (Type, DailyPrice, HomeLocation, CurrentLocation) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?, ?, ?)',
-      [Type, DailyPrice, HomeLocation, CurrentLocation]
+      'insert into Accessories (Type, DailyPrice, HomeLocation, CurrentLocation, Status) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?, ?, ?, (SELECT AccessoryStatus FROM AccessoryStatus WHERE AccessoryStatus.AccessoryStatus = "Available"))',
+      [Type, DailyPrice, HomeLocation, CurrentLocation, Status]
+    ),
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success();
+      };
+  }
+
+  //Adds new accessory price to the databse .
+  insertExAccessory(Type, DailyPrice, HomeLocation, CurrentLocation, Status, success) {
+    connection.query(
+      'insert into Accessories (Type, DailyPrice, HomeLocation, CurrentLocation, Status) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?, ?, ?, (SELECT AccessoryStatus FROM AccessoryStatus WHERE AccessoryStatus.AccessoryStatus = "Available"))',
+      [Type, DailyPrice, HomeLocation, CurrentLocation, Status]
     ),
       (error, results) => {
         if (error) return console.error(error);
@@ -617,6 +630,15 @@ class AccessoryService {
 
         success();
       };
+  }
+
+  //Selects the bicyclestatus from the database.
+  getAccessoryStatuses(success) {
+    connection.query('select * from AccessoryStatus', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
   }
 }
 

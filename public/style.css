@@ -23,11 +23,12 @@
 }
 
 .list-group{
-    max-height: 654px;
+    /* max-height: 654px; */
+    max-height: 72.5vh;
     margin-bottom: 10px;
     overflow:scroll;
     -webkit-overflow-scrolling: touch;
-    padding-top: 30px;
+    padding-top: 10px;
 }
 
 .CustomerList {
@@ -46,4 +47,12 @@
 
 #Bikedropbtn, #Accdropbtn {
   width: 150px;
+}
+
+#EmployeeSearchField, #EmployeeSearchCategory, #EmployeeSearchButton {
+  margin-right: 10px;
+}
+
+.Card-body {
+  height: 100vh;
 }
