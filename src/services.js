@@ -225,9 +225,10 @@ class RentalService {
   }
 
   //Selects available bicycles by the bicycleType, counts the number available.
-  getAvailableBicyclesByType(success) {
+  getAvailableBicyclesByType(rentstart, rentend, success) {
     connection.query(
-      'select Bicycles.BicycleType as Type, (SELECT COUNT(Bicycles.BicycleID) FROM Bicycles WHERE Bicycles.BicycleStatus = "Available" AND Bicycles.BicycleType = Type) as TypeCount FROM Bicycles GROUP BY Bicycles.BicycleType;',
+      'select Bicycles.BicycleType as Type, (SELECT COUNT(Bicycles.BicycleID) FROM Bicycles WHERE Bicycles.BicycleType = Type) as TypeCount FROM Bicycles where Bicycles.BicycleID not in (select BicycleID from RentedBicycles inner join Rentals on Rentals.RentalID = RentedBicycles.RentalID where Rentals.RentStart > ? and Rentals.RentEnd < ?) GROUP BY Bicycles.BicycleType;',
+      [rentstart, rentend],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -251,17 +252,19 @@ class RentalService {
   }
 
   //Sets the status of the Bicycle to 'Rented' in the database
-  setStatusRented(id) {
-    connection.query('update Bicycles set BicycleStatus = "Rented" where BicycleID=?', [id], (error) => {
+  setStatusRented(RentalID) {
+    connection.query('update Bicycles inner join RentedBicycles on RentedBicycles.BicycleID = Bicycles.BicycleID set BicycleStatus = "Rented" where RentedBicycles.RentalID=?', [RentalID], (error, results) => {
       if(error) return console.error(error);
+
+      console.log(results);
     })
   }
 }
 
 class CustomerService {
   //Selects all the customers from the database.
-  getCustomers(success) {
-    connection.query('select * from Customers', (error, results) => {
+  getCustomers(results) {
+    connection.query('select * from Customers', (error) => {
       if (error) return console.error(error);
 
       success(results);
