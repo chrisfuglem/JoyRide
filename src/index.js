@@ -117,7 +117,8 @@ class RentalEdit extends Component {
   RentStart = '';
   RentEnd = '';
   SUM = '';
-  RentedStatus = '';
+  BikeStatus = "";
+  AccessoryStatus = "";
 
   render() {
     return (
@@ -153,7 +154,7 @@ class RentalEdit extends Component {
         <NavLink to="/sales/rentals">
           <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
         </NavLink>{' '}
-        <Button.Danger oncClick={this.setEnd}>End Rental</Button.Danger>
+        <Button.Danger onClick={this.setEnded}>End Rental</Button.Danger>
         <NavLink to="/sales/rentals">
           <Button.Light>Back</Button.Light>
         </NavLink>
@@ -202,18 +203,23 @@ class RentalEdit extends Component {
     });
   }
   setActive() {
-    rentalService.setStatusRented(this.props.match.params.id, status, () => {
-      this.RentedStatus = status;
-      history.push('/sales/rentals');
+    rentalService.setBicycleRented(this.props.match.params.id, status, () => {
+      this.BikeStatus = status;
     });
+    rentalService.setAccessoryRented(this.props.match.params.id, status, () => {
+      this.AccessoryStatus = status;
+    })
     rentalService.activateRental(this.props.match.params.id, () => {
       history.push('/sales/rentals');
     });
   }
-  setEnd() {
-    rentalService.setStatusRented(this.props.match.params.id, status, () => {
-      this.RentedStatus = status;
-      history.push('/sales/rentals');
+
+  setEnded() {
+    rentalService.setBicycleBack(this.props.match.params.id, status, () => {
+      this.BikeStatus = status;
+    });
+    rentalService.setAccessoryBack(this.props.match.params.id, status, () => {
+      this.AccessoryStatus = status;
     });
     rentalService.endRental(this.props.match.params.id, () => {
       history.push('/sales/rentals');
