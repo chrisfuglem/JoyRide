@@ -113,18 +113,21 @@ class RentalEdit extends Component {
   rentedBicycles = [];
   rentedAccessories = [];
   rental = '';
+  FirstName = '';
   RentStart = '';
   RentEnd = '';
   SUM = '';
+  BikeStatus = "";
+  AccessoryStatus = "";
 
   render() {
     return (
       <Card>
         <h3>Rental id {this.props.match.params.id}</h3>
-        <p>{this.FirstName}</p>
-        <p>{this.RentStart}</p>
-        <p>{this.RentEnd}</p>
-        <p>{this.SUM}</p>
+        <p>Customer: {this.FirstName}</p>
+        <p>Start of rent: {this.RentStart}</p>
+        <p>End of rent: {this.RentEnd}</p>
+        <p>Order Sum: {this.SUM}</p>
         <NavLink to="RemoveFromRental">Edit Bicycles and Accessories</NavLink>
         <h4>Bicycles</h4>
         {this.rentedBicycles.map(bicycle => (
@@ -151,7 +154,7 @@ class RentalEdit extends Component {
         <NavLink to="/sales/rentals">
           <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
         </NavLink>{' '}
-        <Button.Danger oncClick={this.setEnd}>End Rental</Button.Danger>
+        <Button.Danger onClick={this.setEnded}>End Rental</Button.Danger>
         <NavLink to="/sales/rentals">
           <br />
           <br />
@@ -164,8 +167,17 @@ class RentalEdit extends Component {
   mounted() {
     rentalService.getRental(this.props.match.params.id, rental => {
       this.rental = rental;
-      console.log(this.rental);
-      console.log(this.rental[0].FirstName);
+      this.FirstName = this.rental[0].FirstName;
+
+      let x = JSON.stringify(this.rental[0].RentStart);
+      x = x.slice(1, 11);
+      this.RentStart = x;
+
+      let y = JSON.stringify(this.rental[0].RentEnd);
+      y = y.slice(1, 11);
+      this.RentEnd = y;
+
+      this.SUM = this.rental[0].SUM;
     });
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
@@ -193,13 +205,24 @@ class RentalEdit extends Component {
     });
   }
   setActive() {
-    rentalService.setStatusRented(this.props.match.params.id, () => {});
+    rentalService.setBicycleRented(this.props.match.params.id, status, () => {
+      this.BikeStatus = status;
+    });
+    rentalService.setAccessoryRented(this.props.match.params.id, status, () => {
+      this.AccessoryStatus = status;
+    })
     rentalService.activateRental(this.props.match.params.id, () => {
       history.push('/sales/rentals');
     });
   }
-  setEnd() {
-    rentalService.setStatusRented(this.props.match.params.id, () => {});
+
+  setEnded() {
+    rentalService.setBicycleBack(this.props.match.params.id, status, () => {
+      this.BikeStatus = status;
+    });
+    rentalService.setAccessoryBack(this.props.match.params.id, status, () => {
+      this.AccessoryStatus = status;
+    });
     rentalService.endRental(this.props.match.params.id, () => {
       history.push('/sales/rentals');
     });
@@ -218,6 +241,9 @@ class RemoveFromRental extends Component {
   accessoryDropdownOptions = [];
   rentedBicycles = [];
   rentedAccessories = [];
+  rental = [];
+  rentstart = '';
+  rentend = '';
 
   constructor(props) {
     super(props);
@@ -233,7 +259,6 @@ class RemoveFromRental extends Component {
         <h3>Bicycle and accessory selection</h3>
         <p>Rental id: {this.props.match.params.id}</p>
         <div>
-          <p>To do: Check if bicycles are available during rental period</p>
           <h4>Available Bicycles</h4>
           <select ref={this.bicycleDropdown}>
             {this.bicycleDropdownOptions.map(bicycle => (
@@ -287,6 +312,24 @@ class RemoveFromRental extends Component {
     // Resets the options to prevent duplicates from being added when mounted is called a second time
     this.bicycleDropdownOptions = [];
     this.accessoryDropdownOptions = [];
+    rentalService.getRental(this.props.match.params.id, rental => {
+      this.rental = rental;
+      let x = '' + this.rental[0].RentStart; // Turns the Date object into a string
+      let time = x.slice(16, 24);
+      x = JSON.stringify(this.rental[0].RentStart);
+      let date = x.slice(1, 11);
+      this.rentstart = date + ' ' + time;
+      console.log(this.rentstart);
+
+      x = '' + this.rental[0].RentEnd; // Turns the Date object into a string
+      time = x.slice(16, 24);
+      x = JSON.stringify(this.rental[0].RentEnd);
+      date = x.slice(1, 11);
+      this.rentend = date + ' ' + time;
+      console.log(this.rentend);
+
+
+    });
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
     });
@@ -296,7 +339,7 @@ class RemoveFromRental extends Component {
     rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
     });
-    rentalService.getAvailableBicyclesByType(bicycles => {
+    rentalService.getAvailableBicyclesByType(this.rentstart, this.rentend, bicycles => {
       this.availableBicyclesCount = bicycles;
       for (let x = 0; x < this.availableBicyclesCount.length; x++) {
         if (this.availableBicyclesCount[x].TypeCount > 0) {
@@ -424,45 +467,7 @@ class RentalInsert extends Component {
           <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
         </NavLink>
         <br />
-        <div>
-          <h4>Available Bicycles</h4>
-          <select id="Bikedrop" ref={this.bicycleDropdown}>
-            {this.bicycleDropdownOptions.map(bicycle => (
-              <option value={bicycle.Type}>
-                {bicycle.Type} - {bicycle.TypeCount} Available
-              </option>
-            ))}
-          </select>
-          <button id="Bikedropbtn" onClick={this.addBicycle}>Add Bicycle</button>
-          {this.rentedBicycles.map(bicycle => (
-            <List.Item>
-              {bicycle.Type} <button onClick={this.removeBicycle.bind(this, bicycle.Type)}>Remove Bicycle</button>
-            </List.Item>
-          ))}
-        </div>
-        <br />
-        <div>
-          <h4>Available Accessories</h4>
-          <select id="Accdrop" ref={this.accessoryDropdown}>
-            {this.accessoryDropdownOptions.map(accessory => (
-              <option key={accessory.AccessoryID} value={accessory.accessoryType}>
-                {accessory.accessoryType} - {accessory.TypeCount} Available
-              </option>
-            ))}
-          </select>
-          <button id="Accdropbtn" onClick={this.addAccessory}>Add Accessory</button>
-          {this.rentedAccessories.map(accessory => (
-            <List.Item>
-              {accessory.accessoryType}{' '}
-              <button onClick={this.removeAccessory.bind(this, accessory.accessoryType)}>Remove Accessory</button>
-            </List.Item>
-          ))}
-        </div>
-        <br />
-        <NavLink to="/sales/rentals">
-          <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
-        </NavLink>
-        <NavLink to="/sales/rentals">
+        <NavLink to="/rentals">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -475,92 +480,12 @@ class RentalInsert extends Component {
     customerService.searchCustomers(this.searchCategory, this.searchValue, customers => {
       this.customers = customers;
     });
-    rentalService.getAvailableBicycles(bicycles => {
-      this.bicycles = bicycles;
-    });
-    rentalService.getAvailableBicyclesByType(bicycles => {
-      this.availableBicyclesCount = bicycles;
-      for (let x = 0; x < this.availableBicyclesCount.length; x++) {
-        if (this.availableBicyclesCount[x].TypeCount > 0) {
-          this.bicycleDropdownOptions.push(this.availableBicyclesCount[x]);
-        }
-      }
-    });
-    rentalService.getAvailableAccessories(accessories => {
-      this.accessories = accessories;
-    });
-    rentalService.getAvailableAccessoriesByType(accessories => {
-      this.availableAccessoriesCount = accessories;
-      for (let x = 0; x < this.availableAccessoriesCount.length; x++) {
-        if (this.availableAccessoriesCount[x].TypeCount > 0) {
-          this.accessoryDropdownOptions.push(this.availableAccessoriesCount[x]);
-        }
-      }
-    });
     rentalService.getPickupLocation(locations => {
       this.locations = locations;
     });
     rentalService.getLastInsertRental(rental => {
       this.lastInsertedRental = rental.RentalID + 1;
     });
-  }
-
-  //Adds bicycle to the rental.
-  addBicycle() {
-    for (let x = 0; x < this.bicycleDropdownOptions.length; x++) {
-      if (this.bicycleDropdownOptions[x].Type == this.bicycleDropdown.current.value) {
-        if (this.bicycleDropdownOptions[x].TypeCount > 0) {
-          this.rentedBicycles.push(this.bicycleDropdownOptions[x]);
-          this.bicycleDropdownOptions[x].TypeCount--;
-          break;
-        }
-      }
-    }
-    console.log(this.rentedBicycles);
-  }
-
-  //Removes bicycle from the rental.
-  removeBicycle(type) {
-    for (let x = 0; x < this.rentedBicycles.length; x++) {
-      if (this.rentedBicycles[x].Type == type) {
-        for (let xx = 0; xx < this.bicycleDropdownOptions.length; xx++) {
-          if (this.bicycleDropdownOptions[xx].Type == this.rentedBicycles[x].Type) {
-            this.bicycleDropdownOptions[xx].TypeCount++;
-          }
-        }
-        this.rentedBicycles.splice(x, 1); //Deletes the first bike with a matching Type
-        console.log(this.rentedBicycles);
-        break;
-      }
-    }
-  }
-
-  //Adds accessory from the rental.
-  addAccessory() {
-    for (let x = 0; x < this.accessoryDropdownOptions.length; x++) {
-      if (this.accessoryDropdownOptions[x].accessoryType == this.accessoryDropdown.current.value) {
-        if (this.accessoryDropdownOptions[x].TypeCount > 0) {
-          this.rentedAccessories.push(this.accessoryDropdownOptions[x]);
-          this.accessoryDropdownOptions[x].TypeCount--;
-          break;
-        }
-      }
-    }
-  }
-
-  //Removes accessory from the rental.
-  removeAccessory(type) {
-    for (let x = 0; x < this.rentedAccessories.length; x++) {
-      if (this.rentedAccessories[x].accessoryType == type) {
-        for (let xx = 0; xx < this.accessoryDropdownOptions.length; xx++) {
-          if (this.accessoryDropdownOptions[xx].accessoryType == this.rentedAccessories[x].accessoryType) {
-            this.accessoryDropdownOptions[xx].TypeCount++;
-          }
-        }
-        this.rentedAccessories.splice(x, 1); //Deletes the first bike with a matching Type
-        break;
-      }
-    }
   }
 
   //Adds new rental.
@@ -575,29 +500,19 @@ class RentalInsert extends Component {
     let year = dateObj.getUTCFullYear();
     let today = year + '-' + month + '-' + day;
 
-    //this.mounted(); // Needed to run getLastInsertRental() to get the last inserted rental
-
     // name, date, rentstart, rentend, sum, pickuplocation, discountsum
     rentalService.insertRental(
       this.customerDropdown.current.value,
       today,
       this.RentStart,
       this.RentEnd,
-      1000,
+      0,
       this.locationDropdown.current.value,
-      800,
+      0,
       () => {
         history.push('/sales/rentals/' + this.lastInsertedRental + '/RemoveFromRental');
       }
     );
-
-    /*
-    this.rentedBicycles.map(bicycle =>
-      rentalService.addBicycleToRental(this.lastInsertedRental, bicycle.Type));
-    this.rentedAccessories.map(accessory =>
-      rentalService.addAccessoryToRental(this.lastInsertedRental, accessory.accessoryType)
-    );
-    */
   }
 }
 
@@ -1497,7 +1412,7 @@ class AccessoryInsertEx extends Component {
         <br />
         <br />
         <NavLink to="/warehouse/accessories">
-        <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
+        <Button.Success onClick={this.insert}>Add Accessory</Button.Success>
         </NavLink>
         <NavLink to="/warehouse/accessories">
           <Button.Light>Back</Button.Light>
@@ -1528,6 +1443,7 @@ class AccessoryInsertEx extends Component {
 //You can choose location to select bicycles from and location to transport to.
 class TransportList extends Component {
   locations = [];
+  transportToLocations = [];
   bicycles = [];
   BicycleStatus = '';
 
@@ -1535,15 +1451,15 @@ class TransportList extends Component {
     return (
       <Card title="Order Transport From:">
         <p>Select the location you want transport from:</p>
-        <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
+        <select id="LocationDropdown" onChange={this.getBicyclesForTransport}>
           <option selected={true} disabled={true}>
             Select Location
           </option>
-          <option value="9">Finse</option>
-          <option value="10">Flaam</option>
-          <option value="11">Voss</option>
-          <option value="12">Myrdal</option>
-          <option value="13">Haugastøl</option>
+          {this.locations.map(location => (
+            <option value={location.LocationName}>
+              {location.LocationName}
+            </option>
+          ))}
         </select>
         <br />
         <p>Select the Bicycles you want to transport:</p>
@@ -1562,15 +1478,23 @@ class TransportList extends Component {
           <option selected={true} disabled={true}>
             Select Location
           </option>
-          {this.locations.map(location => (
-            <option value={location.LocationID}>
-              {location.LocationName} ID: {location.LocationID}
+          {this.transportToLocations.map(location => (
+            <option value={location.LocationName}>
+              {location.LocationName}
             </option>
           ))}
         </select>
         <br />
         <br />
+        <br />
+        <input type="textarea" placeholder="Add additional comments" id="comment" />
+        <br />
+        <br />
+        <p id="alert"></p>
+        <br />
+        <NavLink to="/warehouse/bicycles">
         <Button.Success onClick={this.save}>Submit</Button.Success>
+        </NavLink>
       </Card>
     );
   }
@@ -1582,23 +1506,29 @@ class TransportList extends Component {
   }
 
   //Gets all the bicycles on the chosen location
-  getBicycles() {
-    transportService.getBicycles(document.getElementById('LocationDropdown').value, bicycles => {
+  getBicyclesForTransport() {
+    transportService.getBicyclesForTransport(document.getElementById('LocationDropdown').value, bicycles => {
       this.bicycles = bicycles;
       for (let bicycle of bicycles) bicycle.checked = false;
+      if (this.bicycles.length === 0) {
+        document.getElementById("alert").innerHTML ="There are no bicycles in need of transport at this location."
+      } else {
+        document.getElementById("alert").innerHTML="";
+      }
     });
     transportService.getTransportToLocation(document.getElementById('LocationDropdown').value, locations => {
-      this.locations = locations;
+      this.transportToLocations = locations;
     });
   }
 
   //Updates the status on the bicycles set for transport.
   save() {
-    var pdf = new jsPDF();
-    var pickup = '' + document.getElementById('LocationDropdown').value;
-    var drop = '' + document.getElementById('TransportDropdown').value;
+    let pdf = new jsPDF();
+    let pickup = '' + document.getElementById('LocationDropdown').value;
+    let drop = '' + document.getElementById('TransportDropdown').value;
+    let comment = '\n\nAdditional comments:\n' + document.getElementById('comment').value;
 
-    var text = 'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
+    let text = 'Joyride\n\nTransport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
         console.log('checked ' + this.bicycles[x].BicycleID);
@@ -1610,7 +1540,7 @@ class TransportList extends Component {
       }
     }
 
-    pdf.text(text, 10, 10);
+    pdf.text(text + comment, 10, 10);
     pdf.save('Transport_order.pdf');
   }
 }
@@ -1633,6 +1563,7 @@ class RepairList extends Component {
           ))}
         </List>
         <NavLink to="/warehouse/repair/summary" />
+        <p id="alert"></p>
       </Card>
     );
   }
@@ -1640,6 +1571,9 @@ class RepairList extends Component {
   mounted() {
     repairService.getBicycles(bicycles => {
       this.bicycles = bicycles;
+      if (this.bicycles.length === 0) {
+        document.getElementById("alert").innerHTML ="There are no bicycles in need of repair."
+      }
     });
   }
 }
@@ -1694,9 +1628,6 @@ class RepairDetails extends Component {
       this.HomeLocation = bicycle.HomeLocation;
       this.CurrentLocation = bicycle.CurrentLocation;
     });
-    bicycleService.getBicycleStatuses(statuses => {
-      this.BicycleStatuses = statuses;
-    });
   }
 
   //Updates the status on the chosen bicycle to "In Repair", and saves and order confirmation as a PDF.
@@ -1706,15 +1637,15 @@ class RepairDetails extends Component {
       this.BrakeType = bicycle.Braketype;
       this.Wheelsize = bicycle.Wheelsize;
     });
-    var pdf = new jsPDF();
+    let pdf = new jsPDF();
 
-    var comment = '' + document.getElementById('comment').value;
-    var type = this.BicycleType;
-    var frame = this.FrameType;
-    var brake = this.BrakeType;
-    var wheel = this.Wheelsize;
-    var text =
-      'Repair confirmation: \n \n' +
+    let comment = '' + document.getElementById('comment').value;
+    let type = this.BicycleType;
+    let frame = this.FrameType;
+    let brake = this.BrakeType;
+    let wheel = this.Wheelsize;
+    let text =
+      'Joyride\n\nRepair confirmation: \n \n' +
       'Bicycle Type: ' +
       type +
       '\nFrametype: ' +
