@@ -24,6 +24,7 @@ class Menu extends Component {
       <NavBar brand="Joyride">
         <NavBar.Link to="/sales">Sales</NavBar.Link>
         <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+        <NavBar.Link to="/employees">Employees</NavBar.Link>
       </NavBar>
     );
   }
@@ -47,7 +48,6 @@ class Sales extends Component {
       <NavBar brand="Sales">
         <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
         <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
-        <NavBar.Link to="/sales/employees">Employees</NavBar.Link>
         <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
       </NavBar>
     );
@@ -799,7 +799,7 @@ class EmployeeList extends Component {
       <Card>
       <div>
         <p>Click the employees to edit or delete them</p>
-        <NavLink to="/sales/employees/insert/">
+        <NavLink to="/employees/insert/">
           <Button.Light>Add New Employee</Button.Light>
           <br />
           <br />
@@ -818,7 +818,7 @@ class EmployeeList extends Component {
         <List>
           {this.employees.map(employee => (
             <List.Item key={employee.EmployeeID}>
-              <NavLink to={'/sales/employees/' + employee.EmployeeID + '/edit'}>
+              <NavLink to={'/employees/' + employee.EmployeeID + '/edit'}>
                 {employee.Firstname} {employee.Surname}
               </NavLink>
             </List.Item>
@@ -851,15 +851,15 @@ class EmployeeEdit extends Component {
         <Form.Label>Surname</Form.Label>
         <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
         <br />
-        <NavLink to="/sales/employees">
+        <NavLink to="/employees">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/sales/employees">
+        <NavLink to="/employees">
           <Button.Danger onClick={this.delete}>Delete Employee</Button.Danger>
         </NavLink>
-        <NavLink to="/sales/employees">
+        <NavLink to="/employees">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -876,14 +876,14 @@ class EmployeeEdit extends Component {
   //Updates the employee.
   save() {
     employeeService.updateEmployee(this.props.match.params.id, this.Firstname, this.Surname, () => {
-      history.push('/sales/employees');
+      history.push('/employees');
     });
   }
 
   //Deletes the employee.
   delete() {
     employeeService.deleteEmployee(this.props.match.params.id, () => {
-      history.push('/sales/employees');
+      history.push('/employees');
     });
   }
 }
@@ -898,10 +898,10 @@ class EmployeeInsert extends Component {
         <Form.Label>Surname:</Form.Label>
         <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
         <br />
-        <NavLink to="/sales/employees">
+        <NavLink to="/employees">
           <Button.Success onClick={this.insert}>Add New Employee</Button.Success>
         </NavLink>
-        <NavLink to="/sales/employees">
+        <NavLink to="/employees">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -911,7 +911,7 @@ class EmployeeInsert extends Component {
   //Adds the employee.
   insert() {
     employeeService.insertEmployee(this.Firstname, this.Surname, () => {
-      history.push('/esales/mployees');
+      history.push('/employees');
     });
   }
 }
@@ -1763,7 +1763,7 @@ ReactDOM.render(
       <Route path="/sales" component={Sales} />
       <Route path="/warehouse" component={Warehouse} />
       <Route exact path="/sales/customers" component={CustomerList} />
-      <Route exact path="/sales/employees" component={EmployeeList} />
+      <Route exact path="/employees" component={EmployeeList} />
       <Route exact path="/warehouse/bicycles" component={BicycleList} />
       <Route exact path="/warehouse/accessories" component={AccessoryList} />
       <Route exact path="/warehouse/repair" component={RepairList} />
@@ -1773,13 +1773,13 @@ ReactDOM.render(
       <Route exact path="/sales/rentals/:id/edit" component={RentalEdit} />
       <Route exact path="/sales/rentals/:id/RemoveFromRental" component={RemoveFromRental} />
       <Route exact path="/sales/customers/:id/edit" component={CustomerEdit} />
-      <Route exact path="/sales/employees/:id/edit" component={EmployeeEdit} />
+      <Route exact path="/employees/:id/edit" component={EmployeeEdit} />
       <Route exact path="/warehouse/bicycles/:id/edit" component={BicycleEdit} />
       <Route exact path="/warehouse/accessories/:id/edit" component={AccessoryEdit} />
       <Route exact path="/sales/rentals/insert" component={RentalInsert} />
       <Route exact path="/sales/rentals/insertcustomer" component={BookingCustomerInsert} />
       <Route exact path="/sales/customers/insert" component={CustomerInsert} />
-      <Route exact path="/sales/employees/insert" component={EmployeeInsert} />
+      <Route exact path="/employees/insert" component={EmployeeInsert} />
       <Route exact path="/warehouse/bicycles/insert" component={BicycleInsert} />
       <Route exact path="/warehouse/accessories/insert" component={AccessoryInsert} />
       <Route exact path="/warehouse/accessories/exinsert" component={AccessoryInsertEx} />
