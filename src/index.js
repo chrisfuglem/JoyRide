@@ -114,16 +114,19 @@ class RentalList extends Component {
 class RentalEdit extends Component {
   rentedBicycles = [];
   rentedAccessories = [];
-  rental = [];
+  rental = '';
+  RentStart = '';
+  RentEnd = '';
+  SUM = '';
 
   render() {
     return (
       <Card>
         <h3>Rental id {this.props.match.params.id}</h3>
-        <p>{this.rental.FirstName}</p>
-        <p>{this.rental.RentStart}</p>
-        <p>{this.rental.RentEnd}</p>
-        <p>{this.rental.SUM}</p>
+        <p>{this.FirstName}</p>
+        <p>{this.RentStart}</p>
+        <p>{this.RentEnd}</p>
+        <p>{this.SUM}</p>
         <NavLink to="RemoveFromRental">Edit Bicycles and Accessories</NavLink>
         <h4>Bicycles</h4>
         {this.rentedBicycles.map(bicycle => (
@@ -159,6 +162,7 @@ class RentalEdit extends Component {
     rentalService.getRental(this.props.match.params.id, rental => {
       this.rental = rental;
       console.log(this.rental);
+      console.log(this.rental[0].FirstName);
     });
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
@@ -1162,6 +1166,7 @@ class BicycleUpdate extends Component {
     });
   }
 
+  //ikke ferdig....
   save() {
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
@@ -1351,7 +1356,7 @@ class TransportList extends Component {
       <Card title="Order Transport From:">
         <p>Select the location you want transport from:</p>
         <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
-          <option selected="true" disabled="true">
+          <option selected={true} disabled="disabled">
             Select Location
           </option>
           <option value="9">Finse</option>
@@ -1385,10 +1390,6 @@ class TransportList extends Component {
         </select>
         <br />
         <br />
-        <div className="form-group">
-        <label>Additional Comments</label>
-        <textarea className="form-control" rows="5" id="comment"></textarea>
-        </div>
         <Button.Success onClick={this.save}>Submit</Button.Success>
       </Card>
     );
@@ -1490,10 +1491,7 @@ class RepairDetails extends Component {
           <List.Item>Current status: {this.BicycleStatus}</List.Item>
         </List>
         <br />
-        <div className="form-group">
-        <label>Additional Comments</label>
-        <textarea className="form-control" rows="5" id="comment"></textarea>
-        </div>
+        <input type="textarea" placeholder="Add additional comments" id="comment" />
         <br />
         <br />
         <NavLink to="/bicycles">
