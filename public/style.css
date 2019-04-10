@@ -9,3 +9,41 @@
 #CustomerSearchCategory, #CustomerSearchField, #CustomerSearchButton, option:focus {
 
 }
+
+#CustomerSearchCategory, #CustomerSearchField, #CustomerSearchButton {
+  margin-right: 10px;
+}
+
+.list-group-item:hover {
+  background-color: #DCDCDC;
+};
+
+.list-group-item li:nth-child(odd) {
+  background-color: #efefef;
+}
+
+.list-group{
+    max-height: 654px;
+    margin-bottom: 10px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 30px;
+}
+
+.CustomerList {
+  padding-left: 30px;
+}
+
+#comment {
+  width: 300px;
+  height: 120px;
+}
+
+#Bikedrop, #Accdrop {
+  width: 250px;
+  margin-right: 10px;
+}
+
+#Bikedropbtn, #Accdropbtn {
+  width: 150px;
+}
