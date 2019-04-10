@@ -1533,7 +1533,7 @@ class TransportList extends Component {
     return (
       <Card title="Order Transport From:">
         <p>Select the location you want transport from:</p>
-        <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
+        <select id="LocationDropdown" onChange={this.getBicyclesForTransport}>
           <option selected={true} disabled={true}>
             Select Location
           </option>
@@ -1561,11 +1561,14 @@ class TransportList extends Component {
             Select Location
           </option>
           {this.locations.map(location => (
-            <option value={location.LocationID}>
-              {location.LocationName} ID: {location.LocationID}
+            <option value={location.LocationName}>
+              {location.LocationName}
             </option>
           ))}
         </select>
+        <br /><br /><br />
+        <input type="textarea" placeholder="Add additional comments" id="comment" />
+        <br />
         <br />
         <br />
         <Button.Success onClick={this.save}>Submit</Button.Success>
@@ -1580,8 +1583,8 @@ class TransportList extends Component {
   }
 
   //Gets all the bicycles on the chosen location
-  getBicycles() {
-    transportService.getBicycles(document.getElementById('LocationDropdown').value, bicycles => {
+  getBicyclesForTransport() {
+    transportService.getBicyclesForTransport(document.getElementById('LocationDropdown').value, bicycles => {
       this.bicycles = bicycles;
       for (let bicycle of bicycles) bicycle.checked = false;
     });
@@ -1592,11 +1595,12 @@ class TransportList extends Component {
 
   //Updates the status on the bicycles set for transport.
   save() {
-    var pdf = new jsPDF();
-    var pickup = '' + document.getElementById('LocationDropdown').value;
-    var drop = '' + document.getElementById('TransportDropdown').value;
+    let pdf = new jsPDF();
+    let pickup = '' + document.getElementById('LocationDropdown').value;
+    let drop = '' + document.getElementById('TransportDropdown').value;
+    let comment = '\n\nAdditional comments:\n' + document.getElementById('comment').value;
 
-    var text = 'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
+    let text = 'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
         console.log('checked ' + this.bicycles[x].BicycleID);
@@ -1608,7 +1612,7 @@ class TransportList extends Component {
       }
     }
 
-    pdf.text(text, 10, 10);
+    pdf.text(text + comment, 10, 10);
     pdf.save('Transport_order.pdf');
   }
 }
@@ -1704,14 +1708,14 @@ class RepairDetails extends Component {
       this.BrakeType = bicycle.Braketype;
       this.Wheelsize = bicycle.Wheelsize;
     });
-    var pdf = new jsPDF();
+    let pdf = new jsPDF();
 
-    var comment = '' + document.getElementById('comment').value;
-    var type = this.BicycleType;
-    var frame = this.FrameType;
-    var brake = this.BrakeType;
-    var wheel = this.Wheelsize;
-    var text =
+    let comment = '' + document.getElementById('comment').value;
+    let type = this.BicycleType;
+    let frame = this.FrameType;
+    let brake = this.BrakeType;
+    let wheel = this.Wheelsize;
+    let text =
       'Repair confirmation: \n \n' +
       'Bicycle Type: ' +
       type +

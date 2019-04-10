@@ -697,6 +697,19 @@ class TransportService {
     );
   }
 
+  //gets bicycles for transport.
+  getBicyclesForTransport(LocationID, success) {
+    connection.query(
+      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=? and Bicycles.BicycleStatus = "Need Transport"',
+      [LocationID],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
+  }
+
   //Saves the status of the bicycle(s) selected for Transport to 'In Transport'
   saveStatus(BicycleID) {
     connection.query('update Bicycles set BicycleStatus = "In Transport" where BicycleID=?', [BicycleID], (error,results) => {
