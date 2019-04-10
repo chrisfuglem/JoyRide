@@ -845,6 +845,24 @@ class BicycleList extends Component {
         <NavLink to="/warehouse/bicycles/update">
           <Button.Light>Update Bicycles</Button.Light>
         </NavLink>
+        <br /> <br />
+        <Form.Label>Find Bicycle By:</Form.Label>
+        <div id="BicycleSearch">
+          <input id="BicycleSearchField" type="text" width='200px' />
+          <select id="BicycleSearchCategory">
+            <option value="BicycleID">Bicycle ID</option>
+            <option value="BicycleType">Bicycletype</option>
+            <option value="FrameType">Frametype</option>
+            <option value="BrakeType">Braketype</option>
+            <option value="Wheelsize">Wheelsize</option>
+            <option value="BicycleStatus">Status</option>
+            <option value="HomeLocation">Homelocation</option>
+            <option value="CurrentLocation">Current location</option>
+          </select>
+          <button id="CustomerSearchButton" onClick={this.mounted}>
+            Search
+          </button>
+        </div>
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
@@ -863,9 +881,14 @@ class BicycleList extends Component {
   }
 
   mounted() {
-    bicycleService.getBicycles(bicycles => {
+    this.searchCategory = '' + document.getElementById('BicycleSearchCategory').value;
+    this.searchValue = '%' + document.getElementById('BicycleSearchField').value + '%';
+    bicycleService.searchBicycles(this.searchCategory, this.searchValue, bicycles => {
       this.bicycles = bicycles;
     });
+    // bicycleService.getBicycles(bicycles => {
+    //   this.bicycles = bicycles;
+    // });
   }
 }
 
