@@ -883,14 +883,14 @@ class BicycleList extends Component {
   }
 
   mounted() {
-    this.searchCategory = '' + document.getElementById('BicycleSearchCategory').value;
-    this.searchValue = '%' + document.getElementById('BicycleSearchField').value + '%';
-    bicycleService.searchBicycles(this.searchCategory, this.searchValue, bicycles => {
-      this.bicycles = bicycles;
-    });
-    // bicycleService.getBicycles(bicycles => {
+    // this.searchCategory = '' + document.getElementById('BicycleSearchCategory').value;
+    // this.searchValue = '%' + document.getElementById('BicycleSearchField').value + '%';
+    // bicycleService.searchBicycles(this.searchCategory, this.searchValue, bicycles => {
     //   this.bicycles = bicycles;
     // });
+    bicycleService.getBicycles(bicycles => {
+      this.bicycles = bicycles;
+    });
   }
 }
 
@@ -1092,6 +1092,8 @@ class BicycleInsert extends Component {
           <option value="13">Haugastoel</option>
         </select>
         <br />
+        <Form.Label>Number of bikes to add</Form.Label>
+        <Form.Input type="number" id="NumberToAdd" value={this.Add} onChange={e => (this.Add = e.target.value)}/>
         <br />
         <NavLink to="/warehouse/bicycles">
           <Button.Success onClick={this.insert}>Add New Bicycle</Button.Success>
@@ -1105,19 +1107,21 @@ class BicycleInsert extends Component {
 
   //Adds the bicycle.
   insert() {
-    bicycleService.insertBicycle(
-      (this.BicycleType = '' + document.getElementById('TypeDropdown').value),
-      (this.FrameType = '' + document.getElementById('FrameDropdown').value),
-      (this.BrakeType = '' + document.getElementById('BrakeDropdown').value),
-      this.Wheelsize,
-      (this.BicycleStatus = '' + document.getElementById('StatusDropdown').value),
-      (this.HomeLocation = '' + document.getElementById('HomeLocation').value),
-      this.DailyPrice,
-      (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
-      () => {
-        history.push('/warehouse/bicycles');
-      }
-    );
+    for (let i = 0; i < this.Add; i++) {
+      bicycleService.insertBicycle(
+        (this.BicycleType = '' + document.getElementById('TypeDropdown').value),
+        (this.FrameType = '' + document.getElementById('FrameDropdown').value),
+        (this.BrakeType = '' + document.getElementById('BrakeDropdown').value),
+        this.Wheelsize,
+        (this.BicycleStatus = '' + document.getElementById('StatusDropdown').value),
+        (this.HomeLocation = '' + document.getElementById('HomeLocation').value),
+        this.DailyPrice,
+        (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
+        () => {
+          history.push('/warehouse/bicycles');
+        }
+      );
+    }
   }
 }
 
@@ -1433,6 +1437,8 @@ class AccessoryInsertEx extends Component {
           <option value="13">Haugastoel</option>
         </select>
         <br />
+        <Form.Label>Number to add</Form.Label>
+        <Form.Input type="number" id="NumberToAdd" value={this.Add} onChange={e => (this.Add = e.target.value)}/>
         <br />
         <NavLink to="/warehouse/accessories">
         <Button.Success onClick={this.insert}>Add Accessory</Button.Success>
@@ -1452,13 +1458,15 @@ class AccessoryInsertEx extends Component {
 
   //Adds the accessory.
   insert() {
-    accessoryService.insertAccessoryPrice(
-      (this.AccessoryType = '' + document.getElementById('TypeDropdown').value),
-       this.DailyPrice,
-       this.HomeLocation,
-       this.CurrentLocation, () => {
-      history.push('/warehouse/accessories');
-    });
+    for (let i = 0; i < this.Add; i++) {
+      accessoryService.insertAccessoryPrice(
+        (this.AccessoryType = '' + document.getElementById('TypeDropdown').value),
+         this.DailyPrice,
+         this.HomeLocation,
+         this.CurrentLocation, () => {
+        history.push('/warehouse/accessories');
+      });
+    }
   }
 }
 
