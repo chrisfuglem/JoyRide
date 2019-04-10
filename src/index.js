@@ -248,7 +248,7 @@ class RemoveFromRental extends Component {
           <select ref={this.bicycleDropdown}>
             {this.bicycleDropdownOptions.map(bicycle => (
               <option value={bicycle.Type}>
-                {bicycle.Type} - {bicycle.TypeCount} Available
+                {bicycle.BicycleType} - {bicycle.TypeCount} Available
               </option>
             ))}
           </select>
@@ -299,21 +299,6 @@ class RemoveFromRental extends Component {
     this.accessoryDropdownOptions = [];
     rentalService.getRental(this.props.match.params.id, rental => {
       this.rental = rental;
-      let x = '' + this.rental[0].RentStart; // Turns the Date object into a string
-      let time = x.slice(16, 24);
-      x = JSON.stringify(this.rental[0].RentStart);
-      let date = x.slice(1, 11);
-      this.rentstart = date + ' ' + time;
-      console.log(this.rentstart);
-
-      x = '' + this.rental[0].RentEnd; // Turns the Date object into a string
-      time = x.slice(16, 24);
-      x = JSON.stringify(this.rental[0].RentEnd);
-      date = x.slice(1, 11);
-      this.rentend = date + ' ' + time;
-      console.log(this.rentend);
-
-
     });
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
@@ -324,7 +309,7 @@ class RemoveFromRental extends Component {
     rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
     });
-    rentalService.getAvailableBicyclesByType(this.rentstart, this.rentend, bicycles => {
+    rentalService.getAvailableBicyclesByType(this.props.match.params.id, bicycles => {
       this.availableBicyclesCount = bicycles;
       for (let x = 0; x < this.availableBicyclesCount.length; x++) {
         if (this.availableBicyclesCount[x].TypeCount > 0) {
@@ -347,7 +332,12 @@ class RemoveFromRental extends Component {
 
   //Adds bicycle to the rental.
   addBicycle() {
-    rentalService.addBicycleToRental(this.props.match.params.id, this.bicycleDropdown.current.value);
+    let x = this.bicycleDropdown.current.value;
+    // Removes the ' - number available' from the string
+    let y = x.indexOf(" - ");
+    let bicycleType = x.slice(0, y);
+
+    rentalService.addBicycleToRental(this.props.match.params.id, bicycleType);
     this.mounted(); // Refresh page with new data
   }
 

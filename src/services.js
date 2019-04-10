@@ -129,10 +129,8 @@ class RentalService {
   }
 
   addBicycleToRental(rentalID, bicycleType, success) {
-    connection.query('insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(BicycleID) from Bicycles where BicycleType = ? and BicycleStatus = "Available"))', [
-      rentalID,
-      bicycleType
-    ]),
+    connection.query('insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(BicycleID) FROM Bicycles WHERE NOT EXISTS (SELECT * FROM (SELECT * from RentedBicycles) as RentedBicycles WHERE Bicycles.BicycleID = RentedBicycles.BicycleID) AND Bicycles.BicycleType = ? ));',
+    [rentalID, bicycleType]),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -225,10 +223,10 @@ class RentalService {
   }
 
   //Selects available bicycles by the bicycleType, counts the number available.
-  getAvailableBicyclesByType(rentstart, rentend, success) {
+  getAvailableBicyclesByType(rentalID, success) {
     connection.query(
-      'select Bicycles.BicycleType as Type, (SELECT COUNT(Bicycles.BicycleID) FROM Bicycles WHERE Bicycles.BicycleType = Type) as TypeCount FROM Bicycles where Bicycles.BicycleID not in (select BicycleID from RentedBicycles inner join Rentals on Rentals.RentalID = RentedBicycles.RentalID where Rentals.RentStart > ? and Rentals.RentEnd < ?) GROUP BY Bicycles.BicycleType;',
-      [rentstart, rentend],
+      'select Bicycles.BicycleType, (select count(Bicycles.BicycleID)) as TypeCount from Bicycles where Bicycles.BicycleID not in (select BicycleID from RentedBicycles inner join Rentals on Rentals.RentalID = RentedBicycles.RentalID where Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = ?) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = ?)) GROUP by Bicycles.BicycleType',
+      [rentalID, rentalID],
       (error, results) => {
         if (error) return console.error(error);
 
