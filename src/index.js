@@ -1482,10 +1482,13 @@ class TransportList extends Component {
             </option>
           ))}
         </select>
-        <br /><br /><br />
+        <br />
+        <br />
+        <br />
         <input type="textarea" placeholder="Add additional comments" id="comment" />
         <br />
         <br />
+        <p id="alert"></p>
         <br />
         <NavLink to="/warehouse/bicycles">
         <Button.Success onClick={this.save}>Submit</Button.Success>
@@ -1505,6 +1508,11 @@ class TransportList extends Component {
     transportService.getBicyclesForTransport(document.getElementById('LocationDropdown').value, bicycles => {
       this.bicycles = bicycles;
       for (let bicycle of bicycles) bicycle.checked = false;
+      if (this.bicycles.length === 0) {
+        document.getElementById("alert").innerHTML ="There are no bicycles in need of transport at this location."
+      } else {
+        document.getElementById("alert").innerHTML="";
+      }
     });
     transportService.getTransportToLocation(document.getElementById('LocationDropdown').value, locations => {
       this.transportToLocations = locations;
@@ -1553,6 +1561,7 @@ class RepairList extends Component {
           ))}
         </List>
         <NavLink to="/warehouse/repair/summary" />
+        <p id="alert"></p>
       </Card>
     );
   }
@@ -1560,6 +1569,9 @@ class RepairList extends Component {
   mounted() {
     repairService.getBicycles(bicycles => {
       this.bicycles = bicycles;
+      if (this.bicycles.length === 0) {
+        document.getElementById("alert").innerHTML ="There are no bicycles in need of repair."
+      }
     });
   }
 }
@@ -1613,9 +1625,6 @@ class RepairDetails extends Component {
       this.BicycleStatus = bicycle.BicycleStatus;
       this.HomeLocation = bicycle.HomeLocation;
       this.CurrentLocation = bicycle.CurrentLocation;
-    });
-    bicycleService.getBicycleStatuses(statuses => {
-      this.BicycleStatuses = statuses;
     });
   }
 
