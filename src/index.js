@@ -45,10 +45,10 @@ class Sales extends Component {
   render() {
     return (
       <NavBar brand="Sales">
-        <NavBar.Link to="rentals">Rentals</NavBar.Link>
-        <NavBar.Link to="customers">Customers</NavBar.Link>
-        <NavBar.Link to="employees">Employees</NavBar.Link>
-        <NavBar.Link to="count">Rental Count</NavBar.Link>
+        <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+        <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+        <NavBar.Link to="/sales/employees">Employees</NavBar.Link>
+        <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
       </NavBar>
     );
   }
@@ -59,11 +59,10 @@ class Warehouse extends Component {
   render() {
     return (
       <NavBar brand="Warehouse">
-        <NavBar.Link to="/bicycles">Bicycles</NavBar.Link>
-        <NavBar.Link to="/accessories">Accessories</NavBar.Link>
-        <NavBar.Link to="/rentals">Rentals</NavBar.Link>
-        <NavBar.Link to="/repair">Order Repair</NavBar.Link>
-        <NavBar.Link to="/transport">Order Transport</NavBar.Link>
+        <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+        <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+        <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+        <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
       </NavBar>
     );
   }
@@ -76,14 +75,14 @@ class RentalList extends Component {
   render() {
     return (
       <Card title="Rental List">
-        <NavLink to="/rentals/insert">
+        <NavLink to="/sales/rentals/insert">
           <Button.Light>Add New Rental</Button.Light>
         </NavLink>
         <p>Click the rentals to edit or delete them</p>
         <List>
           {this.rentals.map(rental => (
             <List.Item key={rental.ID}>
-              <NavLink to={'/rentals/' + rental.ID + '/edit'}>
+              <NavLink to={'/sales/rentals/' + rental.ID + '/edit'}>
                 Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
               </NavLink>
               <br />
@@ -143,17 +142,17 @@ class RentalEdit extends Component {
             </p>
           </List.Item>
         ))}
-        <NavLink to="/rentals">
+        <NavLink to="/sales/rentals">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>{' '}
         <Button.Success onClick={this.setActive}>Activate Rental</Button.Success>
         <br />
         <br />
-        <NavLink to="/rentals">
+        <NavLink to="/sales/rentals">
           <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
         </NavLink>{' '}
         <Button.Danger oncClick={this.setEnd}>End Rental</Button.Danger>
-        <NavLink to="/rentals">
+        <NavLink to="/sales/rentals">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -176,31 +175,31 @@ class RentalEdit extends Component {
 
   save() {
     rentalService.updateRental(this.props.match.params.id, this.name, this.email, () => {
-      history.push('/rentals');
+      history.push('/sales/rentals');
     });
   }
 
   delete() {
     rentalService.removeAllBicycles(this.props.match.params.id, () => {
-      history.push('/rentals');
+      history.push('/sales/rentals');
     });
     rentalService.removeAllAccessories(this.props.match.params.id, () => {
-      history.push('/rentals');
+      history.push('/sales/rentals');
     });
     rentalService.deleteRental(this.props.match.params.id, () => {
-      history.push('/rentals');
+      history.push('/sales/rentals');
     });
   }
   setActive() {
     rentalService.setStatusRented(this.props.match.params.id, () => {});
     rentalService.activateRental(this.props.match.params.id, () => {
-      history.push('/rentals');
+      history.push('/sales/rentals');
     });
   }
   setEnd() {
     rentalService.setStatusRented(this.props.match.params.id, () => {});
     rentalService.endRental(this.props.match.params.id, () => {
-      history.push('/rentals');
+      history.push('/sales/rentals');
     });
   }
 }
@@ -272,10 +271,10 @@ class RemoveFromRental extends Component {
             <button onClick={this.removeAccessory.bind(this, accessory.AccessoryID)}>Remove Accessory</button>
           </List.Item>
         ))}
-        <NavLink to={'/rentals/' + this.props.match.params.id + '/edit'}>
+        <NavLink to={'/sales/rentals/' + this.props.match.params.id + '/edit'}>
           <Button.Success>Finish</Button.Success>
         </NavLink>
-        <NavLink to={'/rentals/insert'}>
+        <NavLink to={'/sales/rentals/insert'}>
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -325,7 +324,7 @@ class RemoveFromRental extends Component {
   //Removes the bicycle from the rental.
   removeBicycle(id) {
     rentalService.removeBicycle(id, this.props.match.params.id, () => {
-      history.push('/rentals');
+      history.push('/sales/rentals');
     });
     this.mounted(); // Refresh page with new data
   }
@@ -339,7 +338,7 @@ class RemoveFromRental extends Component {
   //Removes accessory from the rental.
   removeAccessory(id) {
     rentalService.removeAccessory(id, this.props.match.params.id, () => {
-      history.push('/rentals');
+      history.push('/sales/rentals');
     });
     this.mounted(); // Refresh page with new data
   }
@@ -372,7 +371,7 @@ class RentalInsert extends Component {
   render() {
     return (
       <Card title="Adding Rental">
-      <NavLink to="/rentals/insertcustomer">
+      <NavLink to="/sales/rentals/insertcustomer">
         <Button.Light>Add New Customer</Button.Light>
       </NavLink>
       <br />
@@ -419,7 +418,7 @@ class RentalInsert extends Component {
         <Form.Label>End date:</Form.Label>
         <Form.Input type="date" value={this.RentEnd} onChange={e => (this.RentEnd = e.target.value)} />
         <br />
-        <NavLink to={'/rentals/' + this.lastInsertedRental + '/RemoveFromRental'}>
+        <NavLink to={'/sales/rentals/' + this.lastInsertedRental + '/RemoveFromRental'}>
           <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
         </NavLink>
         <br />
@@ -458,10 +457,10 @@ class RentalInsert extends Component {
           ))}
         </div>
         <br />
-        <NavLink to="/rentals">
+        <NavLink to="/sales/rentals">
           <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
         </NavLink>
-        <NavLink to="/rentals">
+        <NavLink to="/sales/rentals">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -586,7 +585,7 @@ class RentalInsert extends Component {
       this.locationDropdown.current.value,
       800,
       () => {
-        history.push('/rentals/' + this.lastInsertedRental + '/RemoveFromRental');
+        history.push('/sales/rentals/' + this.lastInsertedRental + '/RemoveFromRental');
       }
     );
 
@@ -611,7 +610,7 @@ class CustomerList extends Component {
       <Card>
       <div>
         <p>Click the customers to edit or delete them</p>
-        <NavLink to="/customers/insert">
+        <NavLink to="/sales/customers/insert">
           <Button.Light>Add New Customer</Button.Light>
         </NavLink>
         <h3>Search by category</h3>
@@ -631,7 +630,7 @@ class CustomerList extends Component {
         <List>
           {this.customers.map(customer => (
             <List.Item key={customer.CustomerID}>
-              <NavLink to={'/customers/' + customer.CustomerID + '/edit'}>
+              <NavLink to={'/sales/customers/' + customer.CustomerID + '/edit'}>
                 {customer.FirstName} {customer.SurName} | tlf {customer.Phone}
               </NavLink>
             </List.Item>
@@ -673,15 +672,15 @@ class CustomerEdit extends Component {
         <Form.Label>Address</Form.Label>
         <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
         <br />
-        <NavLink to="/customers">
+        <NavLink to="/sales/customers">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/customers">
+        <NavLink to="/sales/customers">
           <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
         </NavLink>
-        <NavLink to="/customers">
+        <NavLink to="/sales/customers">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -708,7 +707,7 @@ class CustomerEdit extends Component {
       this.Phone,
       this.Address,
       () => {
-        history.push('/customers');
+        history.push('/sales/customers');
       }
     );
   }
@@ -716,7 +715,7 @@ class CustomerEdit extends Component {
   //Deletes the customer.
   delete() {
     customerService.deleteCustomer(this.props.match.params.id, () => {
-      history.push('/customers');
+      history.push('/sales/customers');
     });
   }
 }
@@ -737,10 +736,10 @@ class CustomerInsert extends Component {
         <Form.Label>Address:</Form.Label>
         <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
         <br />
-        <NavLink to="/customers">
+        <NavLink to="/sales/customers">
           <Button.Success onClick={this.insert}>Add New Customer</Button.Success>
         </NavLink>
-        <NavLink to="/customers">
+        <NavLink to="/sales/customers">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -750,7 +749,7 @@ class CustomerInsert extends Component {
   //Adds the new cutomer.
   insert() {
     customerService.insertCustomer(this.FirstName, this.SurName, this.Email, this.Phone, this.Address, () => {
-      history.push('/customers');
+      history.push('/sales/customers');
     });
   }
 }
@@ -771,10 +770,10 @@ class BookingCustomerInsert extends Component {
         <Form.Label>Address:</Form.Label>
         <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
         <br />
-        <NavLink to="/rentals/insert">
+        <NavLink to="/sales/rentals/insert">
           <Button.Success onClick={this.insert}>Add New Customer</Button.Success>
         </NavLink>
-        <NavLink to="/rentals/insert">
+        <NavLink to="/sales/rentals/insert">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -784,7 +783,7 @@ class BookingCustomerInsert extends Component {
   //Adds the new cutomer.
   insert() {
     customerService.insertCustomer(this.FirstName, this.SurName, this.Email, this.Phone, this.Address, () => {
-      history.push('/rentals/insert');
+      history.push('/sales/rentals/insert');
     });
   }
 }
@@ -800,7 +799,7 @@ class EmployeeList extends Component {
       <Card>
       <div>
         <p>Click the employees to edit or delete them</p>
-        <NavLink to="/employees/insert/">
+        <NavLink to="/sales/employees/insert/">
           <Button.Light>Add New Employee</Button.Light>
           <br />
           <br />
@@ -819,7 +818,7 @@ class EmployeeList extends Component {
         <List>
           {this.employees.map(employee => (
             <List.Item key={employee.EmployeeID}>
-              <NavLink to={'/employees/' + employee.EmployeeID + '/edit'}>
+              <NavLink to={'/sales/employees/' + employee.EmployeeID + '/edit'}>
                 {employee.Firstname} {employee.Surname}
               </NavLink>
             </List.Item>
@@ -852,15 +851,15 @@ class EmployeeEdit extends Component {
         <Form.Label>Surname</Form.Label>
         <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
         <br />
-        <NavLink to="/employees">
+        <NavLink to="/sales/employees">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/employees">
+        <NavLink to="/sales/employees">
           <Button.Danger onClick={this.delete}>Delete Employee</Button.Danger>
         </NavLink>
-        <NavLink to="/employees">
+        <NavLink to="/sales/employees">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -877,14 +876,14 @@ class EmployeeEdit extends Component {
   //Updates the employee.
   save() {
     employeeService.updateEmployee(this.props.match.params.id, this.Firstname, this.Surname, () => {
-      history.push('/employees');
+      history.push('/sales/employees');
     });
   }
 
   //Deletes the employee.
   delete() {
     employeeService.deleteEmployee(this.props.match.params.id, () => {
-      history.push('/employees');
+      history.push('/sales/employees');
     });
   }
 }
@@ -899,10 +898,10 @@ class EmployeeInsert extends Component {
         <Form.Label>Surname:</Form.Label>
         <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
         <br />
-        <NavLink to="/employees">
+        <NavLink to="/sales/employees">
           <Button.Success onClick={this.insert}>Add New Employee</Button.Success>
         </NavLink>
-        <NavLink to="/employees">
+        <NavLink to="/sales/employees">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -912,7 +911,7 @@ class EmployeeInsert extends Component {
   //Adds the employee.
   insert() {
     employeeService.insertEmployee(this.Firstname, this.Surname, () => {
-      history.push('/employees');
+      history.push('/esales/mployees');
     });
   }
 }
@@ -925,16 +924,16 @@ class BicycleList extends Component {
     return (
       <Card title="Bicycle List">
         <p>Click the bicycles to edit or delete them</p>
-        <NavLink to="/bicycles/insert">
+        <NavLink to="/warehouse/bicycles/insert">
           <Button.Light>Add New Bicycle</Button.Light>
         </NavLink>
-        <NavLink to="/bicycles/update">
+        <NavLink to="/warehouse/bicycles/update">
           <Button.Light>Update Bicycles</Button.Light>
         </NavLink>
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
-              <NavLink to={'/bicycles/' + bicycle.BicycleID + '/edit'}>
+              <NavLink to={'/warehouse/bicycles/' + bicycle.BicycleID + '/edit'}>
                 Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
                 Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location:{' '}
                 {bicycle.HomeLocationName} | Daily Price: {bicycle.DailyPrice}kr per day | Current Location:{' '}
@@ -1032,15 +1031,15 @@ class BicycleEdit extends Component {
         </select>
         <br />
         <br />
-        <NavLink to="/bicycles">
+        <NavLink to="/warehouse/bicycles">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/bicycles">
+        <NavLink to="/warehouse/bicycles">
           <Button.Danger onClick={this.delete}>Delete Bicycle</Button.Danger>
         </NavLink>
-        <NavLink to="/bicycles">
+        <NavLink to="/warehouse/bicycles">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -1076,7 +1075,7 @@ class BicycleEdit extends Component {
       this.DailyPrice,
       (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
       () => {
-        history.push('/bicycles');
+        history.push('/warehouse/bicycles');
       }
     );
   }
@@ -1084,7 +1083,7 @@ class BicycleEdit extends Component {
   //Deletes the bicycle.
   delete() {
     bicycleService.deleteBicycle(this.props.match.params.id, () => {
-      history.push('/bicycles');
+      history.push('/warehouse/bicycles');
     });
   }
 }
@@ -1154,10 +1153,10 @@ class BicycleInsert extends Component {
         </select>
         <br />
         <br />
-        <NavLink to="/bicycles">
+        <NavLink to="/warehouse/bicycles">
           <Button.Success onClick={this.insert}>Add New Bicycle</Button.Success>
         </NavLink>
-        <NavLink to="/bicycles">
+        <NavLink to="/warehouse/bicycles">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -1176,7 +1175,7 @@ class BicycleInsert extends Component {
       this.DailyPrice,
       (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
       () => {
-        history.push('/bicycles');
+        history.push('/warehouse/bicycles');
       }
     );
   }
@@ -1220,10 +1219,10 @@ class BicycleUpdate extends Component {
         </select>
         <br />
         <br />
-        <NavLink to="/bicycles" onClick={this.save}>
+        <NavLink to="/warehouse/bicycles" onClick={this.save}>
           <Button.Success>Update Bicycle</Button.Success>
         </NavLink>
-        <NavLink to="/bicycles">
+        <NavLink to="/warehouse/bicycles">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -1253,7 +1252,7 @@ class BicycleUpdate extends Component {
           (this.bicycles[x].BicycleStatus = '' + document.getElementById('StatusDropdown').value),
           (this.bicycles[x].CurrentLocation = '' + document.getElementById('CurrentLocation').value),
           () => {
-            history.push('/bicycles');
+            history.push('/warehouse/bicycles');
           }
         )
       }
@@ -1268,16 +1267,19 @@ class AccessoryList extends Component {
   render() {
     return (
       <Card title="Accessory List">
-        <NavLink to="/accessories/insert">
+        <NavLink to="/warehouse/accessories/insert">
           <Button.Light>Add New accessory</Button.Light>
+        </NavLink> {' '}
+        <NavLink to="/warehouse/accessories/exinsert">
+          <Button.Light>Add Existing accessory</Button.Light>
         </NavLink>
         <p>Click the accessories to edit or delete them</p>
         <List>
           {this.accessories.map(accessory => (
             <List.Item key={accessory.AccessoryID}>
-              <NavLink to={'/accessories/' + accessory.AccessoryID + '/edit'}>
+              <NavLink to={'/warehouse/accessories/' + accessory.AccessoryID + '/edit'}>
                 {accessory.Type} | Price: {accessory.DailyPrice}kr per day | Home Location: {accessory.HomeLocationName}{' '}
-                | Current Location: {accessory.CurrentLocationName}
+                | Current Location: {accessory.CurrentLocationName} | Status {accessory.Status}
               </NavLink>
             </List.Item>
           ))}
@@ -1297,8 +1299,10 @@ class AccessoryList extends Component {
 class AccessoryEdit extends Component {
   Type = '';
   DailyPrice = '';
+  Status = '';
   HomeLocation = '';
   CurrentLocation = '';
+  AccessoryStatuses = [];
 
   render() {
     return (
@@ -1308,6 +1312,14 @@ class AccessoryEdit extends Component {
         </List.Item>
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+        <br />
+        <Form.Label>Accessory Status</Form.Label>
+        <br />
+        <select id="StatusDropdown" value={this.Status} onChange={e => (this.Status = e.target.value)}>
+          {this.AccessoryStatuses.map(status => (
+            <option value={status.Status}>{status.AccessoryStatus}</option>
+          ))}
+        </select>{' '}
         <br />
         <Form.Label>Home Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
@@ -1329,15 +1341,15 @@ class AccessoryEdit extends Component {
         </select>
         <br />
         <br />
-        <NavLink to="/accessories">
+        <NavLink to="/warehouse/accessories">
           <Button.Success onClick={this.save}>Save Changes</Button.Success>
         </NavLink>
         <br />
         <br />
-        <NavLink to="/accessories">
+        <NavLink to="/warehouse/accessories">
           <Button.Danger onClick={this.delete}>Delete Accessory</Button.Danger>
         </NavLink>
-        <NavLink to="/accessories">
+        <NavLink to="/warehouse/accessories">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -1348,8 +1360,12 @@ class AccessoryEdit extends Component {
     accessoryService.getAccessory(this.props.match.params.id, accessory => {
       this.Type = accessory.Type;
       this.DailyPrice = accessory.DailyPrice;
+      this.Status = accessory.Status;
       this.HomeLocation = accessory.HomeLocation;
       this.CurrentLocation = accessory.CurrentLocation;
+    });
+    accessoryService.getAccessoryStatuses(statuses => {
+      this.AccessoryStatuses = statuses;
     });
   }
 
@@ -1358,10 +1374,11 @@ class AccessoryEdit extends Component {
     accessoryService.updateAccessory(
       this.props.match.params.id,
       this.DailyPrice,
+      (this.AccessoryStatus = '' + document.getElementById('StatusDropdown').value),
       (this.HomeLocation = '' + document.getElementById('HomeLocation').value),
       (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
       () => {
-        history.push('/accessories');
+        history.push('/warehouse/accessories');
       }
     );
   }
@@ -1369,19 +1386,19 @@ class AccessoryEdit extends Component {
   //Deletes the accessory.
   delete() {
     accessoryService.deleteAccessory(this.props.match.params.id, () => {
-      history.push('/accessories');
+      history.push('/warehouse/accessories');
     });
     accessoryService.deleteAccessoryType(this.Type, () => {
-      history.push('/accessories');
+      history.push('/warehouse/accessories');
     });
   }
 }
 
-//Section where you can add accessories.
-class AccessoryTypeInsert extends Component {
+//Section where you can add new accessories.
+class AccessoryInsert extends Component {
   render() {
     return (
-      <Card title="Adding Accessory">
+      <Card title="Adding New Accessory">
         <Form.Label>Accessory Type</Form.Label>
         <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
         <br />
@@ -1390,6 +1407,9 @@ class AccessoryTypeInsert extends Component {
         <br />
         <Form.Label>Current Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+          <option selected={true} disabled={true}>
+            Select Location
+          </option>
           <option value="9">Finse</option>
           <option value="13">Haugastoel</option>
         </select>
@@ -1400,6 +1420,9 @@ class AccessoryTypeInsert extends Component {
           value={this.CurrentLocation}
           onChange={e => (this.CurrentLocation = e.target.value)}
         >
+          <option selected={true} disabled={true}>
+            Select Location
+          </option>
           <option value="9">Finse</option>
           <option value="10">Flaam</option>
           <option value="11">Voss</option>
@@ -1409,7 +1432,7 @@ class AccessoryTypeInsert extends Component {
         <br />
         <br />
         <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
-        <NavLink to="/accessories">
+        <NavLink to="/warehouse/accessories">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -1419,10 +1442,82 @@ class AccessoryTypeInsert extends Component {
   //Adds the accessory.
   insert() {
     accessoryService.insertAccessoryType(this.type, () => {
-      history.push('/accessories/');
+      history.push('/warehouse/accessories/');
     });
     accessoryService.insertAccessoryPrice(this.type, this.dailyprice, this.HomeLocation, this.CurrentLocation, () => {
-      history.push('/accessories');
+      history.push('/warehouse/accessories');
+    });
+  }
+}
+
+//Section where you can add new accessories.
+class AccessoryInsertEx extends Component {
+  AccessoryTypes = [];
+
+  render() {
+    return (
+      <Card title="Adding Existing Accessory">
+        <Form.Label>Accessory Type</Form.Label>
+        <br />
+        <select id="TypeDropdown" value={this.AccessoryType} onChange={e => (this.AccessoryType = e.target.value)}>
+          {this.AccessoryTypes.map(type => (
+            <option value={type.AccessoryType}>{type.AccessoryType}</option>
+          ))}
+        </select>{' '}
+        <br />
+        <Form.Label>Daily Price</Form.Label>
+        <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+        <br />
+        <Form.Label>Current Location</Form.Label> <br />
+        <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+          <option selected={true} disabled={true}>
+            Select Location
+          </option>
+          <option value="9">Finse</option>
+          <option value="13">Haugastoel</option>
+        </select>
+        <br />
+        <Form.Label>Current Location</Form.Label> <br />
+        <select
+          id="CurrentLocation"
+          value={this.CurrentLocation}
+          onChange={e => (this.CurrentLocation = e.target.value)}
+        >
+          <option selected={true} disabled={true}>
+            Select Location
+          </option>
+          <option value="9">Finse</option>
+          <option value="10">Flaam</option>
+          <option value="11">Voss</option>
+          <option value="12">Myrdal</option>
+          <option value="13">Haugastoel</option>
+        </select>
+        <br />
+        <br />
+        <NavLink to="/warehouse/accessories">
+        <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
+        </NavLink>
+        <NavLink to="/warehouse/accessories">
+          <Button.Light>Back</Button.Light>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    accessoryService.getAccessoryTypes(types => {
+      this.AccessoryTypes = types;
+    });
+  }
+
+  //Adds the accessory.
+  insert() {
+    accessoryService.insertAccessoryPrice(
+      (this.AccessoryType = '' + document.getElementById('TypeDropdown').value),
+       this.DailyPrice,
+       this.HomeLocation,
+       this.CurrentLocation, () => {
+      history.push('/warehouse/accessories');
     });
   }
 }
@@ -1508,7 +1603,7 @@ class TransportList extends Component {
         console.log(text);
         text += '\n- ' + this.bicycles[x].BicycleType + ' ' +this.bicycles[x].BicycleID;
         transportService.saveStatus(this.bicycles[x].BicycleID, () => {
-          history.push('/bicycles');
+          history.push('/warehouse/bicycles');
         });
       }
     }
@@ -1527,7 +1622,7 @@ class RepairList extends Component {
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
-              <NavLink to={'/repair/' + bicycle.BicycleID + '/edit'}>
+              <NavLink to={'/warehouse/repair/' + bicycle.BicycleID + '/edit'}>
                 Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
                 Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Current Location:{' '}
                 {bicycle.CurrentLocationName}
@@ -1535,7 +1630,7 @@ class RepairList extends Component {
             </List.Item>
           ))}
         </List>
-        <NavLink to="/repair/summary" />
+        <NavLink to="/warehouse/repair/summary" />
       </Card>
     );
   }
@@ -1577,10 +1672,10 @@ class RepairDetails extends Component {
         <input type="textarea" placeholder="Add additional comments" id="comment" />
         <br />
         <br />
-        <NavLink to="/repair">
+        <NavLink to="/warehouse/repair">
           <Button.Success onClick={this.orderRepair}>Order Repair</Button.Success>
         </NavLink>
-        <NavLink to="/repair">
+        <NavLink to="/warehouse/repair">
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -1648,7 +1743,7 @@ class RentalCountList extends Component {
             </List.Item>
           ))}
         </List>
-        <NavLink to="/repair/summary" />
+        <NavLink to="/warehouse/repair/summary" />
       </Card>
     );
   }
@@ -1663,31 +1758,33 @@ ReactDOM.render(
   <HashRouter>
     <div>
       <Menu />
+
       <Route exact path="/" component={Home} />
-      <Route exact path="/sales" component={Sales} />
-      <Route exact path="/warehouse" component={Warehouse} />
-      <Route exact path="/customers" component={CustomerList} />
-      <Route exact path="/employees" component={EmployeeList} />
-      <Route exact path="/bicycles" component={BicycleList} />
-      <Route exact path="/accessories" component={AccessoryList} />
-      <Route exact path="/repair" component={RepairList} />
-      <Route exact path="/transport" component={TransportList} />
-      <Route exact path="/rentals" component={RentalList} />
-      <Route exact path="/bicycles/update" component={BicycleUpdate} />
-      <Route path="/rentals/:id/edit" component={RentalEdit} />
-      <Route path="/rentals/:id/RemoveFromRental" component={RemoveFromRental} />
-      <Route path="/customers/:id/edit" component={CustomerEdit} />
-      <Route path="/employees/:id/edit" component={EmployeeEdit} />
-      <Route path="/bicycles/:id/edit" component={BicycleEdit} />
-      <Route path="/accessories/:id/edit" component={AccessoryEdit} />
-      <Route path="/rentals/insert" component={RentalInsert} />
-      <Route path="/rentals/insertcustomer" component={BookingCustomerInsert} />
-      <Route path="/customers/insert" component={CustomerInsert} />
-      <Route path="/employees/insert" component={EmployeeInsert} />
-      <Route path="/bicycles/insert" component={BicycleInsert} />
-      <Route exact path="/accessories/insert" component={AccessoryTypeInsert} />
-      <Route path="/repair/:id/edit" component={RepairDetails} />
-      <Route path="/count" component={RentalCountList} />
+      <Route path="/sales" component={Sales} />
+      <Route path="/warehouse" component={Warehouse} />
+      <Route exact path="/sales/customers" component={CustomerList} />
+      <Route exact path="/sales/employees" component={EmployeeList} />
+      <Route exact path="/warehouse/bicycles" component={BicycleList} />
+      <Route exact path="/warehouse/accessories" component={AccessoryList} />
+      <Route exact path="/warehouse/repair" component={RepairList} />
+      <Route exact path="/warehouse/transport" component={TransportList} />
+      <Route exact path="/sales/rentals" component={RentalList} />
+      <Route exact path="/warehouse/bicycles/update" component={BicycleUpdate} />
+      <Route exact path="/sales/rentals/:id/edit" component={RentalEdit} />
+      <Route exact path="/sales/rentals/:id/RemoveFromRental" component={RemoveFromRental} />
+      <Route exact path="/sales/customers/:id/edit" component={CustomerEdit} />
+      <Route exact path="/sales/employees/:id/edit" component={EmployeeEdit} />
+      <Route exact path="/warehouse/bicycles/:id/edit" component={BicycleEdit} />
+      <Route exact path="/warehouse/accessories/:id/edit" component={AccessoryEdit} />
+      <Route exact path="/sales/rentals/insert" component={RentalInsert} />
+      <Route exact path="/sales/rentals/insertcustomer" component={BookingCustomerInsert} />
+      <Route exact path="/sales/customers/insert" component={CustomerInsert} />
+      <Route exact path="/sales/employees/insert" component={EmployeeInsert} />
+      <Route exact path="/warehouse/bicycles/insert" component={BicycleInsert} />
+      <Route exact path="/warehouse/accessories/insert" component={AccessoryInsert} />
+      <Route exact path="/warehouse/accessories/exinsert" component={AccessoryInsertEx} />
+      <Route exact path="/warehouse/repair/:id/edit" component={RepairDetails} />
+      <Route exact path="/sales/count" component={RentalCountList} />
     </div>
   </HashRouter>,
   document.getElementById('root')
