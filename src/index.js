@@ -1410,7 +1410,7 @@ class AccessoryInsertEx extends Component {
         <br />
         <br />
         <NavLink to="/warehouse/accessories">
-        <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
+        <Button.Success onClick={this.insert}>Add Accessory</Button.Success>
         </NavLink>
         <NavLink to="/warehouse/accessories">
           <Button.Light>Back</Button.Light>
@@ -1441,6 +1441,7 @@ class AccessoryInsertEx extends Component {
 //You can choose location to select bicycles from and location to transport to.
 class TransportList extends Component {
   locations = [];
+  transportToLocations = [];
   bicycles = [];
   BicycleStatus = '';
 
@@ -1448,15 +1449,15 @@ class TransportList extends Component {
     return (
       <Card title="Order Transport From:">
         <p>Select the location you want transport from:</p>
-        <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
+        <select id="LocationDropdown" onChange={this.getBicyclesForTransport}>
           <option selected={true} disabled={true}>
             Select Location
           </option>
-          <option value="9">Finse</option>
-          <option value="10">Flaam</option>
-          <option value="11">Voss</option>
-          <option value="12">Myrdal</option>
-          <option value="13">Haugastøl</option>
+          {this.locations.map(location => (
+            <option value={location.LocationName}>
+              {location.LocationName}
+            </option>
+          ))}
         </select>
         <br />
         <p>Select the Bicycles you want to transport:</p>
@@ -1475,15 +1476,20 @@ class TransportList extends Component {
           <option selected={true} disabled={true}>
             Select Location
           </option>
-          {this.locations.map(location => (
-            <option value={location.LocationID}>
-              {location.LocationName} ID: {location.LocationID}
+          {this.transportToLocations.map(location => (
+            <option value={location.LocationName}>
+              {location.LocationName}
             </option>
           ))}
         </select>
+        <br /><br /><br />
+        <input type="textarea" placeholder="Add additional comments" id="comment" />
         <br />
         <br />
+        <br />
+        <NavLink to="/warehouse/bicycles">
         <Button.Success onClick={this.save}>Submit</Button.Success>
+        </NavLink>
       </Card>
     );
   }
@@ -1495,23 +1501,24 @@ class TransportList extends Component {
   }
 
   //Gets all the bicycles on the chosen location
-  getBicycles() {
-    transportService.getBicycles(document.getElementById('LocationDropdown').value, bicycles => {
+  getBicyclesForTransport() {
+    transportService.getBicyclesForTransport(document.getElementById('LocationDropdown').value, bicycles => {
       this.bicycles = bicycles;
       for (let bicycle of bicycles) bicycle.checked = false;
     });
     transportService.getTransportToLocation(document.getElementById('LocationDropdown').value, locations => {
-      this.locations = locations;
+      this.transportToLocations = locations;
     });
   }
 
   //Updates the status on the bicycles set for transport.
   save() {
-    var pdf = new jsPDF();
-    var pickup = '' + document.getElementById('LocationDropdown').value;
-    var drop = '' + document.getElementById('TransportDropdown').value;
+    let pdf = new jsPDF();
+    let pickup = '' + document.getElementById('LocationDropdown').value;
+    let drop = '' + document.getElementById('TransportDropdown').value;
+    let comment = '\n\nAdditional comments:\n' + document.getElementById('comment').value;
 
-    var text = 'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
+    let text = 'Joyride\n\nTransport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
         console.log('checked ' + this.bicycles[x].BicycleID);
@@ -1523,7 +1530,7 @@ class TransportList extends Component {
       }
     }
 
-    pdf.text(text, 10, 10);
+    pdf.text(text + comment, 10, 10);
     pdf.save('Transport_order.pdf');
   }
 }
@@ -1619,15 +1626,15 @@ class RepairDetails extends Component {
       this.BrakeType = bicycle.Braketype;
       this.Wheelsize = bicycle.Wheelsize;
     });
-    var pdf = new jsPDF();
+    let pdf = new jsPDF();
 
-    var comment = '' + document.getElementById('comment').value;
-    var type = this.BicycleType;
-    var frame = this.FrameType;
-    var brake = this.BrakeType;
-    var wheel = this.Wheelsize;
-    var text =
-      'Repair confirmation: \n \n' +
+    let comment = '' + document.getElementById('comment').value;
+    let type = this.BicycleType;
+    let frame = this.FrameType;
+    let brake = this.BrakeType;
+    let wheel = this.Wheelsize;
+    let text =
+      'Joyride\n\nRepair confirmation: \n \n' +
       'Bicycle Type: ' +
       type +
       '\nFrametype: ' +
