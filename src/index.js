@@ -840,26 +840,25 @@ class BicycleList extends Component {
   render() {
     return (
       <Card title="Bicycle List">
-        <p>Click the bicycles to edit or delete them</p>
         <NavLink to="/warehouse/bicycles/insert">
           <Button.Light>Add New Bicycle</Button.Light>
         </NavLink>
         <NavLink to="/warehouse/bicycles/update">
           <Button.Light>Update Bicycles</Button.Light>
         </NavLink>
-        <br /> <br />
+        <p>Click the bicycles to edit or delete them</p>
         <Form.Label>Find Bicycle By:</Form.Label>
         <div id="BicycleSearch">
           <input id="BicycleSearchField" type="text" width='200px' />
           <select id="BicycleSearchCategory">
-            <option value="BicycleID">Bicycle ID</option>
+            <option value="Bicycles.BicycleID">Bicycle ID</option>
             <option value="BicycleType">Bicycletype</option>
             <option value="FrameType">Frametype</option>
             <option value="BrakeType">Braketype</option>
             <option value="Wheelsize">Wheelsize</option>
             <option value="BicycleStatus">Status</option>
-            <option value="HomeLocation">Homelocation</option>
-            <option value="CurrentLocation">Current location</option>
+            <option value="HomeLocation.HomeLocationName">Homelocation</option>
+            <option value="CurrentLocation.CurrentLocationName">Current location</option>
           </select>
           <button id="CustomerSearchButton" onClick={this.mounted}>
             Search
@@ -877,19 +876,22 @@ class BicycleList extends Component {
             </List.Item>
           ))}
         </List>
+        <p id="alert"></p>
         <br />
       </Card>
     );
   }
 
   mounted() {
-    // this.searchCategory = '' + document.getElementById('BicycleSearchCategory').value;
-    // this.searchValue = '%' + document.getElementById('BicycleSearchField').value + '%';
-    // bicycleService.searchBicycles(this.searchCategory, this.searchValue, bicycles => {
-    //   this.bicycles = bicycles;
-    // });
-    bicycleService.getBicycles(bicycles => {
+    this.searchCategory = '' + document.getElementById('BicycleSearchCategory').value;
+    this.searchValue = '%' + document.getElementById('BicycleSearchField').value + '%';
+    bicycleService.searchBicycles(this.searchCategory, this.searchValue, bicycles => {
       this.bicycles = bicycles;
+      if (this.bicycles.length === 0) {
+        document.getElementById("alert").innerHTML ="There are no bicycles in this category."
+      } else {
+        document.getElementById("alert").innerHTML="";
+      }
     });
   }
 }
@@ -1218,6 +1220,20 @@ class AccessoryList extends Component {
           <Button.Light>Add Existing accessory</Button.Light>
         </NavLink>
         <p>Click the accessories to edit or delete them</p>
+        <Form.Label>Find Bicycle By:</Form.Label>
+        <div id="AccessorySearch">
+          <input id="AccessorySearchField" type="text" width='200px' />
+          <select id="AccessorySearchCategory">
+            <option value="Accessories.AccessoryID">Accessory ID</option>
+            <option value="Type">Accessorytype</option>
+            <option value="Status">Status</option>
+            <option value="AccessoryHomeLocation.HomeLocationName">Homelocation</option>
+            <option value="AccessoryCurrentLocation.CurrentLocationName">Current location</option>
+          </select>
+          <button id="CustomerSearchButton" onClick={this.mounted}>
+            Search
+          </button>
+        </div>
         <List>
           {this.accessories.map(accessory => (
             <List.Item key={accessory.AccessoryID}>
@@ -1228,14 +1244,26 @@ class AccessoryList extends Component {
             </List.Item>
           ))}
         </List>
+        <p id="alert"></p>
       </Card>
     );
   }
 
   mounted() {
-    accessoryService.getAccessories(accessories => {
+    this.searchCategory = '' + document.getElementById('AccessorySearchCategory').value;
+    this.searchValue = '%' + document.getElementById('AccessorySearchField').value + '%';
+    accessoryService.searchAccessories(this.searchCategory, this.searchValue, accessories => {
       this.accessories = accessories;
+      if (this.accessories.length === 0) {
+        document.getElementById("alert").innerHTML ="There are no accessories in this category."
+      } else {
+        document.getElementById("alert").innerHTML="";
+      }
     });
+
+    // accessoryService.getAccessories(accessories => {
+    //   this.accessories = accessories;
+    // });
   }
 }
 
@@ -1604,6 +1632,8 @@ class RepairList extends Component {
       this.bicycles = bicycles;
       if (this.bicycles.length === 0) {
         document.getElementById("alert").innerHTML ="There are no bicycles in need of repair."
+      } else {
+        document.getElementById("alert").innerHTML="";
       }
     });
   }

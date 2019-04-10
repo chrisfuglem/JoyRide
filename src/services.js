@@ -563,7 +563,7 @@ class BicycleService {
   //Search function for bicycles.
   searchBicycles(category, value, success) {
     connection.query(
-      'SELECT * FROM Bicycles inner join HomeLocation on HomeLocation.BicycleID = Bicycles.BicycleID  WHERE ' + category + ' LIKE ' + "'" + value + "'",
+      'SELECT * FROM Bicycles inner join HomeLocation on HomeLocation.BicycleID = Bicycles.BicycleID inner join CurrentLocation on CurrentLocation.BicycleId = Bicycles.BicycleID  WHERE ' + category + ' LIKE ' + "'" + value + "'",
       [category, value],
       (error, results) => {
         if (error) return console.error(error);
@@ -680,6 +680,19 @@ class AccessoryService {
 
       success(results);
     });
+  }
+
+  //Search function for accessories.
+  searchAccessories(category, value, success) {
+    connection.query(
+      'SELECT * FROM Accessories inner join AccessoryHomeLocation on AccessoryHomeLocation.AccessoryID = Accessories.AccessoryID inner join AccessoryCurrentLocation on AccessoryCurrentLocation.AccessoryID = Accessories.AccessoryID  WHERE ' + category + ' LIKE ' + "'" + value + "'",
+      [category, value],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
   }
 }
 
