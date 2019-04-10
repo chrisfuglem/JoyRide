@@ -743,9 +743,8 @@ class TransportService {
 
   //Saves the status of the bicycle(s) selected for Transport to 'In Transport'
   saveStatus(BicycleID) {
-    connection.query('update Bicycles set BicycleStatus = "In Transport" where BicycleID=?', [BicycleID], (error,results) => {
+    connection.query('update Bicycles set BicycleStatus = "In Transport" where BicycleID=?', [BicycleID], (error) => {
       if(error) return console.error(error);
-
     })
   }
 }
