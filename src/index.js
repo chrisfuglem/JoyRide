@@ -116,6 +116,7 @@ class RentalEdit extends Component {
   RentStart = '';
   RentEnd = '';
   SUM = '';
+  RentedStatus = '';
 
   render() {
     return (
@@ -191,13 +192,19 @@ class RentalEdit extends Component {
     });
   }
   setActive() {
-    rentalService.setStatusRented(this.props.match.params.id, () => {});
+    rentalService.setStatusRented(this.props.match.params.id, status, () => {
+      this.RentedStatus = status;
+      history.push('/sales/rentals');
+    });
     rentalService.activateRental(this.props.match.params.id, () => {
       history.push('/sales/rentals');
     });
   }
   setEnd() {
-    rentalService.setStatusRented(this.props.match.params.id, () => {});
+    rentalService.setStatusRented(this.props.match.params.id, status, () => {
+      this.RentedStatus = status;
+      history.push('/sales/rentals');
+    });
     rentalService.endRental(this.props.match.params.id, () => {
       history.push('/sales/rentals');
     });

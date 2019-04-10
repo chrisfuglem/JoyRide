@@ -251,17 +251,19 @@ class RentalService {
   }
 
   //Sets the status of the Bicycle to 'Rented' in the database
-  setStatusRented(id) {
-    connection.query('update Bicycles set BicycleStatus = "Rented" where BicycleID=?', [id], (error) => {
+  setStatusRented(RentalID) {
+    connection.query('update Bicycles inner join RentedBicycles on RentedBicycles.BicycleID = Bicycles.BicycleID set BicycleStatus = "Rented" where RentedBicycles.RentalID=?', [RentalID], (error, results) => {
       if(error) return console.error(error);
+
+      console.log(results);
     })
   }
 }
 
 class CustomerService {
   //Selects all the customers from the database.
-  getCustomers(success) {
-    connection.query('select * from Customers', (error, results) => {
+  getCustomers(results) {
+    connection.query('select * from Customers', (error) => {
       if (error) return console.error(error);
 
       success(results);
