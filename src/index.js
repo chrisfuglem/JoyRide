@@ -1263,6 +1263,9 @@ class AccessoryList extends Component {
       <Card title="Accessory List">
         <NavLink to="/accessories/insert">
           <Button.Light>Add New accessory</Button.Light>
+        </NavLink> {' '}
+        <NavLink to="/accessories/exinsert">
+          <Button.Light>Add Existing accessory</Button.Light>
         </NavLink>
         <p>Click the accessories to edit or delete them</p>
         <List>
@@ -1270,7 +1273,7 @@ class AccessoryList extends Component {
             <List.Item key={accessory.AccessoryID}>
               <NavLink to={'/accessories/' + accessory.AccessoryID + '/edit'}>
                 {accessory.Type} | Price: {accessory.DailyPrice}kr per day | Home Location: {accessory.HomeLocationName}{' '}
-                | Current Location: {accessory.CurrentLocationName}
+                | Current Location: {accessory.CurrentLocationName} | Status {accessory.Status}
               </NavLink>
             </List.Item>
           ))}
@@ -1290,8 +1293,10 @@ class AccessoryList extends Component {
 class AccessoryEdit extends Component {
   Type = '';
   DailyPrice = '';
+  Status = '';
   HomeLocation = '';
   CurrentLocation = '';
+  AccessoryStatuses = [];
 
   render() {
     return (
@@ -1301,6 +1306,14 @@ class AccessoryEdit extends Component {
         </List.Item>
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+        <br />
+        <Form.Label>Accessory Status</Form.Label>
+        <br />
+        <select id="StatusDropdown" value={this.Status} onChange={e => (this.Status = e.target.value)}>
+          {this.AccessoryStatuses.map(status => (
+            <option value={status.Status}>{status.AccessoryStatus}</option>
+          ))}
+        </select>{' '}
         <br />
         <Form.Label>Home Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
@@ -1341,8 +1354,12 @@ class AccessoryEdit extends Component {
     accessoryService.getAccessory(this.props.match.params.id, accessory => {
       this.Type = accessory.Type;
       this.DailyPrice = accessory.DailyPrice;
+      this.Status = accessory.Status;
       this.HomeLocation = accessory.HomeLocation;
       this.CurrentLocation = accessory.CurrentLocation;
+    });
+    accessoryService.getAccessoryStatuses(statuses => {
+      this.AccessoryStatuses = statuses;
     });
   }
 
@@ -1351,6 +1368,7 @@ class AccessoryEdit extends Component {
     accessoryService.updateAccessory(
       this.props.match.params.id,
       this.DailyPrice,
+      (this.AccessoryStatus = '' + document.getElementById('StatusDropdown').value),
       (this.HomeLocation = '' + document.getElementById('HomeLocation').value),
       (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
       () => {
@@ -1370,11 +1388,11 @@ class AccessoryEdit extends Component {
   }
 }
 
-//Section where you can add accessories.
-class AccessoryTypeInsert extends Component {
+//Section where you can add new accessories.
+class AccessoryInsert extends Component {
   render() {
     return (
-      <Card title="Adding Accessory">
+      <Card title="Adding New Accessory">
         <Form.Label>Accessory Type</Form.Label>
         <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
         <br />
@@ -1383,6 +1401,9 @@ class AccessoryTypeInsert extends Component {
         <br />
         <Form.Label>Current Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+          <option selected={true} disabled={true}>
+            Select Location
+          </option>
           <option value="9">Finse</option>
           <option value="13">Haugastoel</option>
         </select>
@@ -1393,6 +1414,9 @@ class AccessoryTypeInsert extends Component {
           value={this.CurrentLocation}
           onChange={e => (this.CurrentLocation = e.target.value)}
         >
+          <option selected={true} disabled={true}>
+            Select Location
+          </option>
           <option value="9">Finse</option>
           <option value="10">Flaam</option>
           <option value="11">Voss</option>
@@ -1415,6 +1439,78 @@ class AccessoryTypeInsert extends Component {
       history.push('/accessories/');
     });
     accessoryService.insertAccessoryPrice(this.type, this.dailyprice, this.HomeLocation, this.CurrentLocation, () => {
+      history.push('/accessories');
+    });
+  }
+}
+
+//Section where you can add new accessories.
+class AccessoryInsertEx extends Component {
+  AccessoryTypes = [];
+
+  render() {
+    return (
+      <Card title="Adding Existing Accessory">
+        <Form.Label>Accessory Type</Form.Label>
+        <br />
+        <select id="TypeDropdown" value={this.AccessoryType} onChange={e => (this.AccessoryType = e.target.value)}>
+          {this.AccessoryTypes.map(type => (
+            <option value={type.AccessoryType}>{type.AccessoryType}</option>
+          ))}
+        </select>{' '}
+        <br />
+        <Form.Label>Daily Price</Form.Label>
+        <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+        <br />
+        <Form.Label>Current Location</Form.Label> <br />
+        <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+          <option selected={true} disabled={true}>
+            Select Location
+          </option>
+          <option value="9">Finse</option>
+          <option value="13">Haugastoel</option>
+        </select>
+        <br />
+        <Form.Label>Current Location</Form.Label> <br />
+        <select
+          id="CurrentLocation"
+          value={this.CurrentLocation}
+          onChange={e => (this.CurrentLocation = e.target.value)}
+        >
+          <option selected={true} disabled={true}>
+            Select Location
+          </option>
+          <option value="9">Finse</option>
+          <option value="10">Flaam</option>
+          <option value="11">Voss</option>
+          <option value="12">Myrdal</option>
+          <option value="13">Haugastoel</option>
+        </select>
+        <br />
+        <br />
+        <NavLink to="/accessories">
+        <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
+        </NavLink>
+        <NavLink to="/accessories">
+          <Button.Light>Back</Button.Light>
+        </NavLink>
+      </Card>
+    );
+  }
+
+  mounted() {
+    accessoryService.getAccessoryTypes(types => {
+      this.AccessoryTypes = types;
+    });
+  }
+
+  //Adds the accessory.
+  insert() {
+    accessoryService.insertAccessoryPrice(
+      (this.AccessoryType = '' + document.getElementById('TypeDropdown').value),
+       this.DailyPrice,
+       this.HomeLocation,
+       this.CurrentLocation, () => {
       history.push('/accessories');
     });
   }
@@ -1685,7 +1781,8 @@ ReactDOM.render(
       <Route path="/customers/insert" component={CustomerInsert} />
       <Route path="/employees/insert" component={EmployeeInsert} />
       <Route path="/bicycles/insert" component={BicycleInsert} />
-      <Route exact path="/accessories/insert" component={AccessoryTypeInsert} />
+      <Route exact path="/accessories/insert" component={AccessoryInsert} />
+      <Route exact path="/accessories/exinsert" component={AccessoryInsertEx} />
       <Route path="/repair/:id/edit" component={RepairDetails} />
       <Route path="/count" component={RentalCountList} />
     </div>
