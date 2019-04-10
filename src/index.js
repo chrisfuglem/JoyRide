@@ -1481,7 +1481,9 @@ class TransportList extends Component {
         <br />
         <br />
         <br />
+        <NavLink to="/warehouse/bicycles">
         <Button.Success onClick={this.save}>Submit</Button.Success>
+        </NavLink>
       </Card>
     );
   }
@@ -1510,7 +1512,7 @@ class TransportList extends Component {
     let drop = '' + document.getElementById('TransportDropdown').value;
     let comment = '\n\nAdditional comments:\n' + document.getElementById('comment').value;
 
-    let text = 'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
+    let text = 'Joyride\n\nTransport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
         console.log('checked ' + this.bicycles[x].BicycleID);
@@ -1626,7 +1628,7 @@ class RepairDetails extends Component {
     let brake = this.BrakeType;
     let wheel = this.Wheelsize;
     let text =
-      'Repair confirmation: \n \n' +
+      'Joyride\n\nRepair confirmation: \n \n' +
       'Bicycle Type: ' +
       type +
       '\nFrametype: ' +
