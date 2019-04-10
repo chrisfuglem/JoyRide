@@ -1404,7 +1404,7 @@ class AccessoryInsertEx extends Component {
         <br />
         <br />
         <NavLink to="/warehouse/accessories">
-        <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
+        <Button.Success onClick={this.insert}>Add Accessory</Button.Success>
         </NavLink>
         <NavLink to="/warehouse/accessories">
           <Button.Light>Back</Button.Light>
@@ -1435,6 +1435,7 @@ class AccessoryInsertEx extends Component {
 //You can choose location to select bicycles from and location to transport to.
 class TransportList extends Component {
   locations = [];
+  transportToLocations = [];
   bicycles = [];
   BicycleStatus = '';
 
@@ -1446,11 +1447,11 @@ class TransportList extends Component {
           <option selected={true} disabled={true}>
             Select Location
           </option>
-          <option value="9">Finse</option>
-          <option value="10">Flaam</option>
-          <option value="11">Voss</option>
-          <option value="12">Myrdal</option>
-          <option value="13">Haugastøl</option>
+          {this.locations.map(location => (
+            <option value={location.LocationName}>
+              {location.LocationName}
+            </option>
+          ))}
         </select>
         <br />
         <p>Select the Bicycles you want to transport:</p>
@@ -1469,7 +1470,7 @@ class TransportList extends Component {
           <option selected={true} disabled={true}>
             Select Location
           </option>
-          {this.locations.map(location => (
+          {this.transportToLocations.map(location => (
             <option value={location.LocationName}>
               {location.LocationName}
             </option>
@@ -1498,7 +1499,7 @@ class TransportList extends Component {
       for (let bicycle of bicycles) bicycle.checked = false;
     });
     transportService.getTransportToLocation(document.getElementById('LocationDropdown').value, locations => {
-      this.locations = locations;
+      this.transportToLocations = locations;
     });
   }
 

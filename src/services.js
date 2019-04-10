@@ -667,7 +667,7 @@ class TransportService {
   //Selects transport locations, but removes the locations that is chosen, or not available for transport.
   getTransportToLocation(LocationID, success) {
     connection.query(
-      'SELECT * from Locations WHERE LocationID <> ? and  LocationID <> 10 and LocationID <> 11 and LocationID <> 12;',
+      'SELECT * from Locations WHERE LocationName <> ? and  LocationID <> 10 and LocationID <> 11 and LocationID <> 12;',
       [LocationID],
       (error, results) => {
         if (error) return console.error(error);
@@ -701,10 +701,10 @@ class TransportService {
   }
 
   //gets bicycles for transport.
-  getBicyclesForTransport(LocationID, success) {
+  getBicyclesForTransport(LocationName, success) {
     connection.query(
-      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=? and Bicycles.BicycleStatus = "Need Transport"',
-      [LocationID],
+      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationName=? and Bicycles.BicycleStatus = "Need Transport"',
+      [LocationName],
       (error, results) => {
         if (error) return console.error(error);
 
