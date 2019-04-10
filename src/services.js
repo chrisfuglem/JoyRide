@@ -252,12 +252,40 @@ class RentalService {
   }
 
   //Sets the status of the Bicycle to 'Rented' in the database
-  setStatusRented(RentalID) {
+  setBicycleRented(RentalID) {
     connection.query('update Bicycles inner join RentedBicycles on RentedBicycles.BicycleID = Bicycles.BicycleID set BicycleStatus = "Rented" where RentedBicycles.RentalID=?', [RentalID], (error, results) => {
       if(error) return console.error(error);
 
       console.log(results);
     })
+  }
+
+  //Sets the status of the Accessory to 'Rented' in the database
+  setAccessoryRented(RentalID) {
+    connection.query('update Accessories inner join RentedAccessories on RentedAccessories.AccessoryID = Accessories.AccessoryID set Status = "Rented" where RentedAccessories.RentalID=?', [RentalID], (error, results) => {
+      if(error) return console.error(error);
+
+      console.log(results);
+    });
+  }
+
+  //Sets the status of the Accessory to 'Available' in the database when the rental is ended
+  setAccessoryBack(RentalID) {
+    connection.query('update Accessories inner join RentedAccessories on RentedAccessories.AccessoryID = Accessories.AccessoryID set Status = "Available" where RentedAccessories.RentalID=?',
+    [RentalID], (error, results) => {
+      if(error) return console.error(error);
+
+      console.log(results);
+    });
+  }
+
+  setBicycleBack(RentalID) {
+    connection.query('update Bicycles inner join RentedBicycles on RentedBicycles.BicycleID = Bicycles.BicycleID set BicycleStatus = "Available" where RentedBicycles.RentalID=?',
+    [RentalID], (error, results) => {
+      if(error) return console.error(error);
+
+      console.log(results);
+    });
   }
 }
 
