@@ -23,8 +23,7 @@
 }
 
 .list-group{
-    /* max-height: 654px; */
-    max-height: 72.5vh;
+    max-height: 66.4vh;
     margin-bottom: 10px;
     overflow:scroll;
     -webkit-overflow-scrolling: touch;
@@ -55,4 +54,20 @@
 
 .Card-body {
   height: 100vh;
+}
+
+#TypeDropdown, #FrameDropdown, #BrakeDropdown, #StatusDropdown, #HomeLocation, #CurrentLocation {
+  width: 150px;
+}
+
+.btn.btn-success, .btn.btn-danger {
+  padding-right: 10px;
+  width: auto;
+  text-align: center;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Fjalla+One');
+
+body {
+  font-family: 'Fjalla One', sans-serif;
 }

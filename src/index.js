@@ -117,6 +117,8 @@ class RentalEdit extends Component {
   RentStart = '';
   RentEnd = '';
   SUM = '';
+  BikeStatus = "";
+  AccessoryStatus = "";
 
   render() {
     return (
@@ -152,8 +154,10 @@ class RentalEdit extends Component {
         <NavLink to="/sales/rentals">
           <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
         </NavLink>{' '}
-        <Button.Danger oncClick={this.setEnd}>End Rental</Button.Danger>
+        <Button.Danger onClick={this.setEnded}>End Rental</Button.Danger>
         <NavLink to="/sales/rentals">
+          <br />
+          <br />
           <Button.Light>Back</Button.Light>
         </NavLink>
       </Card>
@@ -201,13 +205,24 @@ class RentalEdit extends Component {
     });
   }
   setActive() {
-    rentalService.setStatusRented(this.props.match.params.id, () => {});
+    rentalService.setBicycleRented(this.props.match.params.id, status, () => {
+      this.BikeStatus = status;
+    });
+    rentalService.setAccessoryRented(this.props.match.params.id, status, () => {
+      this.AccessoryStatus = status;
+    })
     rentalService.activateRental(this.props.match.params.id, () => {
       history.push('/sales/rentals');
     });
   }
-  setEnd() {
-    rentalService.setStatusRented(this.props.match.params.id, () => {});
+
+  setEnded() {
+    rentalService.setBicycleBack(this.props.match.params.id, status, () => {
+      this.BikeStatus = status;
+    });
+    rentalService.setAccessoryBack(this.props.match.params.id, status, () => {
+      this.AccessoryStatus = status;
+    });
     rentalService.endRental(this.props.match.params.id, () => {
       history.push('/sales/rentals');
     });
@@ -815,33 +830,55 @@ class BicycleList extends Component {
   render() {
     return (
       <Card title="Bicycle List">
-        <p>Click the bicycles to edit or delete them</p>
         <NavLink to="/warehouse/bicycles/insert">
           <Button.Light>Add New Bicycle</Button.Light>
         </NavLink>
         <NavLink to="/warehouse/bicycles/update">
           <Button.Light>Update Bicycles</Button.Light>
         </NavLink>
+        <p>Click the bicycles to edit or delete them</p>
+        <Form.Label>Find Bicycle By:</Form.Label>
+        <div id="BicycleSearch">
+          <input id="BicycleSearchField" type="text" width='200px' />
+          <select id="BicycleSearchCategory">
+            <option value="Bicycles.BicycleID">Bicycle ID</option>
+            <option value="BicycleType">Bicycletype</option>
+            <option value="FrameType">Frametype</option>
+            <option value="BrakeType">Braketype</option>
+            <option value="Wheelsize">Wheelsize</option>
+            <option value="BicycleStatus">Status</option>
+            <option value="HomeLocation.HomeLocationName">Homelocation</option>
+            <option value="CurrentLocation.CurrentLocationName">Current location</option>
+          </select>
+          <button id="CustomerSearchButton" onClick={this.mounted}>
+            Search
+          </button>
+        </div>
         <List>
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
               <NavLink to={'/warehouse/bicycles/' + bicycle.BicycleID + '/edit'}>
-                Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
-                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Home Location:{' '}
-                {bicycle.HomeLocationName} | Daily Price: {bicycle.DailyPrice}kr per day | Current Location:{' '}
-                {bicycle.CurrentLocationName}
+                Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Daily Price: {bicycle.DailyPrice}kr per day 
               </NavLink>
             </List.Item>
           ))}
         </List>
+        <p id="alert"></p>
         <br />
       </Card>
     );
   }
 
   mounted() {
-    bicycleService.getBicycles(bicycles => {
+    this.searchCategory = '' + document.getElementById('BicycleSearchCategory').value;
+    this.searchValue = '%' + document.getElementById('BicycleSearchField').value + '%';
+    bicycleService.searchBicycles(this.searchCategory, this.searchValue, bicycles => {
       this.bicycles = bicycles;
+      if (this.bicycles.length === 0) {
+        document.getElementById("alert").innerHTML ="There are no bicycles in this category."
+      } else {
+        document.getElementById("alert").innerHTML="";
+      }
     });
   }
 }
@@ -1044,6 +1081,8 @@ class BicycleInsert extends Component {
           <option value="13">Haugastoel</option>
         </select>
         <br />
+        <Form.Label>Number of bikes to add</Form.Label>
+        <Form.Input type="number" id="NumberToAdd" value={this.Add} onChange={e => (this.Add = e.target.value)}/>
         <br />
         <NavLink to="/warehouse/bicycles">
           <Button.Success onClick={this.insert}>Add New Bicycle</Button.Success>
@@ -1057,19 +1096,21 @@ class BicycleInsert extends Component {
 
   //Adds the bicycle.
   insert() {
-    bicycleService.insertBicycle(
-      (this.BicycleType = '' + document.getElementById('TypeDropdown').value),
-      (this.FrameType = '' + document.getElementById('FrameDropdown').value),
-      (this.BrakeType = '' + document.getElementById('BrakeDropdown').value),
-      this.Wheelsize,
-      (this.BicycleStatus = '' + document.getElementById('StatusDropdown').value),
-      (this.HomeLocation = '' + document.getElementById('HomeLocation').value),
-      this.DailyPrice,
-      (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
-      () => {
-        history.push('/warehouse/bicycles');
-      }
-    );
+    for (let i = 0; i < this.Add; i++) {
+      bicycleService.insertBicycle(
+        (this.BicycleType = '' + document.getElementById('TypeDropdown').value),
+        (this.FrameType = '' + document.getElementById('FrameDropdown').value),
+        (this.BrakeType = '' + document.getElementById('BrakeDropdown').value),
+        this.Wheelsize,
+        (this.BicycleStatus = '' + document.getElementById('StatusDropdown').value),
+        (this.HomeLocation = '' + document.getElementById('HomeLocation').value),
+        this.DailyPrice,
+        (this.CurrentLocation = '' + document.getElementById('CurrentLocation').value),
+        () => {
+          history.push('/warehouse/bicycles');
+        }
+      );
+    }
   }
 }
 
@@ -1166,6 +1207,20 @@ class AccessoryList extends Component {
           <Button.Light>Add Existing accessory</Button.Light>
         </NavLink>
         <p>Click the accessories to edit or delete them</p>
+        <Form.Label>Find Bicycle By:</Form.Label>
+        <div id="AccessorySearch">
+          <input id="AccessorySearchField" type="text" width='200px' />
+          <select id="AccessorySearchCategory">
+            <option value="Accessories.AccessoryID">Accessory ID</option>
+            <option value="Type">Accessorytype</option>
+            <option value="Status">Status</option>
+            <option value="AccessoryHomeLocation.HomeLocationName">Homelocation</option>
+            <option value="AccessoryCurrentLocation.CurrentLocationName">Current location</option>
+          </select>
+          <button id="CustomerSearchButton" onClick={this.mounted}>
+            Search
+          </button>
+        </div>
         <List>
           {this.accessories.map(accessory => (
             <List.Item key={accessory.AccessoryID}>
@@ -1176,14 +1231,26 @@ class AccessoryList extends Component {
             </List.Item>
           ))}
         </List>
+        <p id="alert"></p>
       </Card>
     );
   }
 
   mounted() {
-    accessoryService.getAccessories(accessories => {
+    this.searchCategory = '' + document.getElementById('AccessorySearchCategory').value;
+    this.searchValue = '%' + document.getElementById('AccessorySearchField').value + '%';
+    accessoryService.searchAccessories(this.searchCategory, this.searchValue, accessories => {
       this.accessories = accessories;
+      if (this.accessories.length === 0) {
+        document.getElementById("alert").innerHTML ="There are no accessories in this category."
+      } else {
+        document.getElementById("alert").innerHTML="";
+      }
     });
+
+    // accessoryService.getAccessories(accessories => {
+    //   this.accessories = accessories;
+    // });
   }
 }
 
@@ -1385,9 +1452,11 @@ class AccessoryInsertEx extends Component {
           <option value="13">Haugastoel</option>
         </select>
         <br />
+        <Form.Label>Number to add</Form.Label>
+        <Form.Input type="number" id="NumberToAdd" value={this.Add} onChange={e => (this.Add = e.target.value)}/>
         <br />
         <NavLink to="/warehouse/accessories">
-        <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
+        <Button.Success onClick={this.insert}>Add Accessory</Button.Success>
         </NavLink>
         <NavLink to="/warehouse/accessories">
           <Button.Light>Back</Button.Light>
@@ -1404,13 +1473,15 @@ class AccessoryInsertEx extends Component {
 
   //Adds the accessory.
   insert() {
-    accessoryService.insertAccessoryPrice(
-      (this.AccessoryType = '' + document.getElementById('TypeDropdown').value),
-       this.DailyPrice,
-       this.HomeLocation,
-       this.CurrentLocation, () => {
-      history.push('/warehouse/accessories');
-    });
+    for (let i = 0; i < this.Add; i++) {
+      accessoryService.insertAccessoryPrice(
+        (this.AccessoryType = '' + document.getElementById('TypeDropdown').value),
+         this.DailyPrice,
+         this.HomeLocation,
+         this.CurrentLocation, () => {
+        history.push('/warehouse/accessories');
+      });
+    }
   }
 }
 
@@ -1418,6 +1489,7 @@ class AccessoryInsertEx extends Component {
 //You can choose location to select bicycles from and location to transport to.
 class TransportList extends Component {
   locations = [];
+  transportToLocations = [];
   bicycles = [];
   BicycleStatus = '';
 
@@ -1425,15 +1497,15 @@ class TransportList extends Component {
     return (
       <Card title="Order Transport From:">
         <p>Select the location you want transport from:</p>
-        <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
+        <select id="LocationDropdown" onChange={this.getBicyclesForTransport}>
           <option selected={true} disabled={true}>
             Select Location
           </option>
-          <option value="9">Finse</option>
-          <option value="10">Flaam</option>
-          <option value="11">Voss</option>
-          <option value="12">Myrdal</option>
-          <option value="13">Haugastøl</option>
+          {this.locations.map(location => (
+            <option value={location.LocationName}>
+              {location.LocationName}
+            </option>
+          ))}
         </select>
         <br />
         <p>Select the Bicycles you want to transport:</p>
@@ -1452,15 +1524,23 @@ class TransportList extends Component {
           <option selected={true} disabled={true}>
             Select Location
           </option>
-          {this.locations.map(location => (
-            <option value={location.LocationID}>
-              {location.LocationName} ID: {location.LocationID}
+          {this.transportToLocations.map(location => (
+            <option value={location.LocationName}>
+              {location.LocationName}
             </option>
           ))}
         </select>
         <br />
         <br />
+        <br />
+        <input type="textarea" placeholder="Add additional comments" id="comment" />
+        <br />
+        <br />
+        <p id="alert"></p>
+        <br />
+        <NavLink to="/warehouse/bicycles">
         <Button.Success onClick={this.save}>Submit</Button.Success>
+        </NavLink>
       </Card>
     );
   }
@@ -1472,23 +1552,29 @@ class TransportList extends Component {
   }
 
   //Gets all the bicycles on the chosen location
-  getBicycles() {
-    transportService.getBicycles(document.getElementById('LocationDropdown').value, bicycles => {
+  getBicyclesForTransport() {
+    transportService.getBicyclesForTransport(document.getElementById('LocationDropdown').value, bicycles => {
       this.bicycles = bicycles;
       for (let bicycle of bicycles) bicycle.checked = false;
+      if (this.bicycles.length === 0) {
+        document.getElementById("alert").innerHTML ="There are no bicycles in need of transport at this location."
+      } else {
+        document.getElementById("alert").innerHTML="";
+      }
     });
     transportService.getTransportToLocation(document.getElementById('LocationDropdown').value, locations => {
-      this.locations = locations;
+      this.transportToLocations = locations;
     });
   }
 
   //Updates the status on the bicycles set for transport.
   save() {
-    var pdf = new jsPDF();
-    var pickup = '' + document.getElementById('LocationDropdown').value;
-    var drop = '' + document.getElementById('TransportDropdown').value;
+    let pdf = new jsPDF();
+    let pickup = '' + document.getElementById('LocationDropdown').value;
+    let drop = '' + document.getElementById('TransportDropdown').value;
+    let comment = '\n\nAdditional comments:\n' + document.getElementById('comment').value;
 
-    var text = 'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
+    let text = 'Joyride\n\nTransport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
         console.log('checked ' + this.bicycles[x].BicycleID);
@@ -1500,7 +1586,7 @@ class TransportList extends Component {
       }
     }
 
-    pdf.text(text, 10, 10);
+    pdf.text(text + comment, 10, 10);
     pdf.save('Transport_order.pdf');
   }
 }
@@ -1523,6 +1609,7 @@ class RepairList extends Component {
           ))}
         </List>
         <NavLink to="/warehouse/repair/summary" />
+        <p id="alert"></p>
       </Card>
     );
   }
@@ -1530,6 +1617,11 @@ class RepairList extends Component {
   mounted() {
     repairService.getBicycles(bicycles => {
       this.bicycles = bicycles;
+      if (this.bicycles.length === 0) {
+        document.getElementById("alert").innerHTML ="There are no bicycles in need of repair."
+      } else {
+        document.getElementById("alert").innerHTML="";
+      }
     });
   }
 }
@@ -1584,9 +1676,6 @@ class RepairDetails extends Component {
       this.HomeLocation = bicycle.HomeLocation;
       this.CurrentLocation = bicycle.CurrentLocation;
     });
-    bicycleService.getBicycleStatuses(statuses => {
-      this.BicycleStatuses = statuses;
-    });
   }
 
   //Updates the status on the chosen bicycle to "In Repair", and saves and order confirmation as a PDF.
@@ -1596,15 +1685,15 @@ class RepairDetails extends Component {
       this.BrakeType = bicycle.Braketype;
       this.Wheelsize = bicycle.Wheelsize;
     });
-    var pdf = new jsPDF();
+    let pdf = new jsPDF();
 
-    var comment = '' + document.getElementById('comment').value;
-    var type = this.BicycleType;
-    var frame = this.FrameType;
-    var brake = this.BrakeType;
-    var wheel = this.Wheelsize;
-    var text =
-      'Repair confirmation: \n \n' +
+    let comment = '' + document.getElementById('comment').value;
+    let type = this.BicycleType;
+    let frame = this.FrameType;
+    let brake = this.BrakeType;
+    let wheel = this.Wheelsize;
+    let text =
+      'Joyride\n\nRepair confirmation: \n \n' +
       'Bicycle Type: ' +
       type +
       '\nFrametype: ' +
