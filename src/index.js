@@ -802,6 +802,8 @@ class EmployeeList extends Component {
         <p>Click the employees to edit or delete them</p>
         <NavLink to="/employees/insert/">
           <Button.Light>Add New Employee</Button.Light>
+          <br />
+          <br />
         </NavLink>
         <h3>Search by category</h3>
         <div id="EmployeeSearch">
