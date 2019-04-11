@@ -5,7 +5,7 @@ class RentalService {
   //Selects ID,sum date, start and end from rentals in the database, and counts the number of bikes and accessories in the booking.
   getRentals(success) {
     connection.query(
-      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID order by RentalID DESC;',
+      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, Rentals.RentalStatus, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID order by RentalID DESC;',
       (error, results) => {
         if (error) return console.error(error);
 
@@ -17,7 +17,7 @@ class RentalService {
   //Selects a specific rental booking and extracts rental and customer information from the database.
   getRental(id, success) {
     connection.query(
-      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.RentStart, Rentals.RentEnd, COUNT(RentedBicycles.BicycleID) as bicycleCount, Rentals.SUM FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
+      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.RentStart, Rentals.RentEnd, Rentals.RentalStatus, COUNT(RentedBicycles.BicycleID) as bicycleCount, Rentals.SUM FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
       [id],
       (error, results) => {
         if (error) return console.error(error);
