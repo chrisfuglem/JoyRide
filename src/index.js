@@ -86,7 +86,7 @@ class RentalList extends Component {
                 Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
               </NavLink>
               <br />
-              BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM}
+              BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUMwithDiscount}
             </List.Item>
           ))}
         </List>
@@ -185,6 +185,7 @@ class RentalEdit extends Component {
     rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
       this.rentedAccessories = accessories;
     });
+    console.log(this.props.match.params.id);
   }
 
   save() {
@@ -244,6 +245,8 @@ class RemoveFromRental extends Component {
   rental = [];
   rentstart = '';
   rentend = '';
+  sum = 0;
+  discountSUM = 0;
 
   constructor(props) {
     super(props);
@@ -256,25 +259,27 @@ class RemoveFromRental extends Component {
   render() {
     return (
       <Card>
-        <h3>Bicycle and accessory selection</h3>
-        <p>Rental id: {this.props.match.params.id}</p>
+        <h2>Rental #{this.props.match.params.id}</h2>
+        <h3>Bicycle and Accessory selection</h3>
+        <p>Original Sum: {this.sum}kr</p>
+        <p><b>Final Sum: {this.discountSUM}kr</b></p>
         <div>
           <h4>Available Bicycles</h4>
           <select ref={this.bicycleDropdown}>
             {this.bicycleDropdownOptions.map(bicycle => (
-              <option value={bicycle.Type}>
+              <option key={bicycle.bicycleID} value={bicycle.BicycleType}>
                 {bicycle.BicycleType} - {bicycle.TypeCount} Available
               </option>
             ))}
           </select>
-          <button onClick={this.addBicycle}>Add Bicycle</button>
+          <button onClick={this.addBicycle.bind(this, this.calculateSum)}>Add Bicycle</button>
         </div>
         <div>
           <h4>Available Accessories</h4>
           <select ref={this.accessoryDropdown}>
             {this.accessoryDropdownOptions.map(accessory => (
-              <option key={accessory.AccessoryID} value={accessory.accessoryType}>
-                {accessory.accessoryType} - {accessory.TypeCount} Available
+              <option key={accessory.AccessoryID} value={accessory.Type}>
+                {accessory.Type} - {accessory.TypeCount} Available
               </option>
             ))}
           </select>
@@ -301,9 +306,6 @@ class RemoveFromRental extends Component {
         <NavLink to={'/sales/rentals/' + this.props.match.params.id + '/edit'}>
           <Button.Success>Finish</Button.Success>
         </NavLink>
-        <NavLink to={'/sales/rentals/insert'}>
-          <Button.Light>Back</Button.Light>
-        </NavLink>
       </Card>
     );
   }
@@ -317,13 +319,16 @@ class RemoveFromRental extends Component {
     });
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
+      this.calculateSum();
     });
     rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
       this.rentedAccessories = accessories;
+      this.calculateSum();
     });
     rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
     });
+    // Gets all available bicycles within the rentals period and sorts them by type inside the dropdown
     rentalService.getAvailableBicyclesByType(this.props.match.params.id, bicycles => {
       this.availableBicyclesCount = bicycles;
       for (let x = 0; x < this.availableBicyclesCount.length; x++) {
@@ -335,7 +340,7 @@ class RemoveFromRental extends Component {
     rentalService.getAvailableAccessories(accessories => {
       this.accessories = accessories;
     });
-    rentalService.getAvailableAccessoriesByType(accessories => {
+    rentalService.getAvailableAccessoriesByType(this.props.match.params.id, accessories => {
       this.availableAccessoriesCount = accessories;
       for (let x = 0; x < this.availableAccessoriesCount.length; x++) {
         if (this.availableAccessoriesCount[x].TypeCount > 0) {
@@ -345,15 +350,28 @@ class RemoveFromRental extends Component {
     });
   }
 
+  calculateSum() {
+    this.sum = 0; // Reset before calculating
+    for (let x = 0; x < this.rentedBicycles.length; x++) {
+      this.sum += this.rentedBicycles[x].DailyPrice;
+    }
+    for (let x = 0; x < this.rentedAccessories.length; x++) {
+      this.sum += this.rentedAccessories[x].DailyPrice;
+    }
+    this.sum = Math.round(this.sum);
+    this.discountSUM = Math.round(this.sum * 0.9);
+    rentalService.updateSUM(this.sum, this.discountSUM, this.props.match.params.id);
+  }
+
   //Adds bicycle to the rental.
   addBicycle() {
-    let x = this.bicycleDropdown.current.value;
-    // Removes the ' - number available' from the string
-    let y = x.indexOf(" - ");
-    let bicycleType = x.slice(0, y);
-
-    rentalService.addBicycleToRental(this.props.match.params.id, bicycleType);
-    this.mounted(); // Refresh page with new data
+    if (this.bicycleDropdown.current.value != '') {
+      rentalService.addBicycleToRental(this.props.match.params.id, this.bicycleDropdown.current.value);
+      this.mounted(); // Refresh page with new data
+    }
+    else {
+      alert("No bicycles available");
+    }
   }
 
   //Removes the bicycle from the rental.
@@ -366,8 +384,14 @@ class RemoveFromRental extends Component {
 
   //Adds accessory to the rental.
   addAccessory() {
-    rentalService.addAccessoryToRental(this.props.match.params.id, this.accessoryDropdown.current.value);
-    this.mounted(); // Refresh page with new data
+    // Doesn't query the accessoryDropdown is empty
+    if (this.accessoryDropdown.current.value != '') {
+      rentalService.addAccessoryToRental(this.props.match.params.id, this.accessoryDropdown.current.value);
+      this.mounted(); // Refresh page with new data
+    }
+    else {
+      alert("No accessories available");
+    }
   }
 
   //Removes accessory from the rental.
@@ -858,7 +882,7 @@ class BicycleList extends Component {
           {this.bicycles.map(bicycle => (
             <List.Item key={bicycle.BicycleID}>
               <NavLink to={'/warehouse/bicycles/' + bicycle.BicycleID + '/edit'}>
-                Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Daily Price: {bicycle.DailyPrice}kr per day 
+                Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Daily Price: {bicycle.DailyPrice}kr per day
               </NavLink>
             </List.Item>
           ))}
