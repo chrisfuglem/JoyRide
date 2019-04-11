@@ -532,7 +532,11 @@ class RemoveFromRental extends Component {
       this.sum += this.rentedAccessories[x].DailyPrice;
     }
     this.sum = Math.round(this.sum);
-    this.discountSUM = Math.round(this.sum * 0.9);
+    if (this.rentedBicycles.length > 3) {
+      this.discountSUM = Math.round(this.sum * 0.9);
+    } else {
+      this.discountSUM = this.sum;
+    }
     rentalService.updateSUM(this.sum, this.discountSUM, this.props.match.params.id);
   }
 
