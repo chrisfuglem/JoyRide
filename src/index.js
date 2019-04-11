@@ -338,7 +338,6 @@ class RentalEdit extends Component {
     rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
       this.rentedAccessories = accessories;
     });
-    console.log(this.props.match.params.id);
   }
 
   save() {
@@ -406,6 +405,7 @@ class RemoveFromRental extends Component {
   rentend = '';
   sum = 0;
   discountSUM = 0;
+  discountVariable = 1; // Assign any number from 0 - 1 to apply a discount
 
   constructor(props) {
     super(props);
@@ -492,7 +492,7 @@ class RemoveFromRental extends Component {
     });
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
-      this.calculateSum();
+      this.calculateSum(); // Sum is calculated each time the page reloads
     });
     rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
       this.rentedAccessories = accessories;
@@ -523,6 +523,7 @@ class RemoveFromRental extends Component {
     });
   }
 
+  // Sum is calculated from inside mounted() each time the page reloads
   calculateSum() {
     this.sum = 0; // Reset before calculating
     for (let x = 0; x < this.rentedBicycles.length; x++) {
@@ -532,13 +533,12 @@ class RemoveFromRental extends Component {
       this.sum += this.rentedAccessories[x].DailyPrice;
     }
     this.sum = Math.round(this.sum);
-    this.discountSUM = Math.round(this.sum * 0.9);
+    this.discountSUM = Math.round(this.sum * this.discountVariable);
     rentalService.updateSUM(this.sum, this.discountSUM, this.props.match.params.id);
   }
 
   //Adds bicycle to the rental.
   addBicycle() {
-    console.log(this.bicycleDropdown.current.value);
     if (this.bicycleDropdown.current.value != '') {
       rentalService.addBicycleToRental(this.props.match.params.id, this.bicycleDropdown.current.value);
       this.mounted(); // Refresh page with new data
