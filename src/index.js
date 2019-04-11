@@ -28,21 +28,21 @@ class Menu extends Component {
 class Home extends Component {
   render() {
     return (
-      <div>
+      <div class="col text-center">
         <NavBar brand="Joyride" />
         <Card title="Welcome to Joyride">Navigate using the buttons below</Card>
         <NavLink to="/sales">
-          <Button.Light>Sales</Button.Light>
+          <Button.Info>Sales</Button.Info>
         </NavLink>{' '}
         <br />
         <br />
         <NavLink to="/warehouse">
-          <Button.Light>Warehouse</Button.Light>
+          <Button.Info>Warehouse</Button.Info>
         </NavLink>
         <br />
         <br />
         <NavLink to="/employees">
-          <Button.Light>Employees</Button.Light>
+          <Button.Info>Employees</Button.Info>
         </NavLink>
       </div>
     );
@@ -53,7 +53,7 @@ class Home extends Component {
 class Sales extends Component {
   render() {
     return (
-      <div>
+      <div class="col text-center">
         <NavBar brand="Joyride">
           <NavBar.Link to="/sales">Sales</NavBar.Link>
           <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
@@ -61,17 +61,17 @@ class Sales extends Component {
         </NavBar>
         <br />
         <NavLink to="/sales/rentals">
-          <Button.Light>Rentals</Button.Light>
+          <Button.Info>Rentals</Button.Info>
         </NavLink>{' '}
         <br />
         <br />
         <NavLink to="/sales/customers">
-          <Button.Light>Customers</Button.Light>
+          <Button.Info>Customers</Button.Info>
         </NavLink>
         <br />
         <br />
         <NavLink to="/sales/count">
-          <Button.Light>Rental Count</Button.Light>
+          <Button.Info>Rental Count</Button.Info>
         </NavLink>
       </div>
     );
@@ -82,7 +82,7 @@ class Sales extends Component {
 class Warehouse extends Component {
   render() {
     return (
-      <div>
+      <div class="col text-center">
         <NavBar brand="Joyride">
           <NavBar.Link to="/sales">Sales</NavBar.Link>
           <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
@@ -90,22 +90,22 @@ class Warehouse extends Component {
         </NavBar>
         <br />
         <NavLink to="/warehouse/bicycles">
-          <Button.Light>Bicycles</Button.Light>
+          <Button.Info>Bicycles</Button.Info>
         </NavLink>{' '}
         <br />
         <br />
         <NavLink to="/warehouse/accessories">
-          <Button.Light>Accessories</Button.Light>
+          <Button.Info>Accessories</Button.Info>
         </NavLink>
         <br />
         <br />
         <NavLink to="/warehouse/repair">
-          <Button.Light>Order Repair</Button.Light>
+          <Button.Info>Order Repair</Button.Info>
         </NavLink>
         <br />
         <br />
         <NavLink to="/warehouse/transport">
-          <Button.Light>Order Transport</Button.Light>
+          <Button.Info>Order Transport</Button.Info>
         </NavLink>
       </div>
     );
@@ -1067,6 +1067,7 @@ class BicycleList extends Component {
               Search
             </button>
           </div>
+          <br />
           <List>
             {this.bicycles.map(bicycle => (
               <List.Item key={bicycle.BicycleID}>
@@ -1078,6 +1079,7 @@ class BicycleList extends Component {
             ))}
           </List>
           <p id="alert" />
+          <br />
           <br />
         </Card>
       </div>

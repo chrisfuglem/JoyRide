@@ -18,14 +18,14 @@
   background-color: #DCDCDC;
 };
 
-.list-group-item li:nth-child(odd) {
+.list-group-item:nth-child(odd) {
   background-color: #efefef;
 }
 
 .list-group{
-    max-height: 66.4vh;
+    max-height: 50vh;
     margin-bottom: 10px;
-    overflow:scroll;
+    overflow:auto;
     -webkit-overflow-scrolling: touch;
     padding-top: 10px;
 }
@@ -53,7 +53,9 @@
 }
 
 .Card-body {
-  height: 100vh;
+  max-height: 100%;
+  min-height: 100%;
+  height: cover;
 }
 
 #TypeDropdown, #FrameDropdown, #BrakeDropdown, #StatusDropdown, #HomeLocation, #CurrentLocation {
@@ -74,4 +76,12 @@
 
 body {
   font-family: 'Fjalla One', sans-serif;
+}
+
+.btn.btn-info {
+  height: 10%;
+  width: 30%;
+  margin-top: 5%;
+  margin: 5%;
+  align-self: center;
 }
