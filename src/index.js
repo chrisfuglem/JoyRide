@@ -141,14 +141,28 @@ class RentalList extends Component {
             <Button.Light>Add New Rental</Button.Light>
           </NavLink>
           <p>Click the rentals to edit or delete them</p>
+          <div id="RentalSearch">
+            <input id="RentalSearchField" type="text" width="200px" />
+            <select id="RentalSearchCategory">
+              <option value="Rentals.RentalID">Rental ID</option>
+              <option value="Customers.CustomerID">Customer ID</option>
+              <option value="Customers.FirstName">Customer Fistname</option>
+              <option value="Customers.SurName">Customer Surname</option>
+              <option value="Rentals.RentalStatus">Status</option>
+            </select>
+            <button id="RentalSearchButton" onClick={this.mounted}>
+              Search
+            </button>
+          </div>
           <List>
             {this.rentals.map(rental => (
               <List.Item key={rental.ID}>
                 <NavLink to={'/sales/rentals/' + rental.ID + '/edit'}>
-                  Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
+                  Order {rental.ID} by {rental.FirstName} {rental.SurName} on {rental.RentalDate}
                 </NavLink>
                 <br />
-                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM} Status: {rental.RentalStatus}
+                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM} Status:{' '}
+                {rental.RentalStatus}
               </List.Item>
             ))}
           </List>
@@ -158,35 +172,8 @@ class RentalList extends Component {
     );
   }
 
-  /*<Form.Label>Find Rental By:</Form.Label>
-  <div id="RentalSearch">
-    <input id="RentalSearchField" type="text" width="200px" />
-    <select id="RentalSearchCategory">
-      <option value="Rentals.RentalID">Rental ID</option>
-      <option value="Customers.CustomerID">Customer ID</option>
-      <option value="Customers.FirstName">Customer Fistname</option>
-      <option value="Customers.SurName">Customer Surname</option>
-      <option value="Rentals.RentalStatus">Status</option>
-    </select>
-    <button id="RentalSearchButton" onClick={this.mounted}>
-      Search
-    </button>
-  </div>
-  */
-
   mounted() {
-    rentalService.getRentals(rentals => {
-      this.rentals = rentals;
-      for (let i = 0; i < rentals.length; i++) {
-        // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
-        let rentalDate = JSON.stringify(rentals[i].Date);
-        rentalDate = rentalDate.slice(1, 11);
-        this.rentals[i].RentalDate = rentalDate;
-      }
-    });
-    // this.searchCategory = '' + document.getElementById('RentalSearchCategory').value;
-    // this.searchValue = '%' + document.getElementById('RentalSearchField').value + '%';
-    // rentalService.searchRentals(this.searchCategory, this.searchValue, rentals => {
+    // rentalService.getRentals(rentals => {
     //   this.rentals = rentals;
     //   for (let i = 0; i < rentals.length; i++) {
     //     // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
@@ -195,6 +182,17 @@ class RentalList extends Component {
     //     this.rentals[i].RentalDate = rentalDate;
     //   }
     // });
+    this.searchCategory = '' + document.getElementById('RentalSearchCategory').value;
+    this.searchValue = '%' + document.getElementById('RentalSearchField').value + '%';
+    rentalService.searchRentals(this.searchCategory, this.searchValue, rentals => {
+      this.rentals = rentals;
+      for (let i = 0; i < rentals.length; i++) {
+        // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
+        let rentalDate = JSON.stringify(rentals[i].Date);
+        rentalDate = rentalDate.slice(1, 11);
+        this.rentals[i].RentalDate = rentalDate;
+      }
+    });
   }
 }
 
