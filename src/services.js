@@ -17,7 +17,7 @@ class RentalService {
   //Selects a specific rental booking and extracts rental and customer information from the database.
   getRental(id, success) {
     connection.query(
-      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.RentStart, Rentals.RentEnd, COUNT(RentedBicycles.BicycleID) as bicycleCount, Rentals.SUM FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
+      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.RentStart, Rentals.RentEnd, Rentals.RentalStatus, COUNT(RentedBicycles.BicycleID) as bicycleCount, Rentals.SUM FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
       [id],
       (error, results) => {
         if (error) return console.error(error);
@@ -114,15 +114,10 @@ class RentalService {
 
   //Adds an order with name, email, rent start and rent end.
   insertRental(customer, date, rentstart, rentend, sum, pickuplocation, discountsum, success) {
-    connection.query('insert into Rentals (CustomerID, Date, RentStart, RentEnd, SUM, PickupLocation, SUMwithDiscount, RentalStatus) values (?, ?, ?, ?, ?, ?, ?, "Unactive") SELECT LAST_INSERT_ID();', [
-      customer,
-      date,
-      rentstart,
-      rentend,
-      sum,
-      pickuplocation,
-      discountsum
-    ]),
+    connection.query(
+      'insert into Rentals (CustomerID, Date, RentStart, RentEnd, SUM, PickupLocation, SUMwithDiscount, RentalStatus) values (?, ?, ?, ?, ?, ?, ?, "Unactive")',
+      [customer, date, rentstart, rentend, sum, pickuplocation, discountsum]
+    ),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -139,8 +134,10 @@ class RentalService {
   }
 
   addBicycleToRental(rentalID, bicycleType, success) {
-    connection.query('insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(BicycleID) FROM Bicycles WHERE NOT EXISTS (SELECT * FROM (SELECT * from RentedBicycles) as RentedBicycles WHERE Bicycles.BicycleID = RentedBicycles.BicycleID) AND Bicycles.BicycleType = ? ));',
-    [rentalID, bicycleType]),
+    connection.query(
+      'insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(BicycleID) FROM Bicycles WHERE NOT EXISTS (SELECT * FROM (SELECT * from RentedBicycles) as RentedBicycles WHERE Bicycles.BicycleID = RentedBicycles.BicycleID) AND Bicycles.BicycleType = ? ));',
+      [rentalID, bicycleType]
+    ),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -195,20 +192,6 @@ class RentalService {
     });
   }
 
-  //Gets all details of bicycles.
-  getBicycleHomeLocation(LocationID, success) {
-    connection.query(
-      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
-      [LocationID],
-      (error, results) => {
-        if (error) return console.error(error);
-
-        success(results);
-        console.log(results);
-      }
-    );
-  }
-
   //Selects available accessories by the accessoryType, counts the number available.
   getAvailableAccessoriesByType(rentalID, success) {
     connection.query(
@@ -246,66 +229,81 @@ class RentalService {
 
   //Sets the status of the Rental to 'Ended' in the database
   endRental(id) {
-    connection.query('update Rentals set RentalStatus = "Ended" where RentalID=?', [id], (error) => {
-      if(error) return console.error(error);
-    })
+    connection.query('update Rentals set RentalStatus = "Ended" where RentalID=?', [id], error => {
+      if (error) return console.error(error);
+    });
   }
 
   //Sets the status of the Rental to 'Active' in the database
   activateRental(id) {
-    connection.query('update Rentals set RentalStatus = "Active" where RentalID=?', [id], (error) => {
-      if(error) return console.error(error);
-    })
+    connection.query('update Rentals set RentalStatus = "Active" where RentalID=?', [id], error => {
+      if (error) return console.error(error);
+    });
   }
 
   //Sets the status of the Bicycle to 'Rented' in the database
   setBicycleRented(RentalID) {
-    connection.query('update Bicycles inner join RentedBicycles on RentedBicycles.BicycleID = Bicycles.BicycleID set BicycleStatus = "Rented" where RentedBicycles.RentalID=?', [RentalID], (error, results) => {
-      if(error) return console.error(error);
-
-      console.log(results);
-    })
+    connection.query(
+      'update Bicycles inner join RentedBicycles on RentedBicycles.BicycleID = Bicycles.BicycleID set BicycleStatus = "Rented" where RentedBicycles.RentalID=?',
+      [RentalID],
+      (error, results) => {
+        if (error) return console.error(error);
+      }
+    );
   }
 
   //Sets the status of the Accessory to 'Rented' in the database
   setAccessoryRented(RentalID) {
-    connection.query('update Accessories inner join RentedAccessories on RentedAccessories.AccessoryID = Accessories.AccessoryID set Status = "Rented" where RentedAccessories.RentalID=?', [RentalID], (error, results) => {
-      if(error) return console.error(error);
-
-      console.log(results);
-    });
+    connection.query(
+      'update Accessories inner join RentedAccessories on RentedAccessories.AccessoryID = Accessories.AccessoryID set Status = "Rented" where RentedAccessories.RentalID=?',
+      [RentalID],
+      (error, results) => {
+        if (error) return console.error(error);
+      }
+    );
   }
 
   //Sets the status of the Accessory to 'Available' in the database when the rental is ended
   setAccessoryBack(RentalID) {
-    connection.query('update Accessories inner join RentedAccessories on RentedAccessories.AccessoryID = Accessories.AccessoryID set Status = "Available" where RentedAccessories.RentalID=?',
-    [RentalID], (error, results) => {
-      if(error) return console.error(error);
-
-      console.log(results);
-    });
+    connection.query(
+      'update Accessories inner join RentedAccessories on RentedAccessories.AccessoryID = Accessories.AccessoryID set Status = "Available" where RentedAccessories.RentalID=?',
+      [RentalID],
+      (error, results) => {
+        if (error) return console.error(error);
+      }
+    );
   }
 
   setBicycleBack(RentalID) {
-    connection.query('update Bicycles inner join RentedBicycles on RentedBicycles.BicycleID = Bicycles.BicycleID set BicycleStatus = "Available" where RentedBicycles.RentalID=?',
-    [RentalID], (error, results) => {
-      if(error) return console.error(error);
+    connection.query(
+      'update Bicycles inner join RentedBicycles on RentedBicycles.BicycleID = Bicycles.BicycleID set BicycleStatus = "Available" where RentedBicycles.RentalID=?',
+      [RentalID],
+      (error, results) => {
+        if (error) return console.error(error);
+      }
+    );
+  }
 
-      console.log(results);
-    });
+  //Search function for rentals.
+  searchRentals(category, value, success) {
+    connection.query(
+      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID order by RentalID DESC WHERE ' +
+        category +
+        ' LIKE ' +
+        "'" +
+        value +
+        "'",
+      [category, value],
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
   }
 }
 
 class CustomerService {
-  //Selects all the customers from the database.
-  getCustomers(results) {
-    connection.query('select * from Customers', (error) => {
-      if (error) return console.error(error);
-
-      success(results);
-    });
-  }
-
   //Selects all the information about a specific customer.
   getCustomer(id, success) {
     connection.query('select * from Customers where CustomerID=?', [id], (error, results) => {
@@ -369,15 +367,6 @@ class CustomerService {
 }
 
 class EmployeeService {
-  //Selects all the employees from the database.
-  getEmployees(success) {
-    connection.query('select * from Employees', (error, results) => {
-      if (error) return console.error(error);
-
-      success(results);
-    });
-  }
-
   //Selects a specific employee.
   getEmployee(EmployeeID, success) {
     connection.query('select * from Employees where EmployeeID=?', [EmployeeID], (error, results) => {
@@ -457,17 +446,6 @@ class BicycleService {
       }
     );
   }
-  //Gets the Location of All Bicycles.
-  getBicyclesHome(success) {
-    connection.query(
-      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.HomeLocation',
-      (error, results) => {
-        if (error) return console.error(error);
-
-        success(results);
-      }
-    );
-  }
 
   //Selects a specific bicycle.
   getBicycle(bicycleID, success) {
@@ -486,9 +464,9 @@ class BicycleService {
       (error, results) => {
         if (error) return console.error(error);
 
-        console.log(results);
         success();
-      });
+      }
+    );
   }
 
   //Selects the bicyclestatus from the database.
@@ -570,7 +548,12 @@ class BicycleService {
   //Search function for bicycles.
   searchBicycles(category, value, success) {
     connection.query(
-      'SELECT * FROM Bicycles inner join HomeLocation on HomeLocation.BicycleID = Bicycles.BicycleID inner join CurrentLocation on CurrentLocation.BicycleId = Bicycles.BicycleID  WHERE ' + category + ' LIKE ' + "'" + value + "'",
+      'SELECT * FROM Bicycles inner join HomeLocation on HomeLocation.BicycleID = Bicycles.BicycleID inner join CurrentLocation on CurrentLocation.BicycleId = Bicycles.BicycleID  WHERE ' +
+        category +
+        ' LIKE ' +
+        "'" +
+        value +
+        "'",
       [category, value],
       (error, results) => {
         if (error) return console.error(error);
@@ -582,18 +565,6 @@ class BicycleService {
 }
 
 class AccessoryService {
-  //Selects all the accessories from the database.
-  getAccessories(success) {
-    connection.query(
-      'select * from Accessories inner join AccessoryHomeLocation on AccessoryHomeLocation.AccessoryID = Accessories.AccessoryID inner join AccessoryCurrentLocation on AccessoryCurrentLocation.AccessoryID = Accessories.AccessoryID',
-      (error, results) => {
-        if (error) return console.error(error);
-
-        success(results);
-      }
-    );
-  }
-
   //Selects a specific accessory from the database.
   getAccessory(AccessoryID, success) {
     connection.query('select * from Accessories where AccessoryID=?', [AccessoryID], (error, results) => {
@@ -647,19 +618,6 @@ class AccessoryService {
       };
   }
 
-  //Adds new accessory price to the databse .
-  insertExAccessory(Type, DailyPrice, HomeLocation, CurrentLocation, Status, success) {
-    connection.query(
-      'insert into Accessories (Type, DailyPrice, HomeLocation, CurrentLocation, Status) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?, ?, ?, (SELECT AccessoryStatus FROM AccessoryStatus WHERE AccessoryStatus.AccessoryStatus = "Available"))',
-      [Type, DailyPrice, HomeLocation, CurrentLocation, Status]
-    ),
-      (error, results) => {
-        if (error) return console.error(error);
-
-        success();
-      };
-  }
-
   //Deletes an accessory from the database.
   deleteAccessory(AccessoryID) {
     connection.query('delete from Accessories where AccessoryID=?', [AccessoryID]),
@@ -692,7 +650,12 @@ class AccessoryService {
   //Search function for accessories.
   searchAccessories(category, value, success) {
     connection.query(
-      'SELECT * FROM Accessories inner join AccessoryHomeLocation on AccessoryHomeLocation.AccessoryID = Accessories.AccessoryID inner join AccessoryCurrentLocation on AccessoryCurrentLocation.AccessoryID = Accessories.AccessoryID  WHERE ' + category + ' LIKE ' + "'" + value + "'",
+      'SELECT * FROM Accessories inner join AccessoryHomeLocation on AccessoryHomeLocation.AccessoryID = Accessories.AccessoryID inner join AccessoryCurrentLocation on AccessoryCurrentLocation.AccessoryID = Accessories.AccessoryID  WHERE ' +
+        category +
+        ' LIKE ' +
+        "'" +
+        value +
+        "'",
       [category, value],
       (error, results) => {
         if (error) return console.error(error);
@@ -710,16 +673,6 @@ class TransportService {
       if (error) return console.error(error);
 
       success(results);
-    });
-  }
-
-  //Selects all locations except the one already chosen for transport.
-  getLocationsRemove(LocationID, success) {
-    connection.query('select * from Locations where LocationID <> ?;', [LocationID], (error, results) => {
-      if (error) return console.error(error);
-
-      success(results);
-      console.log(results);
     });
   }
 
@@ -753,7 +706,6 @@ class TransportService {
       (error, results) => {
         if (error) return console.error(error);
 
-        console.log(results);
         success(results);
       }
     );
@@ -774,9 +726,9 @@ class TransportService {
 
   //Saves the status of the bicycle(s) selected for Transport to 'In Transport'
   saveStatus(BicycleID) {
-    connection.query('update Bicycles set BicycleStatus = "In Transport" where BicycleID=?', [BicycleID], (error) => {
-      if(error) return console.error(error);
-    })
+    connection.query('update Bicycles set BicycleStatus = "In Transport" where BicycleID=?', [BicycleID], error => {
+      if (error) return console.error(error);
+    });
   }
 }
 
@@ -788,7 +740,6 @@ class RepairService {
       (error, results) => {
         if (error) return console.error(error);
 
-        console.log(results);
         success(results);
       }
     );
