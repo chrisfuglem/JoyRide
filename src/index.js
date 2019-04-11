@@ -20,13 +20,7 @@ const history = createHashHistory();
 //Main Menu
 class Menu extends Component {
   render() {
-    return (
-      <NavBar brand="Joyride">
-        <NavBar.Link to="/sales">Sales</NavBar.Link>
-        <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
-        <NavBar.Link to="/employees">Employees</NavBar.Link>
-      </NavBar>
-    );
+    return <NavBar brand="Joyride" />;
   }
 }
 
@@ -35,7 +29,21 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <Card title="Welcome to Joyride">Navigate using the buttons above</Card>
+        <NavBar brand="Joyride" />
+        <Card title="Welcome to Joyride">Navigate using the buttons below</Card>
+        <NavLink to="/sales">
+          <Button.Light>Sales</Button.Light>
+        </NavLink>{' '}
+        <br />
+        <br />
+        <NavLink to="/warehouse">
+          <Button.Light>Warehouse</Button.Light>
+        </NavLink>
+        <br />
+        <br />
+        <NavLink to="/employees">
+          <Button.Light>Employees</Button.Light>
+        </NavLink>
       </div>
     );
   }
@@ -45,11 +53,27 @@ class Home extends Component {
 class Sales extends Component {
   render() {
     return (
-      <NavBar brand="Sales">
-        <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
-        <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
-        <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
-      </NavBar>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <br />
+        <NavLink to="/sales/rentals">
+          <Button.Light>Rentals</Button.Light>
+        </NavLink>{' '}
+        <br />
+        <br />
+        <NavLink to="/sales/customers">
+          <Button.Light>Customers</Button.Light>
+        </NavLink>
+        <br />
+        <br />
+        <NavLink to="/sales/count">
+          <Button.Light>Rental Count</Button.Light>
+        </NavLink>
+      </div>
     );
   }
 }
@@ -58,12 +82,32 @@ class Sales extends Component {
 class Warehouse extends Component {
   render() {
     return (
-      <NavBar brand="Warehouse">
-        <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
-        <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
-        <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
-        <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
-      </NavBar>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <br />
+        <NavLink to="/warehouse/bicycles">
+          <Button.Light>Bicycles</Button.Light>
+        </NavLink>{' '}
+        <br />
+        <br />
+        <NavLink to="/warehouse/accessories">
+          <Button.Light>Accessories</Button.Light>
+        </NavLink>
+        <br />
+        <br />
+        <NavLink to="/warehouse/repair">
+          <Button.Light>Order Repair</Button.Light>
+        </NavLink>
+        <br />
+        <br />
+        <NavLink to="/warehouse/transport">
+          <Button.Light>Order Transport</Button.Light>
+        </NavLink>
+      </div>
     );
   }
 }
@@ -74,26 +118,54 @@ class RentalList extends Component {
 
   render() {
     return (
-      <Card title="Rental List">
-        <NavLink to="/sales/rentals/insert">
-          <Button.Light>Add New Rental</Button.Light>
-        </NavLink>
-        <p>Click the rentals to edit or delete them</p>
-        <List>
-          {this.rentals.map(rental => (
-            <List.Item key={rental.ID}>
-              <NavLink to={'/sales/rentals/' + rental.ID + '/edit'}>
-                Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
-              </NavLink>
-              <br />
-              BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM}
-            </List.Item>
-          ))}
-        </List>
-        <br />
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar class="nav-link disabled" href="#" brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card title="Rental List">
+          <NavLink to="/sales/rentals/insert">
+            <Button.Light>Add New Rental</Button.Light>
+          </NavLink>
+          <p>Click the rentals to edit or delete them</p>
+          <List>
+            {this.rentals.map(rental => (
+              <List.Item key={rental.ID}>
+                <NavLink to={'/sales/rentals/' + rental.ID + '/edit'}>
+                  Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
+                </NavLink>
+                <br />
+                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM}
+              </List.Item>
+            ))}
+          </List>
+          <br />
+        </Card>
+      </div>
     );
   }
+
+  /*<Form.Label>Find Rental By:</Form.Label>
+  <div id="RentalSearch">
+    <input id="RentalSearchField" type="text" width="200px" />
+    <select id="RentalSearchCategory">
+      <option value="Rentals.RentalID">Rental ID</option>
+      <option value="Customers.CustomerID">Customer ID</option>
+      <option value="Customers.FirstName">Customer Fistname</option>
+      <option value="Customers.SurName">Customer Surname</option>
+      <option value="Rentals.RentalStatus">Status</option>
+    </select>
+    <button id="RentalSearchButton" onClick={this.mounted}>
+      Search
+    </button>
+  </div>
+  */
 
   mounted() {
     rentalService.getRentals(rentals => {
@@ -105,6 +177,17 @@ class RentalList extends Component {
         this.rentals[i].RentalDate = rentalDate;
       }
     });
+    // this.searchCategory = '' + document.getElementById('RentalSearchCategory').value;
+    // this.searchValue = '%' + document.getElementById('RentalSearchField').value + '%';
+    // rentalService.searchRentals(this.searchCategory, this.searchValue, rentals => {
+    //   this.rentals = rentals;
+    //   for (let i = 0; i < rentals.length; i++) {
+    //     // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
+    //     let rentalDate = JSON.stringify(rentals[i].Date);
+    //     rentalDate = rentalDate.slice(1, 11);
+    //     this.rentals[i].RentalDate = rentalDate;
+    //   }
+    // });
   }
 }
 
@@ -122,45 +205,57 @@ class RentalEdit extends Component {
 
   render() {
     return (
-      <Card>
-        <h3>Rental id {this.props.match.params.id}</h3>
-        <p>Customer: {this.FirstName}</p>
-        <p>Start of rent: {this.RentStart}</p>
-        <p>End of rent: {this.RentEnd}</p>
-        <p>Order Sum: {this.SUM}</p>
-        <NavLink to="RemoveFromRental">Edit Bicycles and Accessories</NavLink>
-        <h4>Bicycles</h4>
-        {this.rentedBicycles.map(bicycle => (
-          <List.Item key={bicycle.BicycleID}>
-            <p>
-              {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
-            </p>
-          </List.Item>
-        ))}
-        <h4>Accessories</h4>
-        {this.rentedAccessories.map(accessory => (
-          <List.Item key={accessory.AccessoryID}>
-            <p>
-              {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
-            </p>
-          </List.Item>
-        ))}
-        <NavLink to="/sales/rentals">
-          <Button.Success onClick={this.save}>Save Changes</Button.Success>
-        </NavLink>{' '}
-        <Button.Success onClick={this.setActive}>Activate Rental</Button.Success>
-        <br />
-        <br />
-        <NavLink to="/sales/rentals">
-          <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
-        </NavLink>{' '}
-        <Button.Danger onClick={this.setEnded}>End Rental</Button.Danger>
-        <NavLink to="/sales/rentals">
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card>
+          <h3>Rental id {this.props.match.params.id}</h3>
+          <p>Customer: {this.FirstName}</p>
+          <p>Start of rent: {this.RentStart}</p>
+          <p>End of rent: {this.RentEnd}</p>
+          <p>Order Sum: {this.SUM}</p>
+          <NavLink to="RemoveFromRental">Edit Bicycles and Accessories</NavLink>
+          <h4>Bicycles</h4>
+          {this.rentedBicycles.map(bicycle => (
+            <List.Item key={bicycle.BicycleID}>
+              <p>
+                {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
+              </p>
+            </List.Item>
+          ))}
+          <h4>Accessories</h4>
+          {this.rentedAccessories.map(accessory => (
+            <List.Item key={accessory.AccessoryID}>
+              <p>
+                {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
+              </p>
+            </List.Item>
+          ))}
+          <NavLink to="/sales/rentals">
+            <Button.Success onClick={this.save}>Save Changes</Button.Success>
+          </NavLink>{' '}
+          <Button.Success onClick={this.setActive}>Activate Rental</Button.Success>
           <br />
           <br />
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+          <NavLink to="/sales/rentals">
+            <Button.Danger onClick={this.delete}>Cancel Rental</Button.Danger>
+          </NavLink>{' '}
+          <Button.Danger onClick={this.setEnded}>End Rental</Button.Danger>
+          <NavLink to="/sales/rentals">
+            <br />
+            <br />
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -260,56 +355,68 @@ class RemoveFromRental extends Component {
 
   render() {
     return (
-      <Card>
-        <h3>Bicycle and accessory selection</h3>
-        <p>Rental id: {this.props.match.params.id}</p>
-        <div>
-          <h4>Available Bicycles</h4>
-          <select ref={this.bicycleDropdown}>
-            {this.bicycleDropdownOptions.map(bicycle => (
-              <option value={bicycle.Type}>
-                {bicycle.BicycleType} - {bicycle.TypeCount} Available
-              </option>
-            ))}
-          </select>
-          <button onClick={this.addBicycle}>Add Bicycle</button>
-        </div>
-        <div>
-          <h4>Available Accessories</h4>
-          <select ref={this.accessoryDropdown}>
-            {this.accessoryDropdownOptions.map(accessory => (
-              <option key={accessory.AccessoryID} value={accessory.accessoryType}>
-                {accessory.accessoryType} - {accessory.TypeCount} Available
-              </option>
-            ))}
-          </select>
-          <button onClick={this.addAccessory}>Add Accessory</button>
-        </div>
-        <h4>Bicycles</h4>
-        {this.rentedBicycles.map(bicycle => (
-          <List.Item key={bicycle.BicycleID}>
-            <p>
-              {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
-            </p>
-            <button onClick={this.removeBicycle.bind(this, bicycle.BicycleID)}>Remove Bicycle</button>
-          </List.Item>
-        ))}
-        <h4>Accessories</h4>
-        {this.rentedAccessories.map(accessory => (
-          <List.Item key={accessory.AccessoryID}>
-            <p>
-              {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
-            </p>
-            <button onClick={this.removeAccessory.bind(this, accessory.AccessoryID)}>Remove Accessory</button>
-          </List.Item>
-        ))}
-        <NavLink to={'/sales/rentals/' + this.props.match.params.id + '/edit'}>
-          <Button.Success>Finish</Button.Success>
-        </NavLink>
-        <NavLink to={'/sales/rentals/insert'}>
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card>
+          <h3>Bicycle and accessory selection</h3>
+          <p>Rental id: {this.props.match.params.id}</p>
+          <div>
+            <h4>Available Bicycles</h4>
+            <select ref={this.bicycleDropdown}>
+              {this.bicycleDropdownOptions.map(bicycle => (
+                <option value={bicycle.Type}>
+                  {bicycle.BicycleType} - {bicycle.TypeCount} Available
+                </option>
+              ))}
+            </select>
+            <button onClick={this.addBicycle}>Add Bicycle</button>
+          </div>
+          <div>
+            <h4>Available Accessories</h4>
+            <select ref={this.accessoryDropdown}>
+              {this.accessoryDropdownOptions.map(accessory => (
+                <option key={accessory.AccessoryID} value={accessory.accessoryType}>
+                  {accessory.accessoryType} - {accessory.TypeCount} Available
+                </option>
+              ))}
+            </select>
+            <button onClick={this.addAccessory}>Add Accessory</button>
+          </div>
+          <h4>Bicycles</h4>
+          {this.rentedBicycles.map(bicycle => (
+            <List.Item key={bicycle.BicycleID}>
+              <p>
+                {bicycle.BicycleType} Bicycle id #{bicycle.BicycleID} | {bicycle.DailyPrice}kr per day
+              </p>
+              <button onClick={this.removeBicycle.bind(this, bicycle.BicycleID)}>Remove Bicycle</button>
+            </List.Item>
+          ))}
+          <h4>Accessories</h4>
+          {this.rentedAccessories.map(accessory => (
+            <List.Item key={accessory.AccessoryID}>
+              <p>
+                {accessory.Type} Accessory id #{accessory.AccessoryID} | {accessory.DailyPrice}kr per day
+              </p>
+              <button onClick={this.removeAccessory.bind(this, accessory.AccessoryID)}>Remove Accessory</button>
+            </List.Item>
+          ))}
+          <NavLink to={'/sales/rentals/' + this.props.match.params.id + '/edit'}>
+            <Button.Success>Finish</Button.Success>
+          </NavLink>
+          <NavLink to={'/sales/rentals/insert'}>
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -410,62 +517,74 @@ class RentalInsert extends Component {
 
   render() {
     return (
-      <Card title="Adding Rental">
-        <NavLink to="/sales/rentals/insertcustomer">
-          <Button.Light>Add New Customer</Button.Light>
-        </NavLink>
-        <br />
-        <Form.Label>Find Customer By:</Form.Label>
-        <div id="CustomerSearch">
-          <input id="CustomerSearchField" type="text" width="200px" />
-          <select id="CustomerSearchCategory">
-            <option>FirstName</option>
-            <option>SurName</option>
-            <option>Phone</option>
-            <option>Email</option>
-            <option>Address</option>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card title="Adding Rental">
+          <NavLink to="/sales/rentals/insertcustomer">
+            <Button.Light>Add New Customer</Button.Light>
+          </NavLink>
+          <br />
+          <Form.Label>Find Customer By:</Form.Label>
+          <div id="CustomerSearch">
+            <input id="CustomerSearchField" type="text" width="200px" />
+            <select id="CustomerSearchCategory">
+              <option>FirstName</option>
+              <option>SurName</option>
+              <option>Phone</option>
+              <option>Email</option>
+              <option>Address</option>
+            </select>
+            <button id="CustomerSearchButton" onClick={this.mounted}>
+              Search
+            </button>
+          </div>
+          <Form.Label>Select Customer:</Form.Label>
+          <br />
+          <select ref={this.customerDropdown}>
+            {this.customers.map(customer => (
+              <option value={customer.CustomerID} key={customer.CustomerID}>
+                {customer[this.searchCategory]}
+              </option>
+            ))}
           </select>
-          <button id="CustomerSearchButton" onClick={this.mounted}>
-            Search
-          </button>
-        </div>
-        <Form.Label>Select Customer:</Form.Label>
-        <br />
-        <select ref={this.customerDropdown}>
-          {this.customers.map(customer => (
-            <option value={customer.CustomerID} key={customer.CustomerID}>
-              {customer[this.searchCategory]}
-            </option>
-          ))}
-        </select>
-        <br />
-        <Form.Label>Select Pickup Location:</Form.Label>
-        <br />
-        <select ref={this.locationDropdown}>
-          {this.locations.map(location => (
-            <option
-              value={location.LocationID}
-              key={location.LocationID}
-              onChange={e => (this.LocationID = e.target.value)}
-            >
-              {location.LocationName}
-            </option>
-          ))}
-        </select>
-        <br />
-        <Form.Label>Start date:</Form.Label>
-        <Form.Input type="date" value={this.RentStart} onChange={e => (this.RentStart = e.target.value)} />
-        <Form.Label>End date:</Form.Label>
-        <Form.Input type="date" value={this.RentEnd} onChange={e => (this.RentEnd = e.target.value)} />
-        <br />
-        <NavLink to={'/sales/rentals/' + this.lastInsertedRental + '/RemoveFromRental'}>
-          <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
-        </NavLink>
-        <br />
-        <NavLink to="/rentals">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+          <br />
+          <Form.Label>Select Pickup Location:</Form.Label>
+          <br />
+          <select ref={this.locationDropdown}>
+            {this.locations.map(location => (
+              <option
+                value={location.LocationID}
+                key={location.LocationID}
+                onChange={e => (this.LocationID = e.target.value)}
+              >
+                {location.LocationName}
+              </option>
+            ))}
+          </select>
+          <br />
+          <Form.Label>Start date:</Form.Label>
+          <Form.Input type="date" value={this.RentStart} onChange={e => (this.RentStart = e.target.value)} />
+          <Form.Label>End date:</Form.Label>
+          <Form.Input type="date" value={this.RentEnd} onChange={e => (this.RentEnd = e.target.value)} />
+          <br />
+          <NavLink to={'/sales/rentals/' + this.lastInsertedRental + '/RemoveFromRental'}>
+            <Button.Success onClick={this.insert}>Add New Rental</Button.Success>
+          </NavLink>
+          <br />
+          <NavLink to="/rentals">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -519,37 +638,49 @@ class CustomerList extends Component {
 
   render() {
     return (
-      <Card>
-        <div>
-          <p>Click the customers to edit or delete them</p>
-          <NavLink to="/sales/customers/insert">
-            <Button.Light>Add New Customer</Button.Light>
-          </NavLink>
-          <h3>Search by category</h3>
-          <div id="CustomerSearch">
-            <input id="CustomerSearchField" type="text" />
-            <select id="CustomerSearchCategory">
-              <option>FirstName</option>
-              <option>SurName</option>
-              <option>Phone</option>
-              <option>Email</option>
-              <option>Address</option>
-            </select>
-            <button id="CustomerSearchButton" onClick={this.mounted}>
-              Search
-            </button>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card>
+          <div>
+            <p>Click the customers to edit or delete them</p>
+            <NavLink to="/sales/customers/insert">
+              <Button.Light>Add New Customer</Button.Light>
+            </NavLink>
+            <h3>Search by category</h3>
+            <div id="CustomerSearch">
+              <input id="CustomerSearchField" type="text" />
+              <select id="CustomerSearchCategory">
+                <option>FirstName</option>
+                <option>SurName</option>
+                <option>Phone</option>
+                <option>Email</option>
+                <option>Address</option>
+              </select>
+              <button id="CustomerSearchButton" onClick={this.mounted}>
+                Search
+              </button>
+            </div>
+            <List>
+              {this.customers.map(customer => (
+                <List.Item key={customer.CustomerID}>
+                  <NavLink to={'/sales/customers/' + customer.CustomerID + '/edit'}>
+                    {customer.FirstName} {customer.SurName} | tlf {customer.Phone}
+                  </NavLink>
+                </List.Item>
+              ))}
+            </List>
           </div>
-          <List>
-            {this.customers.map(customer => (
-              <List.Item key={customer.CustomerID}>
-                <NavLink to={'/sales/customers/' + customer.CustomerID + '/edit'}>
-                  {customer.FirstName} {customer.SurName} | tlf {customer.Phone}
-                </NavLink>
-              </List.Item>
-            ))}
-          </List>
-        </div>
-      </Card>
+        </Card>
+      </div>
     );
   }
 
@@ -572,30 +703,42 @@ class CustomerEdit extends Component {
 
   render() {
     return (
-      <Card title="Editing Customer">
-        <Form.Label>Firstname</Form.Label>
-        <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
-        <Form.Label>Surname</Form.Label>
-        <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
-        <Form.Label>Email</Form.Label>
-        <Form.Input type="text" value={this.Email} onChange={e => (this.Email = e.target.value)} />
-        <Form.Label>Phone</Form.Label>
-        <Form.Input type="text" value={this.Phone} onChange={e => (this.Phone = e.target.value)} />
-        <Form.Label>Address</Form.Label>
-        <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
-        <br />
-        <NavLink to="/sales/customers">
-          <Button.Success onClick={this.save}>Save Changes</Button.Success>
-        </NavLink>
-        <br />
-        <br />
-        <NavLink to="/sales/customers">
-          <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
-        </NavLink>
-        <NavLink to="/sales/customers">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card title="Editing Customer">
+          <Form.Label>Firstname</Form.Label>
+          <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
+          <Form.Label>Surname</Form.Label>
+          <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
+          <Form.Label>Email</Form.Label>
+          <Form.Input type="text" value={this.Email} onChange={e => (this.Email = e.target.value)} />
+          <Form.Label>Phone</Form.Label>
+          <Form.Input type="text" value={this.Phone} onChange={e => (this.Phone = e.target.value)} />
+          <Form.Label>Address</Form.Label>
+          <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
+          <br />
+          <NavLink to="/sales/customers">
+            <Button.Success onClick={this.save}>Save Changes</Button.Success>
+          </NavLink>
+          <br />
+          <br />
+          <NavLink to="/sales/customers">
+            <Button.Danger onClick={this.delete}>Delete Customer</Button.Danger>
+          </NavLink>
+          <NavLink to="/sales/customers">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -636,25 +779,37 @@ class CustomerEdit extends Component {
 class CustomerInsert extends Component {
   render() {
     return (
-      <Card title="Adding Customer">
-        <Form.Label>Firstname:</Form.Label>
-        <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
-        <Form.Label>Surname:</Form.Label>
-        <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
-        <Form.Label>Email:</Form.Label>
-        <Form.Input type="text" value={this.Email} onChange={e => (this.Email = e.target.value)} />
-        <Form.Label>Phone:</Form.Label>
-        <Form.Input type="text" value={this.Phone} onChange={e => (this.Phone = e.target.value)} />
-        <Form.Label>Address:</Form.Label>
-        <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
-        <br />
-        <NavLink to="/sales/customers">
-          <Button.Success onClick={this.insert}>Add New Customer</Button.Success>
-        </NavLink>
-        <NavLink to="/sales/customers">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card title="Adding Customer">
+          <Form.Label>Firstname:</Form.Label>
+          <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
+          <Form.Label>Surname:</Form.Label>
+          <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
+          <Form.Label>Email:</Form.Label>
+          <Form.Input type="text" value={this.Email} onChange={e => (this.Email = e.target.value)} />
+          <Form.Label>Phone:</Form.Label>
+          <Form.Input type="text" value={this.Phone} onChange={e => (this.Phone = e.target.value)} />
+          <Form.Label>Address:</Form.Label>
+          <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
+          <br />
+          <NavLink to="/sales/customers">
+            <Button.Success onClick={this.insert}>Add New Customer</Button.Success>
+          </NavLink>
+          <NavLink to="/sales/customers">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -670,25 +825,37 @@ class CustomerInsert extends Component {
 class BookingCustomerInsert extends Component {
   render() {
     return (
-      <Card title="Adding Customer">
-        <Form.Label>Firstname:</Form.Label>
-        <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
-        <Form.Label>Surname:</Form.Label>
-        <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
-        <Form.Label>Email:</Form.Label>
-        <Form.Input type="text" value={this.Email} onChange={e => (this.Email = e.target.value)} />
-        <Form.Label>Phone:</Form.Label>
-        <Form.Input type="text" value={this.Phone} onChange={e => (this.Phone = e.target.value)} />
-        <Form.Label>Address:</Form.Label>
-        <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
-        <br />
-        <NavLink to="/sales/rentals/insert">
-          <Button.Success onClick={this.insert}>Add New Customer</Button.Success>
-        </NavLink>
-        <NavLink to="/sales/rentals/insert">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card title="Adding Customer">
+          <Form.Label>Firstname:</Form.Label>
+          <Form.Input type="text" value={this.FirstName} onChange={e => (this.FirstName = e.target.value)} />
+          <Form.Label>Surname:</Form.Label>
+          <Form.Input type="text" value={this.SurName} onChange={e => (this.SurName = e.target.value)} />
+          <Form.Label>Email:</Form.Label>
+          <Form.Input type="text" value={this.Email} onChange={e => (this.Email = e.target.value)} />
+          <Form.Label>Phone:</Form.Label>
+          <Form.Input type="text" value={this.Phone} onChange={e => (this.Phone = e.target.value)} />
+          <Form.Label>Address:</Form.Label>
+          <Form.Input type="text" value={this.Address} onChange={e => (this.Address = e.target.value)} />
+          <br />
+          <NavLink to="/sales/rentals/insert">
+            <Button.Success onClick={this.insert}>Add New Customer</Button.Success>
+          </NavLink>
+          <NavLink to="/sales/rentals/insert">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -708,36 +875,44 @@ class EmployeeList extends Component {
 
   render() {
     return (
-      <Card>
-        <div>
-          <p>Click the employees to edit or delete them</p>
-          <NavLink to="/employees/insert/">
-            <Button.Light>Add New Employee</Button.Light>
-            <br />
-            <br />
-          </NavLink>
-          <h3>Search by category</h3>
-          <div id="EmployeeSearch">
-            <input id="EmployeeSearchField" type="text" />
-            <select id="EmployeeSearchCategory">
-              <option>Firstname</option>
-              <option>Surname</option>
-            </select>
-            <button id="EmployeeSearchButton" onClick={this.mounted}>
-              Search
-            </button>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <Card>
+          <div>
+            <p>Click the employees to edit or delete them</p>
+            <NavLink to="/employees/insert/">
+              <Button.Light>Add New Employee</Button.Light>
+              <br />
+              <br />
+            </NavLink>
+            <h3>Search by category</h3>
+            <div id="EmployeeSearch">
+              <input id="EmployeeSearchField" type="text" />
+              <select id="EmployeeSearchCategory">
+                <option>Firstname</option>
+                <option>Surname</option>
+              </select>
+              <button id="EmployeeSearchButton" onClick={this.mounted}>
+                Search
+              </button>
+            </div>
+            <List>
+              {this.employees.map(employee => (
+                <List.Item key={employee.EmployeeID}>
+                  <NavLink to={'/employees/' + employee.EmployeeID + '/edit'}>
+                    {employee.Firstname} {employee.Surname}
+                  </NavLink>
+                </List.Item>
+              ))}
+            </List>
+            <p id="alert" />
           </div>
-          <List>
-            {this.employees.map(employee => (
-              <List.Item key={employee.EmployeeID}>
-                <NavLink to={'/employees/' + employee.EmployeeID + '/edit'}>
-                  {employee.Firstname} {employee.Surname}
-                </NavLink>
-              </List.Item>
-            ))}
-          </List>
-        </div>
-      </Card>
+        </Card>
+      </div>
     );
   }
 
@@ -746,6 +921,11 @@ class EmployeeList extends Component {
     this.searchValue = '%' + document.getElementById('EmployeeSearchField').value + '%';
     employeeService.searchEmployee(this.searchCategory, this.searchValue, employees => {
       this.employees = employees;
+      if (this.employees.length === 0) {
+        document.getElementById('alert').innerHTML = 'There are no employees in this category.';
+      } else {
+        document.getElementById('alert').innerHTML = '';
+      }
     });
   }
 }
@@ -757,24 +937,32 @@ class EmployeeEdit extends Component {
 
   render() {
     return (
-      <Card title="Editing Employee">
-        <Form.Label>Firstname</Form.Label>
-        <Form.Input type="text" value={this.Firstname} onChange={e => (this.Firstname = e.target.value)} />
-        <Form.Label>Surname</Form.Label>
-        <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
         <br />
-        <NavLink to="/employees">
-          <Button.Success onClick={this.save}>Save Changes</Button.Success>
-        </NavLink>
-        <br />
-        <br />
-        <NavLink to="/employees">
-          <Button.Danger onClick={this.delete}>Delete Employee</Button.Danger>
-        </NavLink>
-        <NavLink to="/employees">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+        <Card title="Editing Employee">
+          <Form.Label>Firstname</Form.Label>
+          <Form.Input type="text" value={this.Firstname} onChange={e => (this.Firstname = e.target.value)} />
+          <Form.Label>Surname</Form.Label>
+          <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
+          <br />
+          <NavLink to="/employees">
+            <Button.Success onClick={this.save}>Save Changes</Button.Success>
+          </NavLink>
+          <br />
+          <br />
+          <NavLink to="/employees">
+            <Button.Danger onClick={this.delete}>Delete Employee</Button.Danger>
+          </NavLink>
+          <NavLink to="/employees">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -804,19 +992,27 @@ class EmployeeEdit extends Component {
 class EmployeeInsert extends Component {
   render() {
     return (
-      <Card title="Adding Employee">
-        <Form.Label>Firstname:</Form.Label>
-        <Form.Input type="text" value={this.Firstname} onChange={e => (this.Firstname = e.target.value)} />
-        <Form.Label>Surname:</Form.Label>
-        <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
         <br />
-        <NavLink to="/employees">
-          <Button.Success onClick={this.insert}>Add New Employee</Button.Success>
-        </NavLink>
-        <NavLink to="/employees">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+        <Card title="Adding Employee">
+          <Form.Label>Firstname:</Form.Label>
+          <Form.Input type="text" value={this.Firstname} onChange={e => (this.Firstname = e.target.value)} />
+          <Form.Label>Surname:</Form.Label>
+          <Form.Input type="text" value={this.Surname} onChange={e => (this.Surname = e.target.value)} />
+          <br />
+          <NavLink to="/employees">
+            <Button.Success onClick={this.insert}>Add New Employee</Button.Success>
+          </NavLink>
+          <NavLink to="/employees">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -834,44 +1030,57 @@ class BicycleList extends Component {
 
   render() {
     return (
-      <Card title="Bicycle List">
-        <NavLink to="/warehouse/bicycles/insert">
-          <Button.Light>Add New Bicycle</Button.Light>
-        </NavLink>
-        <NavLink to="/warehouse/bicycles/update">
-          <Button.Light>Update Bicycles</Button.Light>
-        </NavLink>
-        <p>Click the bicycles to edit or delete them</p>
-        <Form.Label>Find Bicycle By:</Form.Label>
-        <div id="BicycleSearch">
-          <input id="BicycleSearchField" type="text" width="200px" />
-          <select id="BicycleSearchCategory">
-            <option value="Bicycles.BicycleID">Bicycle ID</option>
-            <option value="BicycleType">Bicycletype</option>
-            <option value="FrameType">Frametype</option>
-            <option value="BrakeType">Braketype</option>
-            <option value="Wheelsize">Wheelsize</option>
-            <option value="BicycleStatus">Status</option>
-            <option value="HomeLocation.HomeLocationName">Homelocation</option>
-            <option value="CurrentLocation.CurrentLocationName">Current location</option>
-          </select>
-          <button id="CustomerSearchButton" onClick={this.mounted}>
-            Search
-          </button>
-        </div>
-        <List>
-          {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.BicycleID}>
-              <NavLink to={'/warehouse/bicycles/' + bicycle.BicycleID + '/edit'}>
-                Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Daily Price:{' '}
-                {bicycle.DailyPrice}kr per day
-              </NavLink>
-            </List.Item>
-          ))}
-        </List>
-        <p id="alert" />
-        <br />
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card title="Bicycle List">
+          <NavLink to="/warehouse/bicycles/insert">
+            <Button.Light>Add New Bicycle</Button.Light>
+          </NavLink>
+          <NavLink to="/warehouse/bicycles/update">
+            <Button.Light>Update Bicycles</Button.Light>
+          </NavLink>
+          <p>Click the bicycles to edit or delete them</p>
+          <Form.Label>Find Bicycle By:</Form.Label>
+          <div id="BicycleSearch">
+            <input id="BicycleSearchField" type="text" width="200px" />
+            <select id="BicycleSearchCategory">
+              <option value="Bicycles.BicycleID">Bicycle ID</option>
+              <option value="BicycleType">Bicycletype</option>
+              <option value="FrameType">Frametype</option>
+              <option value="BrakeType">Braketype</option>
+              <option value="Wheelsize">Wheelsize</option>
+              <option value="BicycleStatus">Status</option>
+              <option value="HomeLocation.HomeLocationName">Homelocation</option>
+              <option value="CurrentLocation.CurrentLocationName">Current location</option>
+            </select>
+            <button id="BicycleSearchButton" onClick={this.mounted}>
+              Search
+            </button>
+          </div>
+          <List>
+            {this.bicycles.map(bicycle => (
+              <List.Item key={bicycle.BicycleID}>
+                <NavLink to={'/warehouse/bicycles/' + bicycle.BicycleID + '/edit'}>
+                  Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Daily Price:{' '}
+                  {bicycle.DailyPrice}kr per day
+                </NavLink>
+              </List.Item>
+            ))}
+          </List>
+          <p id="alert" />
+          <br />
+        </Card>
+      </div>
     );
   }
 
@@ -908,81 +1117,94 @@ class BicycleEdit extends Component {
 
   render() {
     return (
-      <Card title="Editing bicycle">
-        <Form.Label>Bicycle Type</Form.Label> <br />
-        <select id="TypeDropdown" value={this.BicycleType} onChange={e => (this.BicycleType = e.target.value)}>
-          <option>Beach Cruiser</option>
-          <option>BMX</option>
-          <option>Downhill</option>
-          <option>Hybrid</option>
-          <option>Kids</option>
-          <option>Mountain Bike</option>
-          <option>Racer</option>
-          <option>Road Bike</option>
-          <option>Tandem</option>
-        </select>
-        <br />
-        <Form.Label>Frame Type</Form.Label> <br />
-        <select id="FrameDropdown" value={this.FrameType} onChange={e => (this.FrameType = e.target.value)}>
-          <option>City</option>
-          <option>Hardtail</option>
-          <option>Rigid</option>
-          <option>Road</option>
-          <option>Trail</option>
-        </select>
-        <br />
-        <Form.Label>Brake Type</Form.Label> <br />
-        <select id="BrakeDropdown" value={this.BrakeType} onChange={e => (this.BrakeType = e.target.value)}>
-          <option>Caliper</option>
-          <option>Cantilever</option>
-          <option>Disk</option>
-          <option>V</option>
-        </select>
-        <br />
-        <Form.Label>Wheelsize</Form.Label>
-        <Form.Input type="number" value={this.Wheelsize} onChange={e => (this.Wheelsize = e.target.value)} />
-        <Form.Label>Bicycle Status</Form.Label>
-        <br />
-        <select id="StatusDropdown" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)}>
-          {this.BicycleStatuses.map(status => (
-            <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
-          ))}
-        </select>{' '}
-        <br />
-        <Form.Label>Home Location</Form.Label> <br />
-        <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
-          <option value="9">Finse</option>
-          <option value="13">Haugastoel</option>
-        </select>
-        <br />
-        <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
-        <Form.Label>Current Location</Form.Label> <br />
-        <select
-          id="CurrentLocation"
-          value={this.CurrentLocation}
-          onChange={e => (this.CurrentLocation = e.target.value)}
-        >
-          <option value="9">Finse</option>
-          <option value="10">Flaam</option>
-          <option value="11">Voss</option>
-          <option value="12">Myrdal</option>
-          <option value="13">Haugastoel</option>
-        </select>
-        <br />
-        <br />
-        <NavLink to="/warehouse/bicycles">
-          <Button.Success onClick={this.save}>Save Changes</Button.Success>
-        </NavLink>
-        <br />
-        <br />
-        <NavLink to="/warehouse/bicycles">
-          <Button.Danger onClick={this.delete}>Delete Bicycle</Button.Danger>
-        </NavLink>
-        <NavLink to="/warehouse/bicycles">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card title="Editing bicycle">
+          <Form.Label>Bicycle Type</Form.Label> <br />
+          <select id="TypeDropdown" value={this.BicycleType} onChange={e => (this.BicycleType = e.target.value)}>
+            <option>Beach Cruiser</option>
+            <option>BMX</option>
+            <option>Downhill</option>
+            <option>Hybrid</option>
+            <option>Kids</option>
+            <option>Mountain Bike</option>
+            <option>Racer</option>
+            <option>Road Bike</option>
+            <option>Tandem</option>
+          </select>
+          <br />
+          <Form.Label>Frame Type</Form.Label> <br />
+          <select id="FrameDropdown" value={this.FrameType} onChange={e => (this.FrameType = e.target.value)}>
+            <option>City</option>
+            <option>Hardtail</option>
+            <option>Rigid</option>
+            <option>Road</option>
+            <option>Trail</option>
+          </select>
+          <br />
+          <Form.Label>Brake Type</Form.Label> <br />
+          <select id="BrakeDropdown" value={this.BrakeType} onChange={e => (this.BrakeType = e.target.value)}>
+            <option>Caliper</option>
+            <option>Cantilever</option>
+            <option>Disk</option>
+            <option>V</option>
+          </select>
+          <br />
+          <Form.Label>Wheelsize</Form.Label>
+          <Form.Input type="number" value={this.Wheelsize} onChange={e => (this.Wheelsize = e.target.value)} />
+          <Form.Label>Bicycle Status</Form.Label>
+          <br />
+          <select id="StatusDropdown" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)}>
+            {this.BicycleStatuses.map(status => (
+              <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
+            ))}
+          </select>{' '}
+          <br />
+          <Form.Label>Home Location</Form.Label> <br />
+          <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+            <option value="9">Finse</option>
+            <option value="13">Haugastoel</option>
+          </select>
+          <br />
+          <Form.Label>Daily Price</Form.Label>
+          <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+          <Form.Label>Current Location</Form.Label> <br />
+          <select
+            id="CurrentLocation"
+            value={this.CurrentLocation}
+            onChange={e => (this.CurrentLocation = e.target.value)}
+          >
+            <option value="9">Finse</option>
+            <option value="10">Flaam</option>
+            <option value="11">Voss</option>
+            <option value="12">Myrdal</option>
+            <option value="13">Haugastoel</option>
+          </select>
+          <br />
+          <br />
+          <NavLink to="/warehouse/bicycles">
+            <Button.Success onClick={this.save}>Save Changes</Button.Success>
+          </NavLink>
+          <br />
+          <br />
+          <NavLink to="/warehouse/bicycles">
+            <Button.Danger onClick={this.delete}>Delete Bicycle</Button.Danger>
+          </NavLink>
+          <NavLink to="/warehouse/bicycles">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -1032,81 +1254,95 @@ class BicycleEdit extends Component {
 class BicycleInsert extends Component {
   render() {
     return (
-      <Card title="Adding Bicycle">
-        <Form.Label>Bicycle Type</Form.Label> <br />
-        <select id="TypeDropdown">
-          <option>Beach Cruiser</option>
-          <option>BMX</option>
-          <option>Downhill</option>
-          <option>Hybrid</option>
-          <option>Kids</option>
-          <option>Mountain Bike</option>
-          <option>Racer</option>
-          <option>Road Bike</option>
-          <option>Tandem</option>
-        </select>
-        <br />
-        <Form.Label>Frame Type</Form.Label> <br />
-        <select id="FrameDropdown">
-          <option>City</option>
-          <option>Hardtail</option>
-          <option>Rigid</option>
-          <option>Road</option>
-          <option>Trail</option>
-        </select>
-        <br />
-        <Form.Label>Brake Type</Form.Label> <br />
-        <select id="BrakeDropdown">
-          <option>Caliper</option>
-          <option>Cantilever</option>
-          <option>Disk</option>
-          <option>V</option>
-        </select>
-        <br />
-        <Form.Label>Wheelsize</Form.Label>
-        <Form.Input type="number" value={this.Wheelsize} onChange={e => (this.Wheelsize = e.target.value)} />
-        <Form.Label>Bicycle Status</Form.Label> <br />
-        <select id="StatusDropdown">
-          <option>Available</option>
-          <option>In Repair</option>
-          <option>In Transport</option>
-          <option>Need Repair</option>
-          <option>Need Transport</option>
-          <option>Rented</option>
-        </select>
-        <br />
-        <Form.Label>Home Location</Form.Label> <br />
-        <select id="HomeLocation">
-          <option value="9">Finse</option>
-          <option value="13">Haugastoel</option>
-        </select>
-        <br />
-        <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
-        <Form.Label>Current Location</Form.Label> <br />
-        <select id="CurrentLocation">
-          <option value="9">Finse</option>
-          <option value="10">Flaam</option>
-          <option value="11">Voss</option>
-          <option value="12">Myrdal</option>
-          <option value="13">Haugastoel</option>
-        </select>
-        <br />
-        <Form.Label>Number of bikes to add</Form.Label>
-        <Form.Input type="number" id="NumberToAdd" value={this.Add} onChange={e => (this.Add = e.target.value)} />
-        <br />
-        <NavLink to="/warehouse/bicycles">
-          <Button.Success onClick={this.insert}>Add New Bicycle</Button.Success>
-        </NavLink>
-        <NavLink to="/warehouse/bicycles">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card title="Adding Bicycle">
+          <Form.Label>Bicycle Type</Form.Label> <br />
+          <select id="TypeDropdown">
+            <option>Beach Cruiser</option>
+            <option>BMX</option>
+            <option>Downhill</option>
+            <option>Hybrid</option>
+            <option>Kids</option>
+            <option>Mountain Bike</option>
+            <option>Racer</option>
+            <option>Road Bike</option>
+            <option>Tandem</option>
+          </select>
+          <br />
+          <Form.Label>Frame Type</Form.Label> <br />
+          <select id="FrameDropdown">
+            <option>City</option>
+            <option>Hardtail</option>
+            <option>Rigid</option>
+            <option>Road</option>
+            <option>Trail</option>
+          </select>
+          <br />
+          <Form.Label>Brake Type</Form.Label> <br />
+          <select id="BrakeDropdown">
+            <option>Caliper</option>
+            <option>Cantilever</option>
+            <option>Disk</option>
+            <option>V</option>
+          </select>
+          <br />
+          <Form.Label>Wheelsize</Form.Label>
+          <Form.Input type="number" value={this.Wheelsize} onChange={e => (this.Wheelsize = e.target.value)} />
+          <Form.Label>Bicycle Status</Form.Label> <br />
+          <select id="StatusDropdown">
+            <option>Available</option>
+            <option>In Repair</option>
+            <option>In Transport</option>
+            <option>Need Repair</option>
+            <option>Need Transport</option>
+            <option>Rented</option>
+          </select>
+          <br />
+          <Form.Label>Home Location</Form.Label> <br />
+          <select id="HomeLocation">
+            <option value="9">Finse</option>
+            <option value="13">Haugastoel</option>
+          </select>
+          <br />
+          <Form.Label>Daily Price</Form.Label>
+          <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+          <Form.Label>Current Location</Form.Label> <br />
+          <select id="CurrentLocation">
+            <option value="9">Finse</option>
+            <option value="10">Flaam</option>
+            <option value="11">Voss</option>
+            <option value="12">Myrdal</option>
+            <option value="13">Haugastoel</option>
+          </select>
+          <br />
+          <Form.Label>Number of bikes to add</Form.Label>
+          <Form.Input type="number" id="NumberToAdd" value={this.Add} onChange={e => (this.Add = e.target.value)} />
+          <br />
+          <NavLink to="/warehouse/bicycles">
+            <Button.Success onClick={this.insert}>Add New Bicycle</Button.Success>
+          </NavLink>
+          <NavLink to="/warehouse/bicycles">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
   //Adds the bicycle.
   insert() {
+    //Loops the insert command for number of bikes to be added.
     for (let i = 0; i < this.Add; i++) {
       bicycleService.insertBicycle(
         (this.BicycleType = '' + document.getElementById('TypeDropdown').value),
@@ -1135,41 +1371,54 @@ class BicycleUpdate extends Component {
 
   render() {
     return (
-      <Card title="Bicycle List">
-        <p>Select the bicycles you want to update</p>
-        <List>
-          {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.BicycleID}>
-              <input type="checkbox" checked={bicycle.checked} onChange={e => (bicycle.checked = e.target.checked)} />
-              Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Status: {bicycle.BicycleStatus} |
-              Current Location: {bicycle.CurrentLocationName}
-            </List.Item>
-          ))}
-        </List>
-        <br />
-        Select Location:
-        <select id="CurrentLocation">
-          <option value="9">Finse</option>
-          <option value="10">Flaam</option>
-          <option value="11">Voss</option>
-          <option value="12">Myrdal</option>
-          <option value="13">Haugastoel</option>
-        </select>{' '}
-        Select Status:
-        <select id="StatusDropdown" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)}>
-          {this.statuses.map(status => (
-            <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
-          ))}
-        </select>
-        <br />
-        <br />
-        <NavLink to="/warehouse/bicycles" onClick={this.save}>
-          <Button.Success>Update Bicycle</Button.Success>
-        </NavLink>
-        <NavLink to="/warehouse/bicycles">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card title="Bicycle List">
+          <p>Select the bicycles you want to update</p>
+          <List>
+            {this.bicycles.map(bicycle => (
+              <List.Item key={bicycle.BicycleID}>
+                <input type="checkbox" checked={bicycle.checked} onChange={e => (bicycle.checked = e.target.checked)} />
+                Bicycle ID: {bicycle.BicycleID} | Bicycle Type: {bicycle.BicycleType} | Status: {bicycle.BicycleStatus}{' '}
+                | Current Location: {bicycle.CurrentLocationName}
+              </List.Item>
+            ))}
+          </List>
+          <br />
+          Select Location:
+          <select id="CurrentLocation">
+            <option value="9">Finse</option>
+            <option value="10">Flaam</option>
+            <option value="11">Voss</option>
+            <option value="12">Myrdal</option>
+            <option value="13">Haugastoel</option>
+          </select>{' '}
+          Select Status:
+          <select id="StatusDropdown" value={this.BicycleStatus} onChange={e => (this.BicycleStatus = e.target.value)}>
+            {this.statuses.map(status => (
+              <option value={status.BicycleStatus}>{status.BicycleStatus}</option>
+            ))}
+          </select>
+          <br />
+          <br />
+          <NavLink to="/warehouse/bicycles" onClick={this.save}>
+            <Button.Success>Update Bicycle</Button.Success>
+          </NavLink>
+          <NavLink to="/warehouse/bicycles">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -1186,7 +1435,6 @@ class BicycleUpdate extends Component {
     });
   }
 
-  //ikke ferdig....
   save() {
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
@@ -1210,40 +1458,54 @@ class AccessoryList extends Component {
 
   render() {
     return (
-      <Card title="Accessory List">
-        <NavLink to="/warehouse/accessories/insert">
-          <Button.Light>Add New accessory</Button.Light>
-        </NavLink>{' '}
-        <NavLink to="/warehouse/accessories/exinsert">
-          <Button.Light>Add Existing accessory</Button.Light>
-        </NavLink>
-        <p>Click the accessories to edit or delete them</p>
-        <Form.Label>Find Bicycle By:</Form.Label>
-        <div id="AccessorySearch">
-          <input id="AccessorySearchField" type="text" width="200px" />
-          <select id="AccessorySearchCategory">
-            <option value="Accessories.AccessoryID">Accessory ID</option>
-            <option value="Type">Accessorytype</option>
-            <option value="Status">Status</option>
-            <option value="AccessoryHomeLocation.HomeLocationName">Homelocation</option>
-            <option value="AccessoryCurrentLocation.CurrentLocationName">Current location</option>
-          </select>
-          <button id="CustomerSearchButton" onClick={this.mounted}>
-            Search
-          </button>
-        </div>
-        <List>
-          {this.accessories.map(accessory => (
-            <List.Item key={accessory.AccessoryID}>
-              <NavLink to={'/warehouse/accessories/' + accessory.AccessoryID + '/edit'}>
-                {accessory.Type} | Price: {accessory.DailyPrice}kr per day | Home Location: {accessory.HomeLocationName}{' '}
-                | Current Location: {accessory.CurrentLocationName} | Status {accessory.Status}
-              </NavLink>
-            </List.Item>
-          ))}
-        </List>
-        <p id="alert" />
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card title="Accessory List">
+          <NavLink to="/warehouse/accessories/insert">
+            <Button.Light>Add New accessory</Button.Light>
+          </NavLink>{' '}
+          <NavLink to="/warehouse/accessories/exinsert">
+            <Button.Light>Add Existing accessory</Button.Light>
+          </NavLink>
+          <p>Click the accessories to edit or delete them</p>
+          <Form.Label>Find Bicycle By:</Form.Label>
+          <div id="AccessorySearch">
+            <input id="AccessorySearchField" type="text" width="200px" />
+            <select id="AccessorySearchCategory">
+              <option value="Accessories.AccessoryID">Accessory ID</option>
+              <option value="Type">Accessorytype</option>
+              <option value="Status">Status</option>
+              <option value="AccessoryHomeLocation.HomeLocationName">Homelocation</option>
+              <option value="AccessoryCurrentLocation.CurrentLocationName">Current location</option>
+            </select>
+            <button id="AccessorySearchButton" onClick={this.mounted}>
+              Search
+            </button>
+          </div>
+          <List>
+            {this.accessories.map(accessory => (
+              <List.Item key={accessory.AccessoryID}>
+                <NavLink to={'/warehouse/accessories/' + accessory.AccessoryID + '/edit'}>
+                  {accessory.Type} | Price: {accessory.DailyPrice}kr per day | Home Location:{' '}
+                  {accessory.HomeLocationName} | Current Location: {accessory.CurrentLocationName} | Status{' '}
+                  {accessory.Status}
+                </NavLink>
+              </List.Item>
+            ))}
+          </List>
+          <p id="alert" />
+        </Card>
+      </div>
     );
   }
 
@@ -1258,10 +1520,6 @@ class AccessoryList extends Component {
         document.getElementById('alert').innerHTML = '';
       }
     });
-
-    // accessoryService.getAccessories(accessories => {
-    //   this.accessories = accessories;
-    // });
   }
 }
 
@@ -1276,53 +1534,66 @@ class AccessoryEdit extends Component {
 
   render() {
     return (
-      <Card title="Editing Accessory">
-        <List.Item>
-          <p>{this.Type}</p>
-        </List.Item>
-        <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
-        <br />
-        <Form.Label>Accessory Status</Form.Label>
-        <br />
-        <select id="StatusDropdown" value={this.Status} onChange={e => (this.Status = e.target.value)}>
-          {this.AccessoryStatuses.map(status => (
-            <option value={status.Status}>{status.AccessoryStatus}</option>
-          ))}
-        </select>{' '}
-        <br />
-        <Form.Label>Home Location</Form.Label> <br />
-        <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
-          <option value="9">Finse</option>
-          <option value="13">Haugastoel</option>
-        </select>
-        <br />
-        <Form.Label>Current Location</Form.Label> <br />
-        <select
-          id="CurrentLocation"
-          value={this.CurrentLocation}
-          onChange={e => (this.CurrentLocation = e.target.value)}
-        >
-          <option value="9">Finse</option>
-          <option value="10">Flaam</option>
-          <option value="11">Voss</option>
-          <option value="12">Myrdal</option>
-          <option value="13">Haugastoel</option>
-        </select>
-        <br />
-        <br />
-        <NavLink to="/warehouse/accessories">
-          <Button.Success onClick={this.save}>Save Changes</Button.Success>
-        </NavLink>
-        <br />
-        <br />
-        <NavLink to="/warehouse/accessories">
-          <Button.Danger onClick={this.delete}>Delete Accessory</Button.Danger>
-        </NavLink>
-        <NavLink to="/warehouse/accessories">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card title="Editing Accessory">
+          <List.Item>
+            <p>{this.Type}</p>
+          </List.Item>
+          <Form.Label>Daily Price</Form.Label>
+          <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+          <br />
+          <Form.Label>Accessory Status</Form.Label>
+          <br />
+          <select id="StatusDropdown" value={this.Status} onChange={e => (this.Status = e.target.value)}>
+            {this.AccessoryStatuses.map(status => (
+              <option value={status.Status}>{status.AccessoryStatus}</option>
+            ))}
+          </select>{' '}
+          <br />
+          <Form.Label>Home Location</Form.Label> <br />
+          <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+            <option value="9">Finse</option>
+            <option value="13">Haugastoel</option>
+          </select>
+          <br />
+          <Form.Label>Current Location</Form.Label> <br />
+          <select
+            id="CurrentLocation"
+            value={this.CurrentLocation}
+            onChange={e => (this.CurrentLocation = e.target.value)}
+          >
+            <option value="9">Finse</option>
+            <option value="10">Flaam</option>
+            <option value="11">Voss</option>
+            <option value="12">Myrdal</option>
+            <option value="13">Haugastoel</option>
+          </select>
+          <br />
+          <br />
+          <NavLink to="/warehouse/accessories">
+            <Button.Success onClick={this.save}>Save Changes</Button.Success>
+          </NavLink>
+          <br />
+          <br />
+          <NavLink to="/warehouse/accessories">
+            <Button.Danger onClick={this.delete}>Delete Accessory</Button.Danger>
+          </NavLink>
+          <NavLink to="/warehouse/accessories">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -1368,44 +1639,57 @@ class AccessoryEdit extends Component {
 class AccessoryInsert extends Component {
   render() {
     return (
-      <Card title="Adding New Accessory">
-        <Form.Label>Accessory Type</Form.Label>
-        <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
-        <br />
-        <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="number" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
-        <br />
-        <Form.Label>Home Location</Form.Label> <br />
-        <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
-          <option selected={true} disabled={true}>
-            Select Location
-          </option>
-          <option value="9">Finse</option>
-          <option value="13">Haugastoel</option>
-        </select>
-        <br />
-        <Form.Label>Current Location</Form.Label> <br />
-        <select
-          id="CurrentLocation"
-          value={this.CurrentLocation}
-          onChange={e => (this.CurrentLocation = e.target.value)}
-        >
-          <option selected={true} disabled={true}>
-            Select Location
-          </option>
-          <option value="9">Finse</option>
-          <option value="10">Flaam</option>
-          <option value="11">Voss</option>
-          <option value="12">Myrdal</option>
-          <option value="13">Haugastoel</option>
-        </select>
-        <br />
-        <br />
-        <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
-        <NavLink to="/warehouse/accessories">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card title="Adding New Accessory">
+          <Form.Label>Accessory Type</Form.Label>
+          <Form.Input type="text" value={this.type} onChange={e => (this.type = e.target.value)} />
+          <br />
+          <Form.Label>Daily Price</Form.Label>
+          <Form.Input type="number" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
+          <br />
+          <Form.Label>Home Location</Form.Label> <br />
+          <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+            <option selected={true} disabled={true}>
+              Select Location
+            </option>
+            <option value="9">Finse</option>
+            <option value="13">Haugastoel</option>
+          </select>
+          <br />
+          <Form.Label>Current Location</Form.Label> <br />
+          <select
+            id="CurrentLocation"
+            value={this.CurrentLocation}
+            onChange={e => (this.CurrentLocation = e.target.value)}
+          >
+            <option selected={true} disabled={true}>
+              Select Location
+            </option>
+            <option value="9">Finse</option>
+            <option value="10">Flaam</option>
+            <option value="11">Voss</option>
+            <option value="12">Myrdal</option>
+            <option value="13">Haugastoel</option>
+          </select>
+          <br />
+          <br />
+          <Button.Success onClick={this.insert}>Add New Accessory</Button.Success>
+          <NavLink to="/warehouse/accessories">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -1426,53 +1710,66 @@ class AccessoryInsertEx extends Component {
 
   render() {
     return (
-      <Card title="Adding Existing Accessory">
-        <Form.Label>Accessory Type</Form.Label>
-        <br />
-        <select id="TypeDropdown" value={this.AccessoryType} onChange={e => (this.AccessoryType = e.target.value)}>
-          {this.AccessoryTypes.map(type => (
-            <option value={type.AccessoryType}>{type.AccessoryType}</option>
-          ))}
-        </select>{' '}
-        <br />
-        <Form.Label>Daily Price</Form.Label>
-        <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
-        <br />
-        <Form.Label>Current Location</Form.Label> <br />
-        <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
-          <option selected={true} disabled={true}>
-            Select Location
-          </option>
-          <option value="9">Finse</option>
-          <option value="13">Haugastoel</option>
-        </select>
-        <br />
-        <Form.Label>Current Location</Form.Label> <br />
-        <select
-          id="CurrentLocation"
-          value={this.CurrentLocation}
-          onChange={e => (this.CurrentLocation = e.target.value)}
-        >
-          <option selected={true} disabled={true}>
-            Select Location
-          </option>
-          <option value="9">Finse</option>
-          <option value="10">Flaam</option>
-          <option value="11">Voss</option>
-          <option value="12">Myrdal</option>
-          <option value="13">Haugastoel</option>
-        </select>
-        <br />
-        <Form.Label>Number to add</Form.Label>
-        <Form.Input type="number" id="NumberToAdd" value={this.Add} onChange={e => (this.Add = e.target.value)} />
-        <br />
-        <NavLink to="/warehouse/accessories">
-          <Button.Success onClick={this.insert}>Add Accessory</Button.Success>
-        </NavLink>
-        <NavLink to="/warehouse/accessories">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card title="Adding Existing Accessory">
+          <Form.Label>Accessory Type</Form.Label>
+          <br />
+          <select id="TypeDropdown" value={this.AccessoryType} onChange={e => (this.AccessoryType = e.target.value)}>
+            {this.AccessoryTypes.map(type => (
+              <option value={type.AccessoryType}>{type.AccessoryType}</option>
+            ))}
+          </select>{' '}
+          <br />
+          <Form.Label>Daily Price</Form.Label>
+          <Form.Input type="number" value={this.DailyPrice} onChange={e => (this.DailyPrice = e.target.value)} />
+          <br />
+          <Form.Label>Current Location</Form.Label> <br />
+          <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
+            <option selected={true} disabled={true}>
+              Select Location
+            </option>
+            <option value="9">Finse</option>
+            <option value="13">Haugastoel</option>
+          </select>
+          <br />
+          <Form.Label>Current Location</Form.Label> <br />
+          <select
+            id="CurrentLocation"
+            value={this.CurrentLocation}
+            onChange={e => (this.CurrentLocation = e.target.value)}
+          >
+            <option selected={true} disabled={true}>
+              Select Location
+            </option>
+            <option value="9">Finse</option>
+            <option value="10">Flaam</option>
+            <option value="11">Voss</option>
+            <option value="12">Myrdal</option>
+            <option value="13">Haugastoel</option>
+          </select>
+          <br />
+          <Form.Label>Number to add</Form.Label>
+          <Form.Input type="number" id="NumberToAdd" value={this.Add} onChange={e => (this.Add = e.target.value)} />
+          <br />
+          <NavLink to="/warehouse/accessories">
+            <Button.Success onClick={this.insert}>Add Accessory</Button.Success>
+          </NavLink>
+          <NavLink to="/warehouse/accessories">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -1484,6 +1781,7 @@ class AccessoryInsertEx extends Component {
 
   //Adds the accessory.
   insert() {
+    //Loops the insert command for number of bikes to be added.
     for (let i = 0; i < this.Add; i++) {
       accessoryService.insertAccessoryPrice(
         (this.AccessoryType = '' + document.getElementById('TypeDropdown').value),
@@ -1508,49 +1806,62 @@ class TransportList extends Component {
 
   render() {
     return (
-      <Card title="Order Transport From:">
-        <p>Select the location you want transport from:</p>
-        <select id="LocationDropdown" onChange={this.getBicyclesForTransport}>
-          <option selected={true} disabled={true}>
-            Select Location
-          </option>
-          {this.locations.map(location => (
-            <option value={location.LocationName}>{location.LocationName}</option>
-          ))}
-        </select>
-        <br />
-        <p>Select the Bicycles you want to transport:</p>
-        <List>
-          {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.BicycleID}>
-              ID: {bicycle.BicycleID} Type: {bicycle.BicycleType} Status: {bicycle.BicycleStatus} Home Location:{' '}
-              {bicycle.HomeLocation}{' '}
-              <input type="checkbox" checked={bicycle.checked} onChange={e => (bicycle.checked = e.target.checked)} />
-            </List.Item>
-          ))}
-        </List>
-        <br />
-        <p>Select the location you want transport to:</p>
-        <select id="TransportDropdown" value={this.LocationID}>
-          <option selected={true} disabled={true}>
-            Select Location
-          </option>
-          {this.transportToLocations.map(location => (
-            <option value={location.LocationName}>{location.LocationName}</option>
-          ))}
-        </select>
-        <br />
-        <br />
-        <br />
-        <input type="textarea" placeholder="Add additional comments" id="comment" />
-        <br />
-        <br />
-        <p id="alert" />
-        <br />
-        <NavLink to="/warehouse/bicycles">
-          <Button.Success onClick={this.save}>Submit</Button.Success>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card title="Order Transport From:">
+          <p>Select the location you want transport from:</p>
+          <select id="LocationDropdown" onChange={this.getBicyclesForTransport}>
+            <option selected={true} disabled={true}>
+              Select Location
+            </option>
+            {this.locations.map(location => (
+              <option value={location.LocationName}>{location.LocationName}</option>
+            ))}
+          </select>
+          <br />
+          <p>Select the Bicycles you want to transport:</p>
+          <List>
+            {this.bicycles.map(bicycle => (
+              <List.Item key={bicycle.BicycleID}>
+                ID: {bicycle.BicycleID} Type: {bicycle.BicycleType} Status: {bicycle.BicycleStatus} Home Location:{' '}
+                {bicycle.HomeLocation}{' '}
+                <input type="checkbox" checked={bicycle.checked} onChange={e => (bicycle.checked = e.target.checked)} />
+              </List.Item>
+            ))}
+          </List>
+          <br />
+          <p>Select the location you want transport to:</p>
+          <select id="TransportDropdown" value={this.LocationID}>
+            <option selected={true} disabled={true}>
+              Select Location
+            </option>
+            {this.transportToLocations.map(location => (
+              <option value={location.LocationName}>{location.LocationName}</option>
+            ))}
+          </select>
+          <br />
+          <br />
+          <br />
+          <input type="textarea" placeholder="Add additional comments" id="comment" />
+          <br />
+          <br />
+          <p id="alert" />
+          <br />
+          <NavLink to="/warehouse/bicycles">
+            <Button.Success onClick={this.save}>Submit</Button.Success>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -1583,7 +1894,7 @@ class TransportList extends Component {
     let drop = '' + document.getElementById('TransportDropdown').value;
     let comment = '\n\nAdditional comments:\n' + document.getElementById('comment').value;
 
-    let text =
+    let input =
       'AS sykkelutleie\n\nTransport confirmation: \n \n' +
       'Pickup Location: ' +
       pickup +
@@ -1599,7 +1910,7 @@ class TransportList extends Component {
       }
     }
 
-    pdf.text(text + comment, 10, 10);
+    pdf.text(input + comment, 10, 10);
     pdf.save('Transport_order.pdf');
   }
 }
@@ -1609,21 +1920,34 @@ class RepairList extends Component {
 
   render() {
     return (
-      <Card title="Order Repair for:">
-        <List>
-          {this.bicycles.map(bicycle => (
-            <List.Item key={bicycle.BicycleID}>
-              <NavLink to={'/warehouse/repair/' + bicycle.BicycleID + '/edit'}>
-                Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType} |
-                Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Current Location:{' '}
-                {bicycle.CurrentLocationName}
-              </NavLink>
-            </List.Item>
-          ))}
-        </List>
-        <NavLink to="/warehouse/repair/summary" />
-        <p id="alert" />
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card title="Order Repair for:">
+          <List>
+            {this.bicycles.map(bicycle => (
+              <List.Item key={bicycle.BicycleID}>
+                <NavLink to={'/warehouse/repair/' + bicycle.BicycleID + '/edit'}>
+                  Bicycle Type: {bicycle.BicycleType} | Frametype: {bicycle.FrameType} | Braketype: {bicycle.BrakeType}{' '}
+                  | Wheelsize: {bicycle.Wheelsize} | Status: {bicycle.BicycleStatus} | Current Location:{' '}
+                  {bicycle.CurrentLocationName}
+                </NavLink>
+              </List.Item>
+            ))}
+          </List>
+          <NavLink to="/warehouse/repair/summary" />
+          <p id="alert" />
+        </Card>
+      </div>
     );
   }
 
@@ -1652,30 +1976,43 @@ class RepairDetails extends Component {
 
   render() {
     return (
-      <Card>
-        <List>
-          Bicycle Type:
-          <List.Item>{this.BicycleType}</List.Item>
-          Frame Type:
-          <List.Item>{this.FrameType}</List.Item>
-          Brake Type:
-          <List.Item>{this.BrakeType}</List.Item>
-          Wheelsize:
-          <List.Item>{this.Wheelsize}</List.Item>
-          Bicycle Status:
-          <List.Item>Current status: {this.BicycleStatus}</List.Item>
-        </List>
-        <br />
-        <input type="textarea" placeholder="Add additional comments" id="comment" />
-        <br />
-        <br />
-        <NavLink to="/warehouse/repair">
-          <Button.Success onClick={this.orderRepair}>Order Repair</Button.Success>
-        </NavLink>
-        <NavLink to="/warehouse/repair">
-          <Button.Light>Back</Button.Light>
-        </NavLink>
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Warehouse">
+          <NavBar.Link to="/warehouse/bicycles">Bicycles</NavBar.Link>
+          <NavBar.Link to="/warehouse/accessories">Accessories</NavBar.Link>
+          <NavBar.Link to="/warehouse/repair">Order Repair</NavBar.Link>
+          <NavBar.Link to="/warehouse/transport">Order Transport</NavBar.Link>
+        </NavBar>
+        <Card>
+          <List>
+            Bicycle Type:
+            <List.Item>{this.BicycleType}</List.Item>
+            Frame Type:
+            <List.Item>{this.FrameType}</List.Item>
+            Brake Type:
+            <List.Item>{this.BrakeType}</List.Item>
+            Wheelsize:
+            <List.Item>{this.Wheelsize}</List.Item>
+            Bicycle Status:
+            <List.Item>Current status: {this.BicycleStatus}</List.Item>
+          </List>
+          <br />
+          <input type="textarea" placeholder="Add additional comments" id="comment" />
+          <br />
+          <br />
+          <NavLink to="/warehouse/repair">
+            <Button.Success onClick={this.orderRepair}>Order Repair</Button.Success>
+          </NavLink>
+          <NavLink to="/warehouse/repair">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+        </Card>
+      </div>
     );
   }
 
@@ -1729,16 +2066,28 @@ class RentalCountList extends Component {
 
   render() {
     return (
-      <Card title="Rental Count for Customers">
-        <List>
-          {this.Counts.map(count => (
-            <List.Item key={count.FirstName}>
-              Name: {count.FirstName} {count.SurName} | Rental Count: {count.Orders}
-            </List.Item>
-          ))}
-        </List>
-        <NavLink to="/warehouse/repair/summary" />
-      </Card>
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card title="Rental Count for Customers">
+          <List>
+            {this.Counts.map(count => (
+              <List.Item key={count.FirstName}>
+                Name: {count.FirstName} {count.SurName} | Rental Count: {count.Orders}
+              </List.Item>
+            ))}
+          </List>
+          <NavLink to="/warehouse/repair/summary" />
+        </Card>
+      </div>
     );
   }
   mounted() {
@@ -1751,11 +2100,9 @@ class RentalCountList extends Component {
 ReactDOM.render(
   <HashRouter>
     <div>
-      <Menu />
-
       <Route exact path="/" component={Home} />
-      <Route path="/sales" component={Sales} />
-      <Route path="/warehouse" component={Warehouse} />
+      <Route exact path="/sales" component={Sales} />
+      <Route exact path="/warehouse" component={Warehouse} />
       <Route exact path="/sales/customers" component={CustomerList} />
       <Route exact path="/employees" component={EmployeeList} />
       <Route exact path="/warehouse/bicycles" component={BicycleList} />
