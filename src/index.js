@@ -886,12 +886,9 @@ class BicycleList extends Component {
         document.getElementById('alert').innerHTML = '';
       }
     });
-<<<<<<< HEAD
     bicycleService.getBicycles(bicycles => {
       this.bicycles = bicycles;
     });
-=======
->>>>>>> 900ce990cfbac29178269ee91ee2e97a1fd611eb
   }
 }
 
