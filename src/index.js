@@ -124,7 +124,7 @@ class RentalList extends Component {
           <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
           <NavBar.Link to="/Employees">Employees</NavBar.Link>
         </NavBar>
-        <NavBar brand="Sales">
+        <NavBar class="nav-link disabled" href="#" brand="Sales">
           <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
           <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
           <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
@@ -1095,6 +1095,11 @@ class BicycleList extends Component {
         document.getElementById('alert').innerHTML = '';
       }
     });
+
+    bicycleService.getBicycles(bicycles => {
+      this.bicycles = bicycles;
+    });
+
   }
 }
 
@@ -1889,7 +1894,7 @@ class TransportList extends Component {
     let drop = '' + document.getElementById('TransportDropdown').value;
     let comment = '\n\nAdditional comments:\n' + document.getElementById('comment').value;
 
-    let text =
+    let input =
       'AS sykkelutleie\n\nTransport confirmation: \n \n' +
       'Pickup Location: ' +
       pickup +
@@ -1905,7 +1910,7 @@ class TransportList extends Component {
       }
     }
 
-    pdf.text(text + comment, 10, 10);
+    pdf.text(input + comment, 10, 10);
     pdf.save('Transport_order.pdf');
   }
 }
