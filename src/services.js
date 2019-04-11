@@ -5,8 +5,7 @@ class RentalService {
   //Selects ID,sum date, start and end from rentals in the database, and counts the number of bikes and accessories in the booking excluding Rentals with status 'Ended'.
   getRentals(success) {
     connection.query(
-      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, Rentals.RentalStatus, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID where Rentals.RentalStatus != "Ended"',
-
+      'SELECT Rentals.RentalID as ID, Rentals.SUMwithDiscount, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Rentals.RentalStatus, Customers.FirstName, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID where Rentals.RentalStatus != "Ended"',
       (error, results) => {
         if (error) return console.error(error);
 
