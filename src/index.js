@@ -132,6 +132,8 @@ class RentalList extends Component {
         <Card title="Rental List">
           <NavLink to="/sales/rentals/insert">
             <Button.Light>Add New Rental</Button.Light>
+          </NavLink>{' '}<NavLink to="/sales/rentals/ended">
+          <Button.Light>Ended Rentals</Button.Light>
           </NavLink>
           <p>Click the rentals to edit or delete them</p>
           <List>
@@ -188,6 +190,54 @@ class RentalList extends Component {
     //     this.rentals[i].RentalDate = rentalDate;
     //   }
     // });
+  }
+}
+
+class EndedRentalList extends Component {
+  rentals = [];
+
+  render() {
+    return (
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar class="nav-link disabled" href="#" brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card title="Ended Rental List">{' '}
+        <NavLink to="/sales/rentals">
+        <Button.Light>Back</Button.Light>
+        </NavLink>
+          <List>
+            {this.rentals.map(rental => (
+              <List.Item key={rental.ID}>
+                  Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
+                <br />
+                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM} Status: {rental.RentalStatus}
+              </List.Item>
+            ))}
+          </List>
+          <br />
+        </Card>
+      </div>
+    );
+  }
+
+  mounted() {
+    rentalService.getEndedRentals(rentals => {
+      this.rentals = rentals;
+      for (let i = 0; i < rentals.length; i++) {
+        // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
+        let rentalDate = JSON.stringify(rentals[i].Date);
+        rentalDate = rentalDate.slice(1, 11);
+        this.rentals[i].RentalDate = rentalDate;
+      }
+    });
   }
 }
 
@@ -2110,6 +2160,7 @@ ReactDOM.render(
       <Route exact path="/warehouse/repair" component={RepairList} />
       <Route exact path="/warehouse/transport" component={TransportList} />
       <Route exact path="/sales/rentals" component={RentalList} />
+      <Route exact path="/sales/rentals/ended" component={EndedRentalList} />
       <Route exact path="/warehouse/bicycles/update" component={BicycleUpdate} />
       <Route exact path="/sales/rentals/:id/edit" component={RentalEdit} />
       <Route exact path="/sales/rentals/:id/RemoveFromRental" component={RemoveFromRental} />
