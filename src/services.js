@@ -184,20 +184,6 @@ class RentalService {
     });
   }
 
-  //Gets all details of bicycles.
-  getBicycleHomeLocation(LocationID, success) {
-    connection.query(
-      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.CurrentLocation where LocationID=?',
-      [LocationID],
-      (error, results) => {
-        if (error) return console.error(error);
-
-        success(results);
-        console.log(results);
-      }
-    );
-  }
-
   //Selects available accessories by the accessoryType, counts the number available.
   getAvailableAccessoriesByType(success) {
     connection.query(
@@ -253,8 +239,6 @@ class RentalService {
       [RentalID],
       (error, results) => {
         if (error) return console.error(error);
-
-        console.log(results);
       }
     );
   }
@@ -266,8 +250,6 @@ class RentalService {
       [RentalID],
       (error, results) => {
         if (error) return console.error(error);
-
-        console.log(results);
       }
     );
   }
@@ -279,8 +261,6 @@ class RentalService {
       [RentalID],
       (error, results) => {
         if (error) return console.error(error);
-
-        console.log(results);
       }
     );
   }
@@ -291,8 +271,6 @@ class RentalService {
       [RentalID],
       (error, results) => {
         if (error) return console.error(error);
-
-        console.log(results);
       }
     );
   }
@@ -317,15 +295,6 @@ class RentalService {
 }
 
 class CustomerService {
-  //Selects all the customers from the database.
-  getCustomers(results) {
-    connection.query('select * from Customers', error => {
-      if (error) return console.error(error);
-
-      success(results);
-    });
-  }
-
   //Selects all the information about a specific customer.
   getCustomer(id, success) {
     connection.query('select * from Customers where CustomerID=?', [id], (error, results) => {
@@ -389,15 +358,6 @@ class CustomerService {
 }
 
 class EmployeeService {
-  //Selects all the employees from the database.
-  getEmployees(success) {
-    connection.query('select * from Employees', (error, results) => {
-      if (error) return console.error(error);
-
-      success(results);
-    });
-  }
-
   //Selects a specific employee.
   getEmployee(EmployeeID, success) {
     connection.query('select * from Employees where EmployeeID=?', [EmployeeID], (error, results) => {
@@ -477,17 +437,6 @@ class BicycleService {
       }
     );
   }
-  //Gets the Location of All Bicycles.
-  getBicyclesHome(success) {
-    connection.query(
-      'select * from Bicycles inner join Locations on Locations.LocationID = Bicycles.HomeLocation',
-      (error, results) => {
-        if (error) return console.error(error);
-
-        success(results);
-      }
-    );
-  }
 
   //Selects a specific bicycle.
   getBicycle(bicycleID, success) {
@@ -506,7 +455,6 @@ class BicycleService {
       (error, results) => {
         if (error) return console.error(error);
 
-        console.log(results);
         success();
       }
     );
@@ -608,18 +556,6 @@ class BicycleService {
 }
 
 class AccessoryService {
-  //Selects all the accessories from the database.
-  getAccessories(success) {
-    connection.query(
-      'select * from Accessories inner join AccessoryHomeLocation on AccessoryHomeLocation.AccessoryID = Accessories.AccessoryID inner join AccessoryCurrentLocation on AccessoryCurrentLocation.AccessoryID = Accessories.AccessoryID',
-      (error, results) => {
-        if (error) return console.error(error);
-
-        success(results);
-      }
-    );
-  }
-
   //Selects a specific accessory from the database.
   getAccessory(AccessoryID, success) {
     connection.query('select * from Accessories where AccessoryID=?', [AccessoryID], (error, results) => {
@@ -662,19 +598,6 @@ class AccessoryService {
 
   //Adds new accessory price to the databse .
   insertAccessoryPrice(Type, DailyPrice, HomeLocation, CurrentLocation, Status, success) {
-    connection.query(
-      'insert into Accessories (Type, DailyPrice, HomeLocation, CurrentLocation, Status) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?, ?, ?, (SELECT AccessoryStatus FROM AccessoryStatus WHERE AccessoryStatus.AccessoryStatus = "Available"))',
-      [Type, DailyPrice, HomeLocation, CurrentLocation, Status]
-    ),
-      (error, results) => {
-        if (error) return console.error(error);
-
-        success();
-      };
-  }
-
-  //Adds new accessory price to the databse .
-  insertExAccessory(Type, DailyPrice, HomeLocation, CurrentLocation, Status, success) {
     connection.query(
       'insert into Accessories (Type, DailyPrice, HomeLocation, CurrentLocation, Status) values((SELECT AccessoryType FROM AccessoryTypes WHERE AccessoryTypes.AccessoryType = ?), ?, ?, ?, (SELECT AccessoryStatus FROM AccessoryStatus WHERE AccessoryStatus.AccessoryStatus = "Available"))',
       [Type, DailyPrice, HomeLocation, CurrentLocation, Status]
@@ -744,16 +667,6 @@ class TransportService {
     });
   }
 
-  //Selects all locations except the one already chosen for transport.
-  getLocationsRemove(LocationID, success) {
-    connection.query('select * from Locations where LocationID <> ?;', [LocationID], (error, results) => {
-      if (error) return console.error(error);
-
-      success(results);
-      console.log(results);
-    });
-  }
-
   //Selects transport locations, but removes the locations that is chosen, or not available for transport.
   getTransportToLocation(LocationID, success) {
     connection.query(
@@ -784,7 +697,6 @@ class TransportService {
       (error, results) => {
         if (error) return console.error(error);
 
-        console.log(results);
         success(results);
       }
     );
@@ -819,7 +731,6 @@ class RepairService {
       (error, results) => {
         if (error) return console.error(error);
 
-        console.log(results);
         success(results);
       }
     );

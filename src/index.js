@@ -4,13 +4,20 @@ import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route, withRouter } from 'react-router-dom';
 import {
   rentalService,
-  customerService,
   employeeService,
   bicycleService,
   accessoryService,
+  customerService,
   transportService,
   repairService
 } from './services';
+// import { rentalService } from './rentalservice';
+// import { employeeService } from './employeeservice';
+// import { bicycleService } from './bicycleservice';
+// import { accessoryService } from './accessoryservice';
+// import { customerService } from './customerservice';
+// import { transportService } from './transportservice';
+// import { repairService } from './repairservice';
 import { Card, List, Row, Column, NavBar, Button, Form, TextInput } from './widgets';
 import jsPDF from 'jspdf';
 
@@ -1099,7 +1106,6 @@ class BicycleList extends Component {
     bicycleService.getBicycles(bicycles => {
       this.bicycles = bicycles;
     });
-
   }
 }
 
@@ -1438,7 +1444,6 @@ class BicycleUpdate extends Component {
   save() {
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
-        console.log('checked ' + this.bicycles[x].BicycleID);
         bicycleService.updateBicycles(
           this.bicycles[x].BicycleID,
           (this.bicycles[x].BicycleStatus = '' + document.getElementById('StatusDropdown').value),
@@ -1839,6 +1844,7 @@ class TransportList extends Component {
               </List.Item>
             ))}
           </List>
+          <p id="alert" />
           <br />
           <p>Select the location you want transport to:</p>
           <select id="TransportDropdown" value={this.LocationID}>
