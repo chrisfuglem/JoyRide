@@ -443,7 +443,7 @@ class RemoveFromRental extends Component {
                 </option>
               ))}
             </select>
-            <button onClick={this.addBicycle.bind(this, this.calculateSum)}>Add Bicycle</button>
+            <button onClick={this.addBicycle}>Add Bicycle</button>
           </div>
           <div>
             <h4>Available Accessories</h4>
@@ -1178,10 +1178,6 @@ class BicycleList extends Component {
       } else {
         document.getElementById('alert').innerHTML = '';
       }
-    });
-
-    bicycleService.getBicycles(bicycles => {
-      this.bicycles = bicycles;
     });
   }
 }
