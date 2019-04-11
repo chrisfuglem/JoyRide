@@ -31,9 +31,6 @@ class Home extends Component {
       <div>
         <NavBar brand="Joyride" />
         <Card title="Welcome to Joyride">Navigate using the buttons below</Card>
-        <br />
-        <br />
-        <br />
         <NavLink to="/sales">
           <Button.Light>Sales</Button.Light>
         </NavLink>{' '}
