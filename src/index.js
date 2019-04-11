@@ -888,9 +888,9 @@ class BicycleList extends Component {
     bicycleService.searchBicycles(this.searchCategory, this.searchValue, bicycles => {
       this.bicycles = bicycles;
     });
-    // bicycleService.getBicycles(bicycles => {
-    //   this.bicycles = bicycles;
-    // });
+    bicycleService.getBicycles(bicycles => {
+      this.bicycles = bicycles;
+    });
   }
 }
 
