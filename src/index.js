@@ -120,10 +120,24 @@ class RentalEdit extends Component {
     return (
       <Card>
         <h3>Rental id {this.props.match.params.id}</h3>
-        <p>{this.rental.FirstName}</p>
-        <p>{this.rental.RentStart}</p>
-        <p>{this.rental.RentEnd}</p>
-        <p>{this.rental.SUM}</p>
+        <p>Firstname: {this.rental.FirstName}</p>
+        <p>Start date: {this.rental.RentStart}</p>
+        <p>End date:{this.rental.RentEnd}</p>
+        <p>Total Sum: {this.rental.SUM}</p>
+        <br />
+        <Button.Success onClick={this.discount}>Add discount</Button.Success>{' '}
+        <select id="DiscountDropdown">
+          <option value="1">Full Price</option>
+          <option value="0,8">Group</option>
+          <option value="0,75">Family</option>
+          <option value="0,75">Good customer</option>
+          <option value="0,6">Employee</option>
+          <option value="0,9">Friend</option>
+          <option value="0,85">Student</option>
+          <option value="0,70">Senior</option>
+        </select>
+        <br />
+        <br />
         <NavLink to="RemoveFromRental">Edit Bicycles and Accessories</NavLink>
         <h4>Bicycles</h4>
         {this.rentedBicycles.map(bicycle => (
@@ -196,6 +210,11 @@ class RentalEdit extends Component {
     rentalService.endRental(this.props.match.params.id, () => {
       history.push('/rentals');
     });
+  }
+
+  discount() {
+    let discount = document.getElementByID('DiscountDropdown').value;
+    let sum = this.rental.sum * dicount;
   }
 }
 
@@ -1109,8 +1128,8 @@ class BicycleUpdate extends Component {
   bicycles = [];
   statuses = [];
   locations = [];
-  CurrentLocation = "";
-  BicycleStatus = "";
+  CurrentLocation = '';
+  BicycleStatus = '';
 
   render() {
     return (
@@ -1167,13 +1186,13 @@ class BicycleUpdate extends Component {
       if (this.bicycles[x].checked == true) {
         console.log('checked ' + this.bicycles[x].BicycleID);
         bicycleService.updateBicycles(
-          (this.bicycles[x].BicycleID),
+          this.bicycles[x].BicycleID,
           (this.bicycles[x].BicycleStatus = '' + document.getElementById('StatusDropdown').value),
           (this.bicycles[x].CurrentLocation = '' + document.getElementById('CurrentLocation').value),
           () => {
             history.push('/bicycles');
           }
-        )
+        );
       }
     }
   }
@@ -1303,7 +1322,7 @@ class AccessoryTypeInsert extends Component {
         <Form.Label>Daily Price</Form.Label>
         <Form.Input type="number" value={this.dailyprice} onChange={e => (this.dailyprice = e.target.value)} />
         <br />
-        <Form.Label>Current Location</Form.Label> <br />
+        <Form.Label>Home Location</Form.Label> <br />
         <select id="HomeLocation" value={this.HomeLocation} onChange={e => (this.HomeLocation = e.target.value)}>
           <option value="9">Finse</option>
           <option value="13">Haugastoel</option>
@@ -1350,7 +1369,7 @@ class TransportList extends Component {
     return (
       <Card title="Order Transport From:">
         <p>Select the location you want transport from:</p>
-        <select id="LocationDropdown" value={this.LocationID} onChange={this.getBicycles}>
+        <select id="LocationDropdown" onChange={this.getBicycles}>
           <option selected="true" disabled="true">
             Select Location
           </option>
@@ -1378,16 +1397,14 @@ class TransportList extends Component {
             Select Location
           </option>
           {this.locations.map(location => (
-            <option value={location.LocationID}>
-              {location.LocationName} ID: {location.LocationID}
-            </option>
+            <option value={location.LocationName}>{location.LocationName}</option>
           ))}
         </select>
         <br />
         <br />
         <div className="form-group">
-        <label>Additional Comments</label>
-        <textarea className="form-control" rows="5" id="comment"></textarea>
+          <label>Additional Comments</label>
+          <textarea className="form-control" rows="5" id="comment" />
         </div>
         <Button.Success onClick={this.save}>Submit</Button.Success>
       </Card>
@@ -1414,20 +1431,38 @@ class TransportList extends Component {
   //Updates the status on the bicycles set for transport.
   save() {
     var pdf = new jsPDF();
-    var pickup = '' + document.getElementById('LocationDropdown').value;
-    var drop = '' + document.getElementById('TransportDropdown').value;
-
-    var text = 'Transport confirmation: \n \n' + 'Pickup Location: ' + pickup + '\nDelivery Location: ' + drop + '\n\nBicycles:';
+    var pickup = document.getElementById('LocationDropdown').value;
+    var drop = document.getElementById('TransportDropdown').value;
+    var comment = '' + document.getElementById('comment').value;
+    if (pickup == 9) {
+      pickupLocation = 'Finse';
+    } else if (pickup == 10) {
+      pickupLocation = 'Flaam';
+    } else if (pickup == 11) {
+      pickupLocation = 'Voss';
+    } else if (pickup == 12) {
+      pickupLocation = 'Myrdal';
+    } else if (pickup == 13) {
+      pickupLocation = 'Haugastoel';
+    }
+    var pickupLocation = '';
+    var input =
+      'AS SykkelUtleie \n\nTransport confirmation: \n \n' +
+      'Pickup Location: ' +
+      pickupLocation +
+      '\nDelivery Location: ' +
+      drop +
+      '\n\nBicycles:';
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
-        console.log('checked ' + this.bicycles[x].BicycleID);
-        console.log(text);
-        text += '\n- ' + this.bicycles[x].BicycleType + ' ' +this.bicycles[x].BicycleID;
+        input += '\n- Type: ' + this.bicycles[x].BicycleType + ' ID: ' + this.bicycles[x].BicycleID;
         transportService.saveStatus(this.bicycles[x].BicycleID, () => {
           history.push('/bicycles');
         });
       }
     }
+
+    var text = input + '\n\n Additional comments: ' + comment;
 
     pdf.text(text, 10, 10);
     pdf.save('Transport_order.pdf');
@@ -1491,8 +1526,8 @@ class RepairDetails extends Component {
         </List>
         <br />
         <div className="form-group">
-        <label>Additional Comments</label>
-        <textarea className="form-control" rows="5" id="comment"></textarea>
+          <label>Additional Comments</label>
+          <textarea className="form-control" rows="5" id="comment" />
         </div>
         <br />
         <br />
@@ -1536,7 +1571,7 @@ class RepairDetails extends Component {
     var brake = this.BrakeType;
     var wheel = this.Wheelsize;
     var text =
-      'Repair confirmation: \n \n' +
+      'AS SykkelUtleie \n\nRepair confirmation: \n \n' +
       'Bicycle Type: ' +
       type +
       '\nFrametype: ' +

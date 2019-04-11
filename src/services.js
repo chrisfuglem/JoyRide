@@ -104,15 +104,10 @@ class RentalService {
 
   //Adds an order with name, email, rent start and rent end.
   insertRental(customer, date, rentstart, rentend, sum, pickuplocation, discountsum, success) {
-    connection.query('insert into Rentals (CustomerID, Date, RentStart, RentEnd, SUM, PickupLocation, SUMwithDiscount, RentalStatus) values (?, ?, ?, ?, ?, ?, ?, "Unactive")', [
-      customer,
-      date,
-      rentstart,
-      rentend,
-      sum,
-      pickuplocation,
-      discountsum
-    ]),
+    connection.query(
+      'insert into Rentals (CustomerID, Date, RentStart, RentEnd, SUM, PickupLocation, SUMwithDiscount, RentalStatus) values (?, ?, ?, ?, ?, ?, ?, "Unactive")',
+      [customer, date, rentstart, rentend, sum, pickuplocation, discountsum]
+    ),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -129,10 +124,10 @@ class RentalService {
   }
 
   addBicycleToRental(rentalID, bicycleType, success) {
-    connection.query('insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(BicycleID) from Bicycles where BicycleType = ? and BicycleStatus = "Available"))', [
-      rentalID,
-      bicycleType
-    ]),
+    connection.query(
+      'insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(BicycleID) from Bicycles where BicycleType = ? and BicycleStatus = "Available"))',
+      [rentalID, bicycleType]
+    ),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -141,10 +136,10 @@ class RentalService {
   }
 
   addAccessoryToRental(rentalID, accessoryType, success) {
-    connection.query('insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(AccessoryID) from Accessories where Type = ?))', [
-      rentalID,
-      accessoryType
-    ]),
+    connection.query(
+      'insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(AccessoryID) from Accessories where Type = ?))',
+      [rentalID, accessoryType]
+    ),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -238,24 +233,26 @@ class RentalService {
 
   //Sets the status of the Rental to 'Ended' in the database
   endRental(id) {
-    connection.query('update Rentals set RentalStatus = "Ended" where RentalID=?', [id], (error) => {
-      if(error) return console.error(error);
-    })
+    connection.query('update Rentals set RentalStatus = "Ended" where RentalID=?', [id], error => {
+      if (error) return console.error(error);
+    });
   }
 
   //Sets the status of the Rental to 'Active' in the database
   activateRental(id) {
-    connection.query('update Rentals set RentalStatus = "Active" where RentalID=?', [id], (error) => {
-      if(error) return console.error(error);
-    })
+    connection.query('update Rentals set RentalStatus = "Active" where RentalID=?', [id], error => {
+      if (error) return console.error(error);
+    });
   }
 
   //Sets the status of the Bicycle to 'Rented' in the database
   setStatusRented(id) {
-    connection.query('update Bicycles set BicycleStatus = "Rented" where BicycleID=?', [id], (error) => {
-      if(error) return console.error(error);
-    })
+    connection.query('update Bicycles set BicycleStatus = "Rented" where BicycleID=?', [id], error => {
+      if (error) return console.error(error);
+    });
   }
+
+  addDiscount() {}
 }
 
 class CustomerService {
@@ -450,7 +447,8 @@ class BicycleService {
 
         console.log(results);
         success();
-      });
+      }
+    );
   }
 
   //Selects the bicyclestatus from the database.
@@ -674,10 +672,13 @@ class TransportService {
   }
 
   saveStatus(BicycleID) {
-    connection.query('update Bicycles set BicycleStatus = "In Transport" where BicycleID=?', [BicycleID], (error,results) => {
-      if(error) return console.error(error);
-
-    })
+    connection.query(
+      'update Bicycles set BicycleStatus = "In Transport" where BicycleID=?',
+      [BicycleID],
+      (error, results) => {
+        if (error) return console.error(error);
+      }
+    );
   }
 }
 
