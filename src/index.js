@@ -538,6 +538,7 @@ class RemoveFromRental extends Component {
 
   //Adds bicycle to the rental.
   addBicycle() {
+    console.log(this.bicycleDropdown.current.value);
     if (this.bicycleDropdown.current.value != '') {
       rentalService.addBicycleToRental(this.props.match.params.id, this.bicycleDropdown.current.value);
       this.mounted(); // Refresh page with new data

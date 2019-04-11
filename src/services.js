@@ -147,8 +147,8 @@ class RentalService {
 
   addBicycleToRental(rentalID, bicycleType, success) {
     connection.query(
-      'insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(BicycleID) FROM Bicycles WHERE NOT EXISTS (SELECT * FROM (SELECT * from RentedBicycles) as RentedBicycles WHERE Bicycles.BicycleID = RentedBicycles.BicycleID) AND Bicycles.BicycleType = ? ));',
-      [rentalID, bicycleType]
+      'insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MAX(BicycleID) FROM Bicycles WHERE NOT EXISTS (SELECT * FROM (select * from RentedBicycles) as RentedBicycles inner join (select * from Rentals) as Rentals on Rentals.RentalID = RentedBicycles.RentalID WHERE Bicycles.BicycleID = RentedBicycles.BicycleID and Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = ?) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = ?)) AND Bicycles.BicycleType = ?))',
+      [rentalID, rentalID, rentalID, bicycleType]
     ),
       (error, results) => {
         if (error) return console.error(error);
@@ -159,8 +159,8 @@ class RentalService {
 
   addAccessoryToRental(rentalID, accessoryType, success) {
     connection.query(
-      'insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(AccessoryID) FROM Accessories WHERE NOT EXISTS (SELECT * FROM (SELECT * from RentedAccessories) as RentedAccessories WHERE Accessories.AccessoryID = RentedAccessories.AccessoryID) AND Accessories.Type = ? ));',
-      [rentalID, accessoryType]
+      'insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MAX(AccessoryID) FROM Accessories WHERE NOT EXISTS (SELECT * FROM (select * from RentedAccessories) as RentedAccessories inner join (select * from Rentals) as Rentals on Rentals.RentalID = RentedAccessories.RentalID WHERE Accessories.AccessoryID = RentedAccessories.AccessoryID and Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = ?) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = ?)) AND Accessories.Type = ?))',
+      [rentalID, rentalID, rentalID, accessoryType]
     ),
       (error, results) => {
         if (error) return console.error(error);
@@ -209,8 +209,8 @@ class RentalService {
   //Selects available accessories by the accessoryType, counts the number available.
   getAvailableAccessoriesByType(rentalID, success) {
     connection.query(
-      'select Accessories.Type, (select count(Accessories.AccessoryID)) as TypeCount from Accessories where Accessories.AccessoryID not in (select AccessoryID from RentedAccessories inner join Rentals on Rentals.RentalID = RentedAccessories.RentalID where Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = 78) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = 78)) GROUP by Accessories.Type;',
-      [rentalID, rentalID],
+      'select Accessories.Type, (select count(Accessories.AccessoryID)) as TypeCount from Accessories where Accessories.AccessoryID not in (select AccessoryID from RentedAccessories inner join Rentals on Rentals.RentalID = RentedAccessories.RentalID where Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = ?) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = ?)) GROUP by Accessories.Type;',
+      [rentalID, rentalID, rentalID],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -232,7 +232,7 @@ class RentalService {
   getAvailableBicyclesByType(rentalID, success) {
     connection.query(
       'select Bicycles.BicycleType, (select count(Bicycles.BicycleID)) as TypeCount from Bicycles where Bicycles.BicycleID not in (select BicycleID from RentedBicycles inner join Rentals on Rentals.RentalID = RentedBicycles.RentalID where Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = ?) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = ?)) GROUP by Bicycles.BicycleType',
-      [rentalID, rentalID],
+      [rentalID, rentalID, rentalID],
       (error, results) => {
         if (error) return console.error(error);
 
