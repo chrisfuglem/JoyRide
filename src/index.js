@@ -4,13 +4,20 @@ import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route, withRouter } from 'react-router-dom';
 import {
   rentalService,
-  customerService,
   employeeService,
   bicycleService,
   accessoryService,
+  customerService,
   transportService,
   repairService
 } from './services';
+// import { rentalService } from './rentalservice';
+// import { employeeService } from './employeeservice';
+// import { bicycleService } from './bicycleservice';
+// import { accessoryService } from './accessoryservice';
+// import { customerService } from './customerservice';
+// import { transportService } from './transportservice';
+// import { repairService } from './repairservice';
 import { Card, List, Row, Column, NavBar, Button, Form, TextInput } from './widgets';
 import jsPDF from 'jspdf';
 
@@ -132,16 +139,33 @@ class RentalList extends Component {
         <Card title="Rental List">
           <NavLink to="/sales/rentals/insert">
             <Button.Light>Add New Rental</Button.Light>
+          </NavLink>{' '}
+          <NavLink to="/sales/rentals/ended">
+            <Button.Light>Ended Rentals</Button.Light>
           </NavLink>
           <p>Click the rentals to edit or delete them</p>
+          <div id="RentalSearch">
+            <input id="RentalSearchField" type="text" width="200px" />
+            <select id="RentalSearchCategory">
+              <option value="Rentals.RentalID">Rental ID</option>
+              <option value="Customers.CustomerID">Customer ID</option>
+              <option value="Customers.FirstName">Customer Fistname</option>
+              <option value="Customers.SurName">Customer Surname</option>
+              <option value="Rentals.RentalStatus">Status</option>
+            </select>
+            <button id="RentalSearchButton" onClick={this.mounted}>
+              Search
+            </button>
+          </div>
           <List>
             {this.rentals.map(rental => (
               <List.Item key={rental.ID}>
                 <NavLink to={'/sales/rentals/' + rental.ID + '/edit'}>
-                  Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
+                  Order {rental.ID} by {rental.FirstName} {rental.SurName} on {rental.RentalDate}
                 </NavLink>
                 <br />
-                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM}
+                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM} Status:{' '}
+                {rental.RentalStatus}
               </List.Item>
             ))}
           </List>
@@ -151,35 +175,8 @@ class RentalList extends Component {
     );
   }
 
-  /*<Form.Label>Find Rental By:</Form.Label>
-  <div id="RentalSearch">
-    <input id="RentalSearchField" type="text" width="200px" />
-    <select id="RentalSearchCategory">
-      <option value="Rentals.RentalID">Rental ID</option>
-      <option value="Customers.CustomerID">Customer ID</option>
-      <option value="Customers.FirstName">Customer Fistname</option>
-      <option value="Customers.SurName">Customer Surname</option>
-      <option value="Rentals.RentalStatus">Status</option>
-    </select>
-    <button id="RentalSearchButton" onClick={this.mounted}>
-      Search
-    </button>
-  </div>
-  */
-
   mounted() {
-    rentalService.getRentals(rentals => {
-      this.rentals = rentals;
-      for (let i = 0; i < rentals.length; i++) {
-        // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
-        let rentalDate = JSON.stringify(rentals[i].Date);
-        rentalDate = rentalDate.slice(1, 11);
-        this.rentals[i].RentalDate = rentalDate;
-      }
-    });
-    // this.searchCategory = '' + document.getElementById('RentalSearchCategory').value;
-    // this.searchValue = '%' + document.getElementById('RentalSearchField').value + '%';
-    // rentalService.searchRentals(this.searchCategory, this.searchValue, rentals => {
+    // rentalService.getRentals(rentals => {
     //   this.rentals = rentals;
     //   for (let i = 0; i < rentals.length; i++) {
     //     // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
@@ -188,6 +185,67 @@ class RentalList extends Component {
     //     this.rentals[i].RentalDate = rentalDate;
     //   }
     // });
+    this.searchCategory = '' + document.getElementById('RentalSearchCategory').value;
+    this.searchValue = '%' + document.getElementById('RentalSearchField').value + '%';
+    rentalService.searchRentals(this.searchCategory, this.searchValue, rentals => {
+      this.rentals = rentals;
+      for (let i = 0; i < rentals.length; i++) {
+        // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
+        let rentalDate = JSON.stringify(rentals[i].Date);
+        rentalDate = rentalDate.slice(1, 11);
+        this.rentals[i].RentalDate = rentalDate;
+      }
+    });
+  }
+}
+
+class EndedRentalList extends Component {
+  rentals = [];
+
+  render() {
+    return (
+      <div>
+        <NavBar brand="Joyride">
+          <NavBar.Link to="/sales">Sales</NavBar.Link>
+          <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
+          <NavBar.Link to="/Employees">Employees</NavBar.Link>
+        </NavBar>
+        <NavBar class="nav-link disabled" href="#" brand="Sales">
+          <NavBar.Link to="/sales/rentals">Rentals</NavBar.Link>
+          <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
+          <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
+        </NavBar>
+        <Card title="Ended Rental List">
+          {' '}
+          <NavLink to="/sales/rentals">
+            <Button.Light>Back</Button.Light>
+          </NavLink>
+          <List>
+            {this.rentals.map(rental => (
+              <List.Item key={rental.ID}>
+                Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
+                <br />
+                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM} Status:{' '}
+                {rental.RentalStatus}
+              </List.Item>
+            ))}
+          </List>
+          <br />
+        </Card>
+      </div>
+    );
+  }
+
+  mounted() {
+    rentalService.getEndedRentals(rentals => {
+      this.rentals = rentals;
+      for (let i = 0; i < rentals.length; i++) {
+        // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
+        let rentalDate = JSON.stringify(rentals[i].Date);
+        rentalDate = rentalDate.slice(1, 11);
+        this.rentals[i].RentalDate = rentalDate;
+      }
+    });
   }
 }
 
@@ -280,6 +338,7 @@ class RentalEdit extends Component {
     rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
       this.rentedAccessories = accessories;
     });
+    console.log(this.props.match.params.id);
   }
 
   save() {
@@ -344,6 +403,8 @@ class RemoveFromRental extends Component {
   rental = [];
   rentstart = '';
   rentend = '';
+  sum = 0;
+  discountSUM = 0;
 
   constructor(props) {
     super(props);
@@ -367,13 +428,17 @@ class RemoveFromRental extends Component {
           <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
         </NavBar>
         <Card>
-          <h3>Bicycle and accessory selection</h3>
-          <p>Rental id: {this.props.match.params.id}</p>
+          <h2>Rental #{this.props.match.params.id}</h2>
+          <h3>Bicycle and Accessory selection</h3>
+          <p>Original Sum: {this.sum}kr</p>
+          <p>
+            <b>Final Sum: {this.discountSUM}kr</b>
+          </p>
           <div>
             <h4>Available Bicycles</h4>
             <select ref={this.bicycleDropdown}>
               {this.bicycleDropdownOptions.map(bicycle => (
-                <option value={bicycle.Type}>
+                <option key={bicycle.bicycleID} value={bicycle.BicycleType}>
                   {bicycle.BicycleType} - {bicycle.TypeCount} Available
                 </option>
               ))}
@@ -384,8 +449,8 @@ class RemoveFromRental extends Component {
             <h4>Available Accessories</h4>
             <select ref={this.accessoryDropdown}>
               {this.accessoryDropdownOptions.map(accessory => (
-                <option key={accessory.AccessoryID} value={accessory.accessoryType}>
-                  {accessory.accessoryType} - {accessory.TypeCount} Available
+                <option key={accessory.AccessoryID} value={accessory.Type}>
+                  {accessory.Type} - {accessory.TypeCount} Available
                 </option>
               ))}
             </select>
@@ -412,9 +477,6 @@ class RemoveFromRental extends Component {
           <NavLink to={'/sales/rentals/' + this.props.match.params.id + '/edit'}>
             <Button.Success>Finish</Button.Success>
           </NavLink>
-          <NavLink to={'/sales/rentals/insert'}>
-            <Button.Light>Back</Button.Light>
-          </NavLink>
         </Card>
       </div>
     );
@@ -429,13 +491,16 @@ class RemoveFromRental extends Component {
     });
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
+      this.calculateSum();
     });
     rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
       this.rentedAccessories = accessories;
+      this.calculateSum();
     });
     rentalService.getAvailableBicycles(bicycles => {
       this.bicycles = bicycles;
     });
+    // Gets all available bicycles within the rentals period and sorts them by type inside the dropdown
     rentalService.getAvailableBicyclesByType(this.props.match.params.id, bicycles => {
       this.availableBicyclesCount = bicycles;
       for (let x = 0; x < this.availableBicyclesCount.length; x++) {
@@ -447,7 +512,7 @@ class RemoveFromRental extends Component {
     rentalService.getAvailableAccessories(accessories => {
       this.accessories = accessories;
     });
-    rentalService.getAvailableAccessoriesByType(accessories => {
+    rentalService.getAvailableAccessoriesByType(this.props.match.params.id, accessories => {
       this.availableAccessoriesCount = accessories;
       for (let x = 0; x < this.availableAccessoriesCount.length; x++) {
         if (this.availableAccessoriesCount[x].TypeCount > 0) {
@@ -457,15 +522,27 @@ class RemoveFromRental extends Component {
     });
   }
 
+  calculateSum() {
+    this.sum = 0; // Reset before calculating
+    for (let x = 0; x < this.rentedBicycles.length; x++) {
+      this.sum += this.rentedBicycles[x].DailyPrice;
+    }
+    for (let x = 0; x < this.rentedAccessories.length; x++) {
+      this.sum += this.rentedAccessories[x].DailyPrice;
+    }
+    this.sum = Math.round(this.sum);
+    this.discountSUM = Math.round(this.sum * 0.9);
+    rentalService.updateSUM(this.sum, this.discountSUM, this.props.match.params.id);
+  }
+
   //Adds bicycle to the rental.
   addBicycle() {
-    let x = this.bicycleDropdown.current.value;
-    // Removes the ' - number available' from the string
-    let y = x.indexOf(' - ');
-    let bicycleType = x.slice(0, y);
-
-    rentalService.addBicycleToRental(this.props.match.params.id, bicycleType);
-    this.mounted(); // Refresh page with new data
+    if (this.bicycleDropdown.current.value != '') {
+      rentalService.addBicycleToRental(this.props.match.params.id, this.bicycleDropdown.current.value);
+      this.mounted(); // Refresh page with new data
+    } else {
+      alert('No bicycles available');
+    }
   }
 
   //Removes the bicycle from the rental.
@@ -478,8 +555,13 @@ class RemoveFromRental extends Component {
 
   //Adds accessory to the rental.
   addAccessory() {
-    rentalService.addAccessoryToRental(this.props.match.params.id, this.accessoryDropdown.current.value);
-    this.mounted(); // Refresh page with new data
+    // Doesn't query the accessoryDropdown is empty
+    if (this.accessoryDropdown.current.value != '') {
+      rentalService.addAccessoryToRental(this.props.match.params.id, this.accessoryDropdown.current.value);
+      this.mounted(); // Refresh page with new data
+    } else {
+      alert('No accessories available');
+    }
   }
 
   //Removes accessory from the rental.
@@ -601,6 +683,8 @@ class RentalInsert extends Component {
       this.lastInsertedRental = rental.RentalID + 1;
     });
   }
+
+  //tjall
 
   //Adds new rental.
   insert() {
@@ -1063,7 +1147,7 @@ class BicycleList extends Component {
               <option value="HomeLocation.HomeLocationName">Homelocation</option>
               <option value="CurrentLocation.CurrentLocationName">Current location</option>
             </select>
-            <button id="BicycleSearchButton" onClick={this.mounted}>
+            <button id="CustomerSearchButton" onClick={this.mounted}>
               Search
             </button>
           </div>
@@ -1097,11 +1181,6 @@ class BicycleList extends Component {
         document.getElementById('alert').innerHTML = '';
       }
     });
-
-    bicycleService.getBicycles(bicycles => {
-      this.bicycles = bicycles;
-    });
-
   }
 }
 
@@ -1440,7 +1519,6 @@ class BicycleUpdate extends Component {
   save() {
     for (let x = 0; x < this.bicycles.length; x++) {
       if (this.bicycles[x].checked == true) {
-        console.log('checked ' + this.bicycles[x].BicycleID);
         bicycleService.updateBicycles(
           this.bicycles[x].BicycleID,
           (this.bicycles[x].BicycleStatus = '' + document.getElementById('StatusDropdown').value),
@@ -1841,6 +1919,7 @@ class TransportList extends Component {
               </List.Item>
             ))}
           </List>
+          <p id="alert" />
           <br />
           <p>Select the location you want transport to:</p>
           <select id="TransportDropdown" value={this.LocationID}>
@@ -2112,6 +2191,7 @@ ReactDOM.render(
       <Route exact path="/warehouse/repair" component={RepairList} />
       <Route exact path="/warehouse/transport" component={TransportList} />
       <Route exact path="/sales/rentals" component={RentalList} />
+      <Route exact path="/sales/rentals/ended" component={EndedRentalList} />
       <Route exact path="/warehouse/bicycles/update" component={BicycleUpdate} />
       <Route exact path="/sales/rentals/:id/edit" component={RentalEdit} />
       <Route exact path="/sales/rentals/:id/RemoveFromRental" component={RemoveFromRental} />
