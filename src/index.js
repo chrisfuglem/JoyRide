@@ -136,7 +136,6 @@ class RentalList extends Component {
           <NavBar.Link to="/sales/customers">Customers</NavBar.Link>
           <NavBar.Link to="/sales/count">Rental Count</NavBar.Link>
         </NavBar>
-<<<<<<< HEAD
         <Card title="Rental List">
           <NavLink to="/sales/rentals/insert">
             <Button.Light>Add New Rental</Button.Light>
@@ -157,26 +156,6 @@ class RentalList extends Component {
           </List>
           <br />
         </Card>
-=======
-      <Card title="Rental List">
-        <NavLink to="/sales/rentals/insert">
-          <Button.Light>Add New Rental</Button.Light>
-        </NavLink>
-        <p>Click the rentals to edit or delete them</p>
-        <List>
-          {this.rentals.map(rental => (
-            <List.Item key={rental.ID}>
-              <NavLink to={'/sales/rentals/' + rental.ID + '/edit'}>
-                Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
-              </NavLink>
-              <br />
-              BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUMwithDiscount}
-            </List.Item>
-          ))}
-        </List>
-        <br />
-      </Card>
->>>>>>> 9cb94323afdb834c47c5a107a5f1d193b0d3dce8
       </div>
     );
   }
