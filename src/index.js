@@ -684,6 +684,8 @@ class RentalInsert extends Component {
     });
   }
 
+  //tjall
+
   //Adds new rental.
   insert() {
     //Get todays date
