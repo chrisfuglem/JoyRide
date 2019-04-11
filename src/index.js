@@ -141,7 +141,7 @@ class RentalList extends Component {
                   Order {rental.ID} by {rental.FirstName} on {rental.RentalDate}
                 </NavLink>
                 <br />
-                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM}
+                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM} Status: {rental.RentalStatus}
               </List.Item>
             ))}
           </List>
