@@ -5,7 +5,7 @@ class RentalService {
   //Selects ID,sum date, start and end from rentals in the database, and counts the number of bikes and accessories in the booking.
   getRentals(success) {
     connection.query(
-      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, Rentals.RentalStatus, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID order by RentalID DESC;',
+      'SELECT Rentals.RentalID as ID, Rentals.SUMwithDiscount, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID order by RentalID DESC;',
       (error, results) => {
         if (error) return console.error(error);
 
@@ -95,10 +95,20 @@ class RentalService {
 
   //Updates an order with name and email.
   updateRental(id, name, email, success) {
-    connection.query('update Rentals set name=?, email=? where id= ?', [name, email, id], (error, results) => {
+    connection.query('update Rentals set name=?, email=? where id= ?',
+    [name, email, id],
+    (error, results) => {
       if (error) return console.error(error);
 
       success();
+    });
+  }
+
+  updateSUM(SUM, discountSUM, rentalID) {
+    connection.query('update Rentals set SUM = ?, SUMwithDiscount = ? where RentalID = ?',
+    [SUM, discountSUM, rentalID],
+    (error, results) => {
+      if (error) return console.error(error);
     });
   }
 
@@ -136,10 +146,8 @@ class RentalService {
   }
 
   addAccessoryToRental(rentalID, accessoryType, success) {
-    connection.query(
-      'insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(AccessoryID) from Accessories where Type = ?))',
-      [rentalID, accessoryType]
-    ),
+    connection.query('insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(AccessoryID) FROM Accessories WHERE NOT EXISTS (SELECT * FROM (SELECT * from RentedAccessories) as RentedAccessories WHERE Accessories.AccessoryID = RentedAccessories.AccessoryID) AND Accessories.Type = ? ));',
+    [rentalID, accessoryType]),
       (error, results) => {
         if (error) return console.error(error);
 
@@ -185,9 +193,10 @@ class RentalService {
   }
 
   //Selects available accessories by the accessoryType, counts the number available.
-  getAvailableAccessoriesByType(success) {
+  getAvailableAccessoriesByType(rentalID, success) {
     connection.query(
-      'select Accessories.Type as accessoryType, (SELECT COUNT(Accessories.AccessoryID) FROM Accessories WHERE Accessories.Status = "Available" AND Accessories.Type = accessoryType) as TypeCount FROM Accessories GROUP BY Accessories.Type;',
+      'select Accessories.Type, (select count(Accessories.AccessoryID)) as TypeCount from Accessories where Accessories.AccessoryID not in (select AccessoryID from RentedAccessories inner join Rentals on Rentals.RentalID = RentedAccessories.RentalID where Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = 78) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = 78)) GROUP by Accessories.Type;',
+      [rentalID, rentalID],
       (error, results) => {
         if (error) return console.error(error);
 
