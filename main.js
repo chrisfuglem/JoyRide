@@ -14,10 +14,14 @@ require('electron-reload')(path.join(__dirname, 'src'), {
 
 let mainWindow;
 app.on('ready', () => {
-  mainWindow = new BrowserWindow({ width: 800, height: 600, webPreferences: { nodeIntegration: true } });
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: { nodeIntegration: true, devTools: false }
+  });
 
   // Open Development Tools
-  mainWindow.openDevTools();
+  // mainWindow.openDevTools();
 
   mainWindow.loadURL('file://' + __dirname + '/public/index.html');
 });

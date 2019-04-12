@@ -34,22 +34,24 @@ const history = createHashHistory();
 class Home extends Component {
   render() {
     return (
-      <div className="col text-center">
+      <div>
         <NavBar brand="Joyride" />
-        <Card title="Welcome to Joyride">Navigate using the buttons below</Card>
-        <NavLink to="/sales">
-          <Button.Info>Sales</Button.Info>
-        </NavLink>{' '}
-        <br />
-        <br />
-        <NavLink to="/warehouse">
-          <Button.Info>Warehouse</Button.Info>
-        </NavLink>
-        <br />
-        <br />
-        <NavLink to="/employees">
-          <Button.Info>Employees</Button.Info>
-        </NavLink>
+        <div className="col text-center">
+          <br />
+          <NavLink to="/sales">
+            <Button.Info>Sales</Button.Info>
+          </NavLink>{' '}
+          <br />
+          <br />
+          <NavLink to="/warehouse">
+            <Button.Info>Warehouse</Button.Info>
+          </NavLink>
+          <br />
+          <br />
+          <NavLink to="/employees">
+            <Button.Info>Employees</Button.Info>
+          </NavLink>
+        </div>
       </div>
     );
   }
@@ -59,26 +61,28 @@ class Home extends Component {
 class Sales extends Component {
   render() {
     return (
-      <div className="col text-center">
+      <div>
         <NavBar brand="Joyride">
           <NavBar.Link to="/sales">Sales</NavBar.Link>
           <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
           <NavBar.Link to="/Employees">Employees</NavBar.Link>
         </NavBar>
-        <br />
-        <NavLink to="/sales/rentals">
-          <Button.Info>Rentals</Button.Info>
-        </NavLink>{' '}
-        <br />
-        <br />
-        <NavLink to="/sales/customers">
-          <Button.Info>Customers</Button.Info>
-        </NavLink>
-        <br />
-        <br />
-        <NavLink to="/sales/count">
-          <Button.Info>Rental Count</Button.Info>
-        </NavLink>
+        <div className="col text-center">
+          <br />
+          <NavLink to="/sales/rentals">
+            <Button.Info>Rentals</Button.Info>
+          </NavLink>{' '}
+          <br />
+          <br />
+          <NavLink to="/sales/customers">
+            <Button.Info>Customers</Button.Info>
+          </NavLink>
+          <br />
+          <br />
+          <NavLink to="/sales/count">
+            <Button.Info>Rental Count</Button.Info>
+          </NavLink>
+        </div>
       </div>
     );
   }
@@ -88,31 +92,33 @@ class Sales extends Component {
 class Warehouse extends Component {
   render() {
     return (
-      <div className="col text-center">
+      <div>
         <NavBar brand="Joyride">
           <NavBar.Link to="/sales">Sales</NavBar.Link>
           <NavBar.Link to="/warehouse">Warehouse</NavBar.Link>
           <NavBar.Link to="/Employees">Employees</NavBar.Link>
         </NavBar>
-        <br />
-        <NavLink to="/warehouse/bicycles">
-          <Button.Info>Bicycles</Button.Info>
-        </NavLink>{' '}
-        <br />
-        <br />
-        <NavLink to="/warehouse/accessories">
-          <Button.Info>Accessories</Button.Info>
-        </NavLink>
-        <br />
-        <br />
-        <NavLink to="/warehouse/repair">
-          <Button.Info>Order Repair</Button.Info>
-        </NavLink>
-        <br />
-        <br />
-        <NavLink to="/warehouse/transport">
-          <Button.Info>Order Transport</Button.Info>
-        </NavLink>
+        <div className="col text-center">
+          <br />
+          <NavLink to="/warehouse/bicycles">
+            <Button.Info>Bicycles</Button.Info>
+          </NavLink>{' '}
+          <br />
+          <br />
+          <NavLink to="/warehouse/accessories">
+            <Button.Info>Accessories</Button.Info>
+          </NavLink>
+          <br />
+          <br />
+          <NavLink to="/warehouse/repair">
+            <Button.Info>Order Repair</Button.Info>
+          </NavLink>
+          <br />
+          <br />
+          <NavLink to="/warehouse/transport">
+            <Button.Info>Order Transport</Button.Info>
+          </NavLink>
+        </div>
       </div>
     );
   }
