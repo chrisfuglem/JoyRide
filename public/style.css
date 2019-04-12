@@ -52,10 +52,9 @@
   margin-right: 10px;
 }
 
-.Card-body {
+.Card {
   max-height: 100%;
   min-height: 100%;
-  height: cover;
 }
 
 #TypeDropdown, #FrameDropdown, #BrakeDropdown, #StatusDropdown, #HomeLocation, #CurrentLocation {
