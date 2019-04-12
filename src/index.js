@@ -149,7 +149,7 @@ class RentalList extends Component {
             <select id="RentalSearchCategory">
               <option value="Rentals.RentalID">Rental ID</option>
               <option value="Customers.CustomerID">Customer ID</option>
-              <option value="Customers.FirstName">Customer Fistname</option>
+              <option value="Customers.FirstName">Customer Firstname</option>
               <option value="Customers.SurName">Customer Surname</option>
               <option value="Rentals.RentalStatus">Status</option>
             </select>
@@ -164,8 +164,8 @@ class RentalList extends Component {
                   Order {rental.ID} by {rental.FirstName} {rental.SurName} on {rental.RentalDate}
                 </NavLink>
                 <br />
-                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM: {rental.SUM} Status:{' '}
-                {rental.RentalStatus}
+                BicycleCount: {rental.Bicyclecount} | Accessorycount: {rental.Accessorycount} SUM:{' '}
+                {rental.SUMwithDiscount} Status: {rental.RentalStatus}
               </List.Item>
             ))}
           </List>
@@ -176,15 +176,6 @@ class RentalList extends Component {
   }
 
   mounted() {
-    // rentalService.getRentals(rentals => {
-    //   this.rentals = rentals;
-    //   for (let i = 0; i < rentals.length; i++) {
-    //     // Siden datoer fra databasen lagres som et Object må de gjøres om til Strings
-    //     let rentalDate = JSON.stringify(rentals[i].Date);
-    //     rentalDate = rentalDate.slice(1, 11);
-    //     this.rentals[i].RentalDate = rentalDate;
-    //   }
-    // });
     this.searchCategory = '' + document.getElementById('RentalSearchCategory').value;
     this.searchValue = '%' + document.getElementById('RentalSearchField').value + '%';
     rentalService.searchRentals(this.searchCategory, this.searchValue, rentals => {
@@ -257,7 +248,7 @@ class RentalEdit extends Component {
   FirstName = '';
   RentStart = '';
   RentEnd = '';
-  SUM = '';
+  SUMwithDiscount = '';
   BikeStatus = '';
   AccessoryStatus = '';
 
@@ -279,7 +270,7 @@ class RentalEdit extends Component {
           <p>Customer: {this.FirstName}</p>
           <p>Start of rent: {this.RentStart}</p>
           <p>End of rent: {this.RentEnd}</p>
-          <p>Order Sum: {this.SUM}</p>
+          <p>Order Sum: {this.SUMwithDiscount}</p>
           <NavLink to="RemoveFromRental">Edit Bicycles and Accessories</NavLink>
           <h4>Bicycles</h4>
           {this.rentedBicycles.map(bicycle => (
@@ -298,7 +289,7 @@ class RentalEdit extends Component {
             </List.Item>
           ))}
           <NavLink to="/sales/rentals">
-            <Button.Success onClick={this.save}>Save Changes</Button.Success>
+            <Button.Success>Save Changes</Button.Success>
           </NavLink>{' '}
           <Button.Success onClick={this.setActive}>Activate Rental</Button.Success>
           <br />
@@ -330,19 +321,13 @@ class RentalEdit extends Component {
       y = y.slice(1, 11);
       this.RentEnd = y;
 
-      this.SUM = this.rental[0].SUM;
+      this.SUMwithDiscount = this.rental[0].SUMwithDiscount;
     });
     rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
       this.rentedBicycles = bicycles;
     });
     rentalService.getRentedAccessories(this.props.match.params.id, accessories => {
       this.rentedAccessories = accessories;
-    });
-  }
-
-  save() {
-    rentalService.updateRental(this.props.match.params.id, this.name, this.email, () => {
-      history.push('/sales/rentals');
     });
   }
 
@@ -380,11 +365,6 @@ class RentalEdit extends Component {
       history.push('/sales/rentals');
     });
   }
-
-  discount() {
-    let discount = document.getElementByID('DiscountDropdown').value;
-    let sum = this.rental.sum * dicount;
-  }
 }
 
 //Section for selecting/deselecting bicycles and accessories.
@@ -404,7 +384,9 @@ class RemoveFromRental extends Component {
   rentstart = '';
   rentend = '';
   sum = 0;
+  sumStore = 0;
   discountSUM = 0;
+  extraSUM = 0;
   discountVariable = 1; // Assign any number from 0 - 1 to apply a discount
 
   constructor(props) {
@@ -435,6 +417,19 @@ class RemoveFromRental extends Component {
           <p>
             <b>Final Sum: {this.discountSUM}kr</b>
           </p>
+          <p id="discTag"> </p>
+          <select id="discount">
+            <option value="" selected={true}>
+              No Discount
+            </option>
+            <option value="0.85">Student</option>
+            <option value="0.75">Senior</option>
+            <option value="0.8">Family</option>
+            <option value="0.875">Friend</option>
+            <option value="0.7">Returning Customer</option>
+          </select>
+          <button onClick={this.addDiscount}>Add discount</button>
+          <button onClick={this.returnSum}>Remove discount</button>
           <div>
             <h4>Available Bicycles</h4>
             <select ref={this.bicycleDropdown}>
@@ -526,6 +521,7 @@ class RemoveFromRental extends Component {
   // Sum is calculated from inside mounted() each time the page reloads
   calculateSum() {
     this.sum = 0; // Reset before calculating
+    this.discount = '' + document.getElementById('discount').value;
     for (let x = 0; x < this.rentedBicycles.length; x++) {
       this.sum += this.rentedBicycles[x].DailyPrice;
     }
@@ -533,12 +529,37 @@ class RemoveFromRental extends Component {
       this.sum += this.rentedAccessories[x].DailyPrice;
     }
     this.sum = Math.round(this.sum);
+    this.sumStore = this.sum;
     if (this.rentedBicycles.length > 3) {
       this.discountSUM = Math.round(this.sum * 0.9);
+      this.extraSUM = this.discountSUM;
     } else {
       this.discountSUM = this.sum;
+      this.extraSUM = this.discountSUM;
     }
-    rentalService.updateSUM(this.sum, this.discountSUM, this.props.match.params.id);
+    rentalService.updateSUM(this.sum, this.extraSUM, this.props.match.params.id);
+  }
+
+  addDiscount() {
+    this.discount = '' + document.getElementById('discount').value;
+    if (this.discount != '') {
+      this.extraSUM = Math.round(this.sum * this.discount);
+      document.getElementById('discTag').innerHTML = '<b> With extra discount: ' + this.extraSUM + ' kr</b>';
+    } else {
+      return;
+    }
+    rentalService.updateSUM(this.sum, this.extraSUM, this.props.match.params.id);
+  }
+
+  returnSum() {
+    if (this.rentedBicycles.length > 3) {
+      this.extraSUM = Math.round(this.sum * 0.9);
+      document.getElementById('discTag').innerHTML = '';
+    } else {
+      this.extraSUM = this.sumStore;
+      document.getElementById('discTag').innerHTML = '';
+    }
+    rentalService.updateSUM(this.sum, this.extraSUM, this.props.match.params.id);
   }
 
   //Adds bicycle to the rental.
@@ -561,7 +582,6 @@ class RemoveFromRental extends Component {
 
   //Adds accessory to the rental.
   addAccessory() {
-    // Doesn't query the accessoryDropdown is empty
     if (this.accessoryDropdown.current.value != '') {
       rentalService.addAccessoryToRental(this.props.match.params.id, this.accessoryDropdown.current.value);
       this.mounted(); // Refresh page with new data
@@ -689,8 +709,6 @@ class RentalInsert extends Component {
       this.lastInsertedRental = rental.RentalID + 1;
     });
   }
-
-  //tjall
 
   //Adds new rental.
   insert() {
