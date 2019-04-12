@@ -2,10 +2,22 @@ import { connection } from './mysql_connection';
 import { connect } from 'net';
 
 class RentalService {
-  //Selects ID,sum date, start and end from rentals in the database, and counts the number of bikes and accessories in the booking.
+  //Selects ID,sum date, start and end from rentals in the database, and counts the number of bikes and accessories in the booking excluding Rentals with status 'Ended'.
   getRentals(success) {
     connection.query(
-      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID order by RentalID DESC;',
+      'SELECT Rentals.RentalID as ID, Rentals.SUMwithDiscount, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Rentals.RentalStatus, Customers.FirstName, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID where Rentals.RentalStatus != "Ended"',
+      (error, results) => {
+        if (error) return console.error(error);
+
+        success(results);
+      }
+    );
+  }
+
+  //Gets all the rentals with status 'Ended'
+  getEndedRentals(success) {
+    connection.query(
+      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, Rentals.RentalStatus, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID where Rentals.RentalStatus = "Ended"',
       (error, results) => {
         if (error) return console.error(error);
 
@@ -17,7 +29,7 @@ class RentalService {
   //Selects a specific rental booking and extracts rental and customer information from the database.
   getRental(id, success) {
     connection.query(
-      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.RentStart, Rentals.RentEnd, COUNT(RentedBicycles.BicycleID) as bicycleCount, Rentals.SUM FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
+      'SELECT Rentals.RentalID, Customers.FirstName, Rentals.RentStart, Rentals.RentEnd, Rentals.RentalStatus, COUNT(RentedBicycles.BicycleID) as bicycleCount, Rentals.SUMwithDiscount FROM ((Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID) INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID) WHERE Rentals.RentalID=?',
       [id],
       (error, results) => {
         if (error) return console.error(error);
@@ -102,6 +114,16 @@ class RentalService {
     });
   }
 
+  updateSUM(SUM, extraSUM, rentalID) {
+    connection.query(
+      'update Rentals set SUM = ?, SUMwithDiscount = ? where RentalID = ?',
+      [SUM, extraSUM, rentalID],
+      (error, results) => {
+        if (error) return console.error(error);
+      }
+    );
+  }
+
   //Adds an order with name, email, rent start and rent end.
   insertRental(customer, date, rentstart, rentend, sum, pickuplocation, discountsum, success) {
     connection.query(
@@ -125,8 +147,8 @@ class RentalService {
 
   addBicycleToRental(rentalID, bicycleType, success) {
     connection.query(
-      'insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(BicycleID) FROM Bicycles WHERE NOT EXISTS (SELECT * FROM (SELECT * from RentedBicycles) as RentedBicycles WHERE Bicycles.BicycleID = RentedBicycles.BicycleID) AND Bicycles.BicycleType = ? ));',
-      [rentalID, bicycleType]
+      'insert into RentedBicycles (RentalID, BicycleID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MAX(BicycleID) FROM Bicycles WHERE NOT EXISTS (SELECT * FROM (select * from RentedBicycles) as RentedBicycles inner join (select * from Rentals) as Rentals on Rentals.RentalID = RentedBicycles.RentalID WHERE Bicycles.BicycleID = RentedBicycles.BicycleID and Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = ?) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = ?)) AND Bicycles.BicycleType = ?))',
+      [rentalID, rentalID, rentalID, bicycleType]
     ),
       (error, results) => {
         if (error) return console.error(error);
@@ -137,8 +159,8 @@ class RentalService {
 
   addAccessoryToRental(rentalID, accessoryType, success) {
     connection.query(
-      'insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MIN(AccessoryID) from Accessories where Type = ?))',
-      [rentalID, accessoryType]
+      'insert into RentedAccessories (RentalID, AccessoryID) values ((SELECT RentalID from Rentals where RentalID = ?), (SELECT MAX(AccessoryID) FROM Accessories WHERE NOT EXISTS (SELECT * FROM (select * from RentedAccessories) as RentedAccessories inner join (select * from Rentals) as Rentals on Rentals.RentalID = RentedAccessories.RentalID WHERE Accessories.AccessoryID = RentedAccessories.AccessoryID and Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = ?) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = ?)) AND Accessories.Type = ?))',
+      [rentalID, rentalID, rentalID, accessoryType]
     ),
       (error, results) => {
         if (error) return console.error(error);
@@ -185,9 +207,10 @@ class RentalService {
   }
 
   //Selects available accessories by the accessoryType, counts the number available.
-  getAvailableAccessoriesByType(success) {
+  getAvailableAccessoriesByType(rentalID, success) {
     connection.query(
-      'select Accessories.Type as accessoryType, (SELECT COUNT(Accessories.AccessoryID) FROM Accessories WHERE Accessories.Status = "Available" AND Accessories.Type = accessoryType) as TypeCount FROM Accessories GROUP BY Accessories.Type;',
+      'select Accessories.Type, (select count(Accessories.AccessoryID)) as TypeCount from Accessories where Accessories.AccessoryID not in (select AccessoryID from RentedAccessories inner join Rentals on Rentals.RentalID = RentedAccessories.RentalID where Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = ?) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = ?)) GROUP by Accessories.Type;',
+      [rentalID, rentalID, rentalID],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -209,7 +232,7 @@ class RentalService {
   getAvailableBicyclesByType(rentalID, success) {
     connection.query(
       'select Bicycles.BicycleType, (select count(Bicycles.BicycleID)) as TypeCount from Bicycles where Bicycles.BicycleID not in (select BicycleID from RentedBicycles inner join Rentals on Rentals.RentalID = RentedBicycles.RentalID where Rentals.RentStart <= (select Rentals.RentEnd from Rentals where Rentals.RentalID = ?) and Rentals.RentEnd >= (select Rentals.RentStart from Rentals where Rentals.RentalID = ?)) GROUP by Bicycles.BicycleType',
-      [rentalID, rentalID],
+      [rentalID, rentalID, rentalID],
       (error, results) => {
         if (error) return console.error(error);
 
@@ -278,7 +301,7 @@ class RentalService {
   //Search function for rentals.
   searchRentals(category, value, success) {
     connection.query(
-      'SELECT Rentals.RentalID as ID, Rentals.SUM, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Customers.FirstName, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID order by RentalID DESC WHERE ' +
+      'SELECT Rentals.RentalID as ID, Rentals.SUMwithDiscount, Rentals.Date, Rentals.RentStart, Rentals.RentEnd, Rentals.RentalStatus, Customers.FirstName, Customers.SurName, (SELECT COUNT(RentedBicycles.BicycleID) FROM Rentals INNER JOIN RentedBicycles ON Rentals.RentalID = RentedBicycles.RentalID WHERE Rentals.RentalID = ID) as Bicyclecount, (SELECT COUNT(RentedAccessories.AccessoryID) FROM Rentals INNER JOIN RentedAccessories ON Rentals.RentalID = RentedAccessories.RentalID WHERE Rentals.RentalID = ID) as Accessorycount FROM Rentals INNER JOIN Customers ON Rentals.CustomerID = Customers.CustomerID WHERE ' +
         category +
         ' LIKE ' +
         "'" +
