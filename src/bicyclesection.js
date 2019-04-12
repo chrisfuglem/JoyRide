@@ -13,7 +13,7 @@ const history = createHashHistory();
 //Section where it lists all the bicycles with information. From here you can add/update bicycles.
 export class BicycleList extends Component {
     bicycles = [];
-  
+
     render() {
       return (
         <div>
@@ -35,6 +35,8 @@ export class BicycleList extends Component {
             <NavLink to="/warehouse/bicycles/update">
               <Button.Light>Update Bicycles</Button.Light>
             </NavLink>
+            <br />
+            <br />
             <p>Click the bicycles to edit or delete them</p>
             <Form.Label>Find Bicycle By:</Form.Label>
             <div id="BicycleSearch">
@@ -71,7 +73,7 @@ export class BicycleList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       this.searchCategory = '' + document.getElementById('BicycleSearchCategory').value;
       this.searchValue = '%' + document.getElementById('BicycleSearchField').value + '%';
@@ -85,7 +87,7 @@ export class BicycleList extends Component {
       });
     }
   }
-  
+
   //Section where you can edit ot delete the chosen bicycle.
   export class BicycleEdit extends Component {
     BicycleType = '';
@@ -97,7 +99,7 @@ export class BicycleList extends Component {
     DailyPrice = '';
     CurrentLocation = '';
     BicycleStatuses = [];
-  
+
     render() {
       return (
         <div>
@@ -190,7 +192,7 @@ export class BicycleList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       bicycleService.getBicycle(this.props.match.params.id, bicycle => {
         this.BicycleType = bicycle.BicycleType;
@@ -206,7 +208,7 @@ export class BicycleList extends Component {
         this.BicycleStatuses = statuses;
       });
     }
-  
+
     //Updates the bicycle.
     save() {
       bicycleService.updateBicycle(
@@ -224,7 +226,7 @@ export class BicycleList extends Component {
         }
       );
     }
-  
+
     //Deletes the bicycle.
     delete() {
       bicycleService.deleteBicycle(this.props.match.params.id, () => {
@@ -232,7 +234,7 @@ export class BicycleList extends Component {
       });
     }
   }
-  
+
   //Section where you can add new bicycles.
   export class BicycleInsert extends Component {
     render() {
@@ -322,7 +324,7 @@ export class BicycleList extends Component {
         </div>
       );
     }
-  
+
     //Adds the bicycle.
     insert() {
       //Loops the insert command for number of bikes to be added.
@@ -343,7 +345,7 @@ export class BicycleList extends Component {
       }
     }
   }
-  
+
   //Section where you can update several bicyclelocations at once.
   export class BicycleUpdate extends Component {
     bicycles = [];
@@ -351,7 +353,7 @@ export class BicycleList extends Component {
     locations = [];
     CurrentLocation = '';
     BicycleStatus = '';
-  
+
     render() {
       return (
         <div>
@@ -404,7 +406,7 @@ export class BicycleList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       bicycleService.getBicyclestoUpdate(bicycles => {
         this.bicycles = bicycles;
@@ -417,7 +419,7 @@ export class BicycleList extends Component {
         this.locations = locations;
       });
     }
-  
+
     save() {
       for (let x = 0; x < this.bicycles.length; x++) {
         if (this.bicycles[x].checked == true) {

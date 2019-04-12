@@ -14,7 +14,7 @@ export class CustomerList extends Component {
     customers = [];
     searchCategory = '';
     searchValue = '';
-  
+
     render() {
       return (
         <div>
@@ -34,6 +34,8 @@ export class CustomerList extends Component {
               <NavLink to="/sales/customers/insert">
                 <Button.Light>Add New Customer</Button.Light>
               </NavLink>
+              <br />
+              <br />
               <h3>Search by category</h3>
               <div id="CustomerSearch">
                 <input id="CustomerSearchField" type="text" />
@@ -48,6 +50,7 @@ export class CustomerList extends Component {
                   Search
                 </button>
               </div>
+              <br />
               <List>
                 {this.customers.map(customer => (
                   <List.Item key={customer.CustomerID}>
@@ -62,7 +65,7 @@ export class CustomerList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       this.searchCategory = '' + document.getElementById('CustomerSearchCategory').value;
       this.searchValue = '%' + document.getElementById('CustomerSearchField').value + '%';
@@ -71,7 +74,7 @@ export class CustomerList extends Component {
       });
     }
   }
-  
+
   //Section where you can edit or delete the chosen customer.
   export class CustomerEdit extends Component {
     FirstName = '';
@@ -79,7 +82,7 @@ export class CustomerList extends Component {
     Email = '';
     Phone = '';
     Address = '';
-  
+
     render() {
       return (
         <div>
@@ -120,7 +123,7 @@ export class CustomerList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       customerService.getCustomer(this.props.match.params.id, customer => {
         this.FirstName = customer.FirstName;
@@ -130,7 +133,7 @@ export class CustomerList extends Component {
         this.Address = customer.Address;
       });
     }
-  
+
     //Updates the customer.
     save() {
       customerService.updateCustomer(
@@ -145,7 +148,7 @@ export class CustomerList extends Component {
         }
       );
     }
-  
+
     //Deletes the customer.
     delete() {
       customerService.deleteCustomer(this.props.match.params.id, () => {
@@ -153,7 +156,7 @@ export class CustomerList extends Component {
       });
     }
   }
-  
+
   //Section where you can add new customers.
   export class CustomerInsert extends Component {
     render() {
@@ -191,7 +194,7 @@ export class CustomerList extends Component {
         </div>
       );
     }
-  
+
     //Adds the new cutomer.
     insert() {
       customerService.insertCustomer(this.FirstName, this.SurName, this.Email, this.Phone, this.Address, () => {
@@ -199,7 +202,7 @@ export class CustomerList extends Component {
       });
     }
   }
-  
+
   //Section where you can add new customers and navigate directly to add rental.
   export class BookingCustomerInsert extends Component {
     render() {
@@ -237,7 +240,7 @@ export class CustomerList extends Component {
         </div>
       );
     }
-  
+
     //Adds the new cutomer.
     insert() {
       customerService.insertCustomer(this.FirstName, this.SurName, this.Email, this.Phone, this.Address, () => {

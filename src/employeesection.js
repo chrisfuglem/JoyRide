@@ -14,7 +14,7 @@ export class EmployeeList extends Component {
     employees = [];
     searchCategory = '';
     searchValue = '';
-  
+
     render() {
       return (
         <div>
@@ -42,6 +42,7 @@ export class EmployeeList extends Component {
                   Search
                 </button>
               </div>
+              <br />
               <List>
                 {this.employees.map(employee => (
                   <List.Item key={employee.EmployeeID}>
@@ -57,7 +58,7 @@ export class EmployeeList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       this.searchCategory = '' + document.getElementById('EmployeeSearchCategory').value;
       this.searchValue = '%' + document.getElementById('EmployeeSearchField').value + '%';
@@ -71,12 +72,12 @@ export class EmployeeList extends Component {
       });
     }
   }
-  
+
   //Section where you can edit or delete the chosen customer.
   export class EmployeeEdit extends Component {
     Firstname = '';
     Surname = '';
-  
+
     render() {
       return (
         <div>
@@ -107,21 +108,21 @@ export class EmployeeList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       employeeService.getEmployee(this.props.match.params.id, employee => {
         this.Firstname = employee.Firstname;
         this.Surname = employee.Surname;
       });
     }
-  
+
     //Updates the employee.
     save() {
       employeeService.updateEmployee(this.props.match.params.id, this.Firstname, this.Surname, () => {
         history.push('/employees');
       });
     }
-  
+
     //Deletes the employee.
     delete() {
       employeeService.deleteEmployee(this.props.match.params.id, () => {
@@ -129,7 +130,7 @@ export class EmployeeList extends Component {
       });
     }
   }
-  
+
   //Section where you can add new employees.
   export class EmployeeInsert extends Component {
     render() {
@@ -157,7 +158,7 @@ export class EmployeeList extends Component {
         </div>
       );
     }
-  
+
     //Adds the employee.
     insert() {
       employeeService.insertEmployee(this.Firstname, this.Surname, () => {

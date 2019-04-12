@@ -16,7 +16,7 @@ export class TransportList extends Component {
     transportToLocations = [];
     bicycles = [];
     BicycleStatus = '';
-  
+
     render() {
       return (
         <div>
@@ -41,6 +41,7 @@ export class TransportList extends Component {
                 <option value={location.LocationName}>{location.LocationName}</option>
               ))}
             </select>
+            <br />
             <br />
             <p>Select the Bicycles you want to transport:</p>
             <List>
@@ -78,13 +79,13 @@ export class TransportList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       transportService.getLocations(locations => {
         this.locations = locations;
       });
     }
-  
+
     //Gets all the bicycles on the chosen location
     getBicyclesForTransport() {
       transportService.getBicyclesForTransport(document.getElementById('LocationDropdown').value, bicycles => {
@@ -100,14 +101,14 @@ export class TransportList extends Component {
         this.transportToLocations = locations;
       });
     }
-  
+
     //Updates the status on the bicycles set for transport.
     save() {
       let pdf = new jsPDF();
       let pickup = '' + document.getElementById('LocationDropdown').value;
       let drop = '' + document.getElementById('TransportDropdown').value;
       let comment = '\n\nAdditional comments:\n' + document.getElementById('comment').value;
-  
+
       let input =
         'AS sykkelutleie\n\nTransport confirmation: \n \n' +
         'Pickup Location: ' +
@@ -123,7 +124,7 @@ export class TransportList extends Component {
           });
         }
       }
-  
+
       pdf.text(input + comment, 10, 10);
       pdf.save('Transport_order.pdf');
     }

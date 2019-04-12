@@ -12,7 +12,7 @@ const history = createHashHistory();
 //Section where it lists all the accessories. From here you can add/edit accessories.
 export class AccessoryList extends Component {
     accessories = [];
-  
+
     render() {
       return (
         <div>
@@ -34,6 +34,8 @@ export class AccessoryList extends Component {
             <NavLink to="/warehouse/accessories/exinsert">
               <Button.Light>Add Existing accessory</Button.Light>
             </NavLink>
+            <br />
+            <br />
             <p>Click the accessories to edit or delete them</p>
             <Form.Label>Find Bicycle By:</Form.Label>
             <div id="AccessorySearch">
@@ -49,6 +51,7 @@ export class AccessoryList extends Component {
                 Search
               </button>
             </div>
+            <br />
             <List>
               {this.accessories.map(accessory => (
                 <List.Item key={accessory.AccessoryID}>
@@ -65,7 +68,7 @@ export class AccessoryList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       this.searchCategory = '' + document.getElementById('AccessorySearchCategory').value;
       this.searchValue = '%' + document.getElementById('AccessorySearchField').value + '%';
@@ -79,7 +82,7 @@ export class AccessoryList extends Component {
       });
     }
   }
-  
+
   //Section where you edit/delete the chosen accessory.
   export class AccessoryEdit extends Component {
     Type = '';
@@ -88,7 +91,7 @@ export class AccessoryList extends Component {
     HomeLocation = '';
     CurrentLocation = '';
     AccessoryStatuses = [];
-  
+
     render() {
       return (
         <div>
@@ -153,7 +156,7 @@ export class AccessoryList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       accessoryService.getAccessory(this.props.match.params.id, accessory => {
         this.Type = accessory.Type;
@@ -166,7 +169,7 @@ export class AccessoryList extends Component {
         this.AccessoryStatuses = statuses;
       });
     }
-  
+
     //Updates the accessory.
     save() {
       accessoryService.updateAccessory(
@@ -180,7 +183,7 @@ export class AccessoryList extends Component {
         }
       );
     }
-  
+
     //Deletes the accessory.
     delete() {
       accessoryService.deleteAccessory(this.props.match.params.id, () => {
@@ -191,7 +194,7 @@ export class AccessoryList extends Component {
       });
     }
   }
-  
+
   //Section where you can add new accessories.
   export class AccessoryInsert extends Component {
     render() {
@@ -249,7 +252,7 @@ export class AccessoryList extends Component {
         </div>
       );
     }
-  
+
     //Adds the accessory.
     insert() {
       accessoryService.insertAccessoryType(this.type, () => {
@@ -260,11 +263,11 @@ export class AccessoryList extends Component {
       });
     }
   }
-  
+
   //Section where you can add new accessories.
   export class AccessoryInsertEx extends Component {
     AccessoryTypes = [];
-  
+
     render() {
       return (
         <div>
@@ -329,13 +332,13 @@ export class AccessoryList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       accessoryService.getAccessoryTypes(types => {
         this.AccessoryTypes = types;
       });
     }
-  
+
     //Adds the accessory.
     insert() {
       //Loops the insert command for number of bikes to be added.

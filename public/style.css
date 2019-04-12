@@ -41,8 +41,9 @@
   width: 150px;
 }
 
-.btn.btn-success, .btn.btn-danger {
+.btn.btn-success, .btn.btn-danger, .btn.btn-light {
   padding-right: 10px;
+  margin-right: 10px;
   width: auto;
   text-align: center;
 }
@@ -65,7 +66,7 @@ body {
   align-self: center;
 }
 
-#RentalSearchField, #RentalSearchCategory, #AccessorySearchField, #AccessorySearchCategory, #BicycleSearchCategory, #BicycleSearchField, #CustomerSearchCategory, #CustomerSearchField {
+#RentalSearchField, #RentalSearchCategory, #AccessorySearchField, #AccessorySearchCategory, #BicycleSearchCategory, #BicycleSearchField, #CustomerSearchCategory, #CustomerSearchField, #CurrentLocation {
   margin-right: 10px;
 }
 

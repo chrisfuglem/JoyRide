@@ -13,7 +13,7 @@ const history = createHashHistory();
 //List all rentals, from here you can add and edit rentals.
 export class RentalList extends Component {
     rentals = [];
-  
+
     render() {
       return (
         <div>
@@ -34,6 +34,8 @@ export class RentalList extends Component {
             <NavLink to="/sales/rentals/ended">
               <Button.Light>Ended Rentals</Button.Light>
             </NavLink>
+            <br />
+            <br />
             <p>Click the rentals to edit or delete them</p>
             <div id="RentalSearch">
               <input id="RentalSearchField" type="text" width="200px" />
@@ -48,6 +50,7 @@ export class RentalList extends Component {
                 Search
               </button>
             </div>
+            <br />
             <List>
               {this.rentals.map(rental => (
                 <List.Item key={rental.ID}>
@@ -65,7 +68,7 @@ export class RentalList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       this.searchCategory = '' + document.getElementById('RentalSearchCategory').value;
       this.searchValue = '%' + document.getElementById('RentalSearchField').value + '%';
@@ -80,10 +83,10 @@ export class RentalList extends Component {
       });
     }
   }
-  
+
   export class EndedRentalList extends Component {
     rentals = [];
-  
+
     render() {
       return (
         <div>
@@ -117,7 +120,7 @@ export class RentalList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       rentalService.getEndedRentals(rentals => {
         this.rentals = rentals;
@@ -130,7 +133,7 @@ export class RentalList extends Component {
       });
     }
   }
-  
+
   //Rental edit section. Shows information from the chosen rental.
   export class RentalEdit extends Component {
     rentedBicycles = [];
@@ -142,7 +145,7 @@ export class RentalList extends Component {
     SUMwithDiscount = '';
     BikeStatus = '';
     AccessoryStatus = '';
-  
+
     render() {
       return (
         <div>
@@ -198,20 +201,20 @@ export class RentalList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       rentalService.getRental(this.props.match.params.id, rental => {
         this.rental = rental;
         this.FirstName = this.rental[0].FirstName;
-  
+
         let x = JSON.stringify(this.rental[0].RentStart);
         x = x.slice(1, 11);
         this.RentStart = x;
-  
+
         let y = JSON.stringify(this.rental[0].RentEnd);
         y = y.slice(1, 11);
         this.RentEnd = y;
-  
+
         this.SUMwithDiscount = this.rental[0].SUMwithDiscount;
       });
       rentalService.getRentedBicycles(this.props.match.params.id, bicycles => {
@@ -221,7 +224,7 @@ export class RentalList extends Component {
         this.rentedAccessories = accessories;
       });
     }
-  
+
     delete() {
       rentalService.removeAllBicycles(this.props.match.params.id, () => {
         history.push('/sales/rentals');
@@ -244,7 +247,7 @@ export class RentalList extends Component {
         history.push('/sales/rentals');
       });
     }
-  
+
     setEnded() {
       rentalService.setBicycleBack(this.props.match.params.id, status, () => {
         this.BikeStatus = status;
@@ -257,7 +260,7 @@ export class RentalList extends Component {
       });
     }
   }
-  
+
   //Section for selecting/deselecting bicycles and accessories.
   export class RemoveFromRental extends Component {
     rental = [];
@@ -279,7 +282,7 @@ export class RentalList extends Component {
     discountSUM = 0;
     extraSUM = 0;
     discountVariable = 1; // Assign any number from 0 - 1 to apply a discount
-  
+
     constructor(props) {
       super(props);
       this.customerDropdown = React.createRef();
@@ -287,7 +290,7 @@ export class RentalList extends Component {
       this.accessoryDropdown = React.createRef();
       this.locationDropdown = React.createRef();
     }
-  
+
     render() {
       return (
         <div>
@@ -368,7 +371,7 @@ export class RentalList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       // Resets the options to prevent duplicates from being added when mounted is called a second time
       this.bicycleDropdownOptions = [];
@@ -408,7 +411,7 @@ export class RentalList extends Component {
         }
       });
     }
-  
+
     // Sum is calculated from inside mounted() each time the page reloads
     calculateSum() {
       this.sum = 0; // Reset before calculating
@@ -451,7 +454,7 @@ export class RentalList extends Component {
       }
       rentalService.updateSUM(this.sum, this.extraSUM, this.props.match.params.id);
     }
-  
+
     //Adds bicycle to the rental.
     addBicycle() {
       if (this.bicycleDropdown.current.value != '') {
@@ -461,7 +464,7 @@ export class RentalList extends Component {
         alert('No bicycles available');
       }
     }
-  
+
     //Removes the bicycle from the rental.
     removeBicycle(id) {
       rentalService.removeBicycle(id, this.props.match.params.id, () => {
@@ -469,7 +472,7 @@ export class RentalList extends Component {
       });
       this.mounted(); // Refresh page with new data
     }
-  
+
     //Adds accessory to the rental.
     addAccessory() {
       if (this.accessoryDropdown.current.value != '') {
@@ -479,7 +482,7 @@ export class RentalList extends Component {
         alert('No accessories available');
       }
     }
-  
+
     //Removes accessory from the rental.
     removeAccessory(id) {
       rentalService.removeAccessory(id, this.props.match.params.id, () => {
@@ -488,7 +491,7 @@ export class RentalList extends Component {
       this.mounted(); // Refresh page with new data
     }
   }
-  
+
   //Section for adding rentals. Here you can choose pickuplocation,
   //customer, start date, end date and add bicycles and accessories to the booking.
   export class RentalInsert extends Component {
@@ -504,7 +507,7 @@ export class RentalList extends Component {
     rentedAccessories = [];
     searchCategory = '';
     lastInsertedRental = 0;
-  
+
     constructor(props) {
       super(props);
       this.customerDropdown = React.createRef();
@@ -512,7 +515,7 @@ export class RentalList extends Component {
       this.accessoryDropdown = React.createRef();
       this.locationDropdown = React.createRef();
     }
-  
+
     render() {
       return (
         <div>
@@ -585,7 +588,7 @@ export class RentalList extends Component {
         </div>
       );
     }
-  
+
     mounted() {
       this.searchCategory = '' + document.getElementById('CustomerSearchCategory').value;
       this.searchValue = '%' + document.getElementById('CustomerSearchField').value + '%';
@@ -599,7 +602,7 @@ export class RentalList extends Component {
         this.lastInsertedRental = rental.RentalID + 1;
       });
     }
-  
+
     //Adds new rental.
     insert() {
       //Get todays date
@@ -611,7 +614,7 @@ export class RentalList extends Component {
       let day = dateObj.getUTCDate();
       let year = dateObj.getUTCFullYear();
       let today = year + '-' + month + '-' + day;
-  
+
       // name, date, rentstart, rentend, sum, pickuplocation, discountsum
       rentalService.insertRental(
         this.customerDropdown.current.value,
@@ -631,7 +634,7 @@ export class RentalList extends Component {
   //Section where you can see how many rentals the different customers have.
 export class RentalCountList extends Component {
     Counts = [];
-  
+
     render() {
       return (
         <div>
