@@ -8,13 +8,20 @@ import jsPDF from 'jspdf';
 //ACCESSORIES
 import { AccessoryList, AccessoryEdit, AccessoryInsert, AccessoryInsertEx } from './accessorysection';
 //BICYCLES
-import { BicycleList, BicycleInsert, BicycleUpdate, BicycleEdit, } from './bicyclesection';
+import { BicycleList, BicycleInsert, BicycleUpdate, BicycleEdit } from './bicyclesection';
 //CUSTOMERS
 import { CustomerList, CustomerEdit, CustomerInsert, BookingCustomerInsert } from './customersection';
 //EMPLOYEES
 import { EmployeeList, EmployeeEdit, EmployeeInsert } from './employeesection';
 //RENTALS
-import { RentalList, EndedRentalList, RentalEdit, RemoveFromRental, RentalInsert, RentalCountList } from './rentalsection';
+import {
+  RentalList,
+  EndedRentalList,
+  RentalEdit,
+  RemoveFromRental,
+  RentalInsert,
+  RentalCountList
+} from './rentalsection';
 //REPAIRS
 import { RepairList, RepairDetails } from './repairsection';
 //TRANSPORTS

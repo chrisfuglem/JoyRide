@@ -107,7 +107,7 @@ class RentalService {
 
   //Updates an order with name and email.
   updateRental(id, name, email, success) {
-    connection.query('update Rentals set name=?, email=? where RentalID= ?', [name, email, id], (error, results) => {
+    connection.query('update Rentals set name=?, email=? where id= ?', [name, email, id], (error, results) => {
       if (error) return console.error(error);
 
       success();
@@ -306,8 +306,7 @@ class RentalService {
         ' LIKE ' +
         "'" +
         value +
-        "'" +
-        "and Rentals.RentalStatus != 'Ended'",
+        "'",
       [category, value],
       (error, results) => {
         if (error) return console.error(error);
