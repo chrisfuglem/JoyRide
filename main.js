@@ -7,10 +7,10 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
 // Reload application on changes in src folder
-require('electron-reload')(path.join(__dirname, 'src'), {
-  ignored: /^.*\.(json|txt)$/,
-  electron: require(path.join(__dirname, 'node_modules', 'electron'))
-});
+// require('electron-reload')(path.join(__dirname, 'src'), {
+//   ignored: /^.*\.(json|txt)$/,
+//   electron: require(path.join(__dirname, 'node_modules', 'electron'))
+// });
 
 let mainWindow;
 app.on('ready', () => {
