@@ -1,17 +1,17 @@
 .list-group-item:hover {
-  background-color: #DCDCDC;
-};
+  background-color: #dcdcdc;
+}
 
 .list-group-item:nth-child(odd) {
   background-color: #efefef;
 }
 
-.list-group{
-    max-height: 50vh;
-    margin-bottom: 10px;
-    overflow:auto;
-    -webkit-overflow-scrolling: touch;
-    padding-top: 2px;
+.list-group {
+  max-height: 50vh;
+  margin-bottom: 10px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-top: 2px;
 }
 
 #comment {
@@ -19,16 +19,20 @@
   height: 120px;
 }
 
-#Bikedrop, #Accdrop {
+#Bikedrop,
+#Accdrop {
   width: 250px;
   margin-right: 10px;
 }
 
-#Bikedropbtn, #Accdropbtn {
+#Bikedropbtn,
+#Accdropbtn {
   width: 150px;
 }
 
-#EmployeeSearchField, #EmployeeSearchCategory, #EmployeeSearchButton {
+#EmployeeSearchField,
+#EmployeeSearchCategory,
+#EmployeeSearchButton {
   margin-right: 10px;
 }
 
@@ -37,11 +41,18 @@
   min-height: 100%;
 }
 
-#TypeDropdown, #FrameDropdown, #BrakeDropdown, #StatusDropdown, #HomeLocation, #CurrentLocation {
+#TypeDropdown,
+#FrameDropdown,
+#BrakeDropdown,
+#StatusDropdown,
+#HomeLocation,
+#CurrentLocation {
   width: 150px;
 }
 
-.btn.btn-success, .btn.btn-danger, .btn.btn-light {
+.btn.btn-success,
+.btn.btn-danger,
+.btn.btn-light {
   padding-right: 10px;
   margin-right: 10px;
   width: auto;
@@ -62,18 +73,33 @@ body {
   height: 10%;
   width: 30%;
   margin-top: 5%;
-  margin: 5%;
+  margin: 3%;
   align-self: center;
 }
 
-#RentalSearchField, #RentalSearchCategory, #AccessorySearchField, #AccessorySearchCategory, #BicycleSearchCategory, #BicycleSearchField, #CustomerSearchCategory, #CustomerSearchField, #CurrentLocation {
+#RentalSearchField,
+#RentalSearchCategory,
+#AccessorySearchField,
+#AccessorySearchCategory,
+#BicycleSearchCategory,
+#BicycleSearchField,
+#CustomerSearchCategory,
+#CustomerSearchField,
+#CurrentLocation {
   margin-right: 10px;
 }
 
-#CustomerSearchCategory, #EmployeeSearchCategory, #AccessorySearchCategory, #BicycleSearchCategory {
+#CustomerSearchCategory,
+#EmployeeSearchCategory,
+#AccessorySearchCategory,
+#BicycleSearchCategory {
   width: 150px;
 }
 
-#CustomerSearchButton, #EmployeeSearchButton, #RentalSearchButton, #AccessorySearchButton, #BicycleSearchButton {
+#CustomerSearchButton,
+#EmployeeSearchButton,
+#RentalSearchButton,
+#AccessorySearchButton,
+#BicycleSearchButton {
   width: 100px;
 }
