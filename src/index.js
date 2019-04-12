@@ -143,6 +143,8 @@ class RentalList extends Component {
           <NavLink to="/sales/rentals/ended">
             <Button.Light>Ended Rentals</Button.Light>
           </NavLink>
+          <br />
+          <br />
           <p>Click the rentals to edit or delete them</p>
           <div id="RentalSearch">
             <input id="RentalSearchField" type="text" width="200px" />
@@ -745,6 +747,8 @@ class CustomerList extends Component {
             <NavLink to="/sales/customers/insert">
               <Button.Light>Add New Customer</Button.Light>
             </NavLink>
+            <br />
+            <br />
             <h3>Search by category</h3>
             <div id="CustomerSearch">
               <input id="CustomerSearchField" type="text" />
@@ -1139,6 +1143,8 @@ class BicycleList extends Component {
           <NavLink to="/warehouse/bicycles/update">
             <Button.Light>Update Bicycles</Button.Light>
           </NavLink>
+          <br />
+          <br />
           <p>Click the bicycles to edit or delete them</p>
           <Form.Label>Find Bicycle By:</Form.Label>
           <div id="BicycleSearch">
@@ -1153,7 +1159,7 @@ class BicycleList extends Component {
               <option value="HomeLocation.HomeLocationName">Homelocation</option>
               <option value="CurrentLocation.CurrentLocationName">Current location</option>
             </select>
-            <button id="CustomerSearchButton" onClick={this.mounted}>
+            <button id="BicycleSearchButton" onClick={this.mounted}>
               Search
             </button>
           </div>
@@ -1169,8 +1175,6 @@ class BicycleList extends Component {
             ))}
           </List>
           <p id="alert" />
-          <br />
-          <br />
         </Card>
       </div>
     );
@@ -1563,6 +1567,8 @@ class AccessoryList extends Component {
           <NavLink to="/warehouse/accessories/exinsert">
             <Button.Light>Add Existing accessory</Button.Light>
           </NavLink>
+          <br />
+          <br />
           <p>Click the accessories to edit or delete them</p>
           <Form.Label>Find Bicycle By:</Form.Label>
           <div id="AccessorySearch">
@@ -1915,6 +1921,7 @@ class TransportList extends Component {
             ))}
           </select>
           <br />
+          <br />
           <p>Select the Bicycles you want to transport:</p>
           <List>
             {this.bicycles.map(bicycle => (
@@ -1938,12 +1945,8 @@ class TransportList extends Component {
           </select>
           <br />
           <br />
-          <br />
           <input type="textarea" placeholder="Add additional comments" id="comment" />
-          <br />
-          <br />
           <p id="alert" />
-          <br />
           <NavLink to="/warehouse/bicycles">
             <Button.Success onClick={this.save}>Submit</Button.Success>
           </NavLink>
